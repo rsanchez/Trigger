@@ -2,6 +2,8 @@
 
 class Trigger_mcp {
 
+	var $context = array();
+
 	function Trigger_mcp()
 	{
 		$this->EE =& get_instance();
@@ -36,6 +38,8 @@ class Trigger_mcp {
 	
 	function parse_trigger_output()
 	{
+		$result = null;
+		
 		$output = null;
 	
 		// Get Context
@@ -64,19 +68,58 @@ class Trigger_mcp {
 		
 		$driver = trim($parts[1]);
 		
+		// Load driver
+		
+		include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
+		
+		$driver_class = 'Commands_'.$driver;
+		
+		$obj = new $driver_class();
+		
 		// Set driver
 		
-		if( $driver != '' && !isset($parts[2]) ):
+		if( $driver != '' ):
 		
-			$this->EE->session->cache['trigger']['context'] = array('ee', $driver);
-			
-			foreach( $this->EE->session->cache['trigger']['context'] as $cont ):
-			
-				$output .= $cont . " : ";
-			
-			endforeach;
+			$this->context[0] = 'ee';
+			$this->context[1] = $driver;
 		
 		endif;
+		
+		if( isset($parts[2]) && $parts[2]!='' ):
+		
+			// We have a method
+			
+			$method = trim($parts[2]);
+			
+			$method = str_replace(" ", "_", $method);
+		
+			if( method_exists($obj, $method) ):
+			
+				$result = $obj->$method();
+			
+			endif;
+		
+		endif;
+		
+		// Get result out there
+		
+		if( $result ):
+		
+			$output = $result . "\n";
+		
+		endif;
+		
+		// Set context
+
+		foreach( $this->context as $cont ):
+		
+			$output .= $cont . " : ";
+		
+		endforeach;
+
+		// Save context
+		
+		$this->EE->session->cache['trigger']['context'] = $this->context;
 	
 		$this->_output_response($output);
 	}
