@@ -1,5 +1,10 @@
-<pre>
-	<ul id="terminal_stream">
-		<li>EE : Channels : Pages : <input type="text" /></li>
-	</ul>
-</pre>
+<form id="trigger_form">
+
+<textarea name="trigger_content" id="trigger_content">
+<?php foreach( $context as $item ): echo $item . " : "; endforeach; ?>
+
+</textarea>
+
+<div id="trigger_target"></div>
+
+</form>
