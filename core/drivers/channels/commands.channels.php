@@ -1,10 +1,11 @@
 <?php
 
-class Commands_channel
+class Commands_channels
 {
+
 	function new_channel()
 	{
-		return "channel added";
+		return 'channel was set';
 	}
 
 }

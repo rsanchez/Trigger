@@ -1,7 +1,8 @@
 $(document).ready(function()
 {
 	$(window).keypress(function(e) {
-	    if(e.keyCode == 13) {
+	    
+	if(e.keyCode == 13) {
 	    
 	var textarea = $('#trigger_content').val();
 
@@ -13,6 +14,8 @@ $(document).ready(function()
 		success: function(data){
 		
 		$('#trigger_content').val($('#trigger_content').val()+data);
+		
+		var textarea = null;
 		
 		}
 	});

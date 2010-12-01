@@ -7,10 +7,16 @@ class Trigger_mcp {
 	function Trigger_mcp()
 	{
 		$this->EE =& get_instance();
+		
+		$this->EE->load->library('Trigger');
 
 		$theme_url = $this->EE->config->item('theme_folder_url') . 'third_party/trigger';
 		
 		$this->EE->cp->add_to_head("<link rel='stylesheet' href='{$theme_url}/css/trigger.css'>");
+
+		// -------------------------------------
+		// Set default context if none set
+		// -------------------------------------
 
 		if ( ! isset($this->EE->session->cache['trigger']['context']) ):
 			
@@ -23,34 +29,51 @@ class Trigger_mcp {
 	
 	function index()
 	{
+		// -------------------------------------
+		// Get some javascript
+		// -------------------------------------
+		
 		$this->EE->load->library('javascript');
 
 		$this->EE->cp->load_package_js('trigger');
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_module_name'));
+
+		// -------------------------------------
+		// Set the context for the view
+		// -------------------------------------
 		
 		$this->EE->cp->set_variable('context', $this->EE->session->cache['trigger']['context']);
+
+		// -------------------------------------
+		// Load trigger edit window
+		// -------------------------------------
 
 		return $this->EE->load->view('window', '', TRUE); 
 	}
 
 	// --------------------------------------------------------------------------
 	
+	/**
+	 * Handles the trigger input and output
+	 */
 	function parse_trigger_output()
 	{
 		$result = null;
 		
 		$output = null;
+		
+		$error = null;
 	
-		// Get Context
+		// -------------------------------------
+		// Get the line in question
+		// -------------------------------------
 		
 		$text = $this->EE->input->post('line');
 		
 		// Get last line
 		
 		$lines = explode("\n", $text);
-		
-		$lines = array_reverse($lines);
 		
 		foreach( $lines as $individ_line ):
 		
@@ -62,66 +85,116 @@ class Trigger_mcp {
 		
 		endforeach;
 		
+		// -------------------------------------
 		// Get context
+		// -------------------------------------
+
+		$this->context[0] = 'ee';
 		
 		$parts = explode(":", $line);
 		
+		// -------------------------------------
+		// Check for driver
+		// -------------------------------------
+		
+		if( trim($parts[1]) == '' ):
+		
+			// -------------------------------------
+			// If there is no driver, exit to error
+			// -------------------------------------
+			
+			$error = "Please specify a driver\n";
+			
+			$this->EE->session->cache['trigger']['context'] = array('ee');
+			
+			$this->_output_response( $error . $this->EE->trigger->output_context( $this->context ) );
+			
+		endif;
+		
 		$driver = trim($parts[1]);
 		
-		// Load driver
+		// -------------------------------------
+		// Validate Driver
+		// -------------------------------------
 		
-		include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
+		if( ! file_exists(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php') ):
+		
+			// -------------------------------------
+			// If there is no driver, exit to error
+			// -------------------------------------
+			
+			$error = "'" . $driver . "' driver does not exist\n";
+			
+			$this->EE->session->cache['trigger']['context'] = array('ee');
+			
+			$this->_output_response( $error . $this->EE->trigger->output_context( $this->context ) );
+		
+		endif;
+		
+		// -------------------------------------
+		// Load driver
+		// -------------------------------------
+		
+		@include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
 		
 		$driver_class = 'Commands_'.$driver;
 		
 		$obj = new $driver_class();
 		
-		// Set driver
+		// Set driver to driver context position
 		
 		if( $driver != '' ):
 		
-			$this->context[0] = 'ee';
 			$this->context[1] = $driver;
 		
 		endif;
+
+		// -------------------------------------
+		// Determine Action
+		// -------------------------------------
 		
-		if( isset($parts[2]) && $parts[2]!='' ):
+		if( isset($parts[2]) ):
 		
-			// We have a method
+			$rest = trim($parts[2]);
 			
-			$method = trim($parts[2]);
+		else:
 			
-			$method = str_replace(" ", "_", $method);
-		
-			if( method_exists($obj, $method) ):
-			
-				$result = $obj->$method();
-			
-			endif;
+			$rest = FALSE;
 		
 		endif;
 		
-		// Get result out there
+		if( $rest ):
+		
+			$segs = explode(" ", $rest);
+		
+			$action = trim($segs[0]);
+		
+			switch( $action )
+			{
+				case 'root':
+					// Go back to EE
+					$this->context = array('ee');
+					$this->_output_response( $this->EE->trigger->output_context( $this->context ) );
+					break;
+			}
+		
+		endif;
+		
+		// -------------------------------------
+		// All line ending to result
+		// -------------------------------------
 		
 		if( $result ):
 		
-			$output = $result . "\n";
+			$result = $result . "\n";
 		
 		endif;
 		
-		// Set context
-
-		foreach( $this->context as $cont ):
-		
-			$output .= $cont . " : ";
-		
-		endforeach;
-
-		// Save context
-		
-		$this->EE->session->cache['trigger']['context'] = $this->context;
+		// -------------------------------------
+		// Output Data
+		// -------------------------------------
 	
-		$this->_output_response($output);
+		$this->_output_response( $result . $this->EE->trigger->output_context( $this->context ) );
 	}
 
 	// --------------------------------------------------------------------------
