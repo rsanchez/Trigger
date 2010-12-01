@@ -92,6 +92,18 @@ class Trigger_mcp {
 		$this->context[0] = 'ee';
 		
 		$parts = explode(":", $line);
+
+		// -------------------------------------
+		// Easy out for "root" in the 1 context
+		// -------------------------------------
+		
+		if( trim($parts[1]) == 'root' ):
+		
+			$this->context = array('ee');
+			
+			$this->_output_response( $this->EE->trigger->output_context( $this->context ) );
+					
+		endif;
 		
 		// -------------------------------------
 		// Check for driver
@@ -171,8 +183,11 @@ class Trigger_mcp {
 		
 			switch( $action )
 			{
+				// -------------------------------------
+				// Go back to the root
+				// -------------------------------------
+			
 				case 'root':
-					// Go back to EE
 					$this->context = array('ee');
 					$this->_output_response( $this->EE->trigger->output_context( $this->context ) );
 					break;
