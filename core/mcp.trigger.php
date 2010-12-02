@@ -2,13 +2,32 @@
 
 class Trigger_mcp {
 
-	var $context = array();
+	var $context 	= array();
+	
+	var $vars		= array();
 
 	function Trigger_mcp()
 	{
 		$this->EE =& get_instance();
 		
 		$this->EE->load->library('Trigger');
+
+		// -------------------------------------
+		// Catch the session cache data. Whatever.
+		// -------------------------------------
+		
+		
+		if( ! isset($this->EE->session->cache['Trigger_mcp']['vars']) ):
+		
+			$this->vars = array();
+			
+		else:
+		
+			$this->vars = $this->EE->session->cache['Trigger_mcp']['vars'];
+		
+		endif;
+
+		// -------------------------------------
 
 		$theme_url = $this->EE->config->item('theme_folder_url') . 'third_party/trigger';
 		
@@ -22,7 +41,7 @@ class Trigger_mcp {
 			
 			$this->EE->session->cache['trigger']['context'] = array('ee');
 			
-		endif;
+		endif;		
 	}
 
 	// --------------------------------------------------------------------------
@@ -188,8 +207,48 @@ class Trigger_mcp {
 				// -------------------------------------
 			
 				case 'root':
+				
 					$this->context = array('ee');
+					
 					$this->_output_response( $this->EE->trigger->output_context( $this->context ) );
+					
+					break;
+
+				// -------------------------------------
+				// Set a variable
+				// -------------------------------------
+
+				case 'set':
+				
+					$this->context = array('ee', $driver);
+					
+					if( ! $this->EE->trigger->set_variable( $segs ) ):
+					
+						$error = "Unable to set variable\n";
+					
+					endif;
+					
+					$this->_output_response( $error . $this->EE->trigger->output_context( $this->context ) );
+					
+					break;
+
+				default:
+				
+					// Must be a command
+				
+					$call = str_replace(" ", "_", $rest);
+					$call = strtolower($call);
+					
+					if( !method_exists($obj, $call) ):
+
+						$this->_output_response( "Invalid Command\n" . $this->EE->trigger->output_context( $this->context ) );
+					else:
+
+						$this->_output_response( $obj->$call() . "\n" . $this->EE->trigger->output_context( $this->context ) );
+					
+					endif;
+				
+				
 					break;
 			}
 		
