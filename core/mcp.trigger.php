@@ -241,7 +241,7 @@ class Trigger_mcp {
 					
 					if( !method_exists($obj, $call) ):
 
-						$this->_output_response( "Invalid Command\n" . $this->EE->trigger->output_context( $this->context ) );
+						$this->_output_response( "invalid command\n" . $this->EE->trigger->output_context( $this->context ) );
 					else:
 
 						$this->_output_response( $obj->$call() . "\n" . $this->EE->trigger->output_context( $this->context ) );
