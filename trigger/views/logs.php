@@ -1,0 +1,27 @@
+<div class="cp_button"> 
+	<a href="index.php?S=c1b83ff5126f9f23fa0925befedc7f1b9d2d1738&D=cp&D=cp&C=addons_modules&M=show_module_cp&module=freeform&method=manage_entries"><?=lang('trigger_clear_logs');?></a> 
+</div> 
+
+<div class="cp_button"> 
+	<a href="index.php?S=c1b83ff5126f9f23fa0925befedc7f1b9d2d1738&D=cp&D=cp&C=addons_modules&M=show_module_cp&module=freeform&method=manage_entries"><?=lang('trigger_export_logs');?></a> 
+</div> 
+
+<?php
+	$this->table->set_template($cp_table_template);
+	$this->table->set_heading(
+		'User', 'When', 'Comand', 'Result'
+	);
+
+	foreach($log_lines as $line)
+	{
+		$this->table->add_row(
+				$members[$line->user_id],
+				date('M j Y g:i:s a', $line->log_time),
+				$line->command,
+				$line->result
+			);
+	}
+?>
+<?=$this->table->generate();?>
+
+<?=$pagination;?>

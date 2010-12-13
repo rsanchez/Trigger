@@ -60,6 +60,8 @@ class Trigger_mcp {
 	
 	function index()
 	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">#trigger_content {background: none; border: none; padding: 2px; display: inline; color: #838D94; height: 200px;}</style>');
+	
 		$this->EE->cp->set_right_nav( $this->nav );	
 	
 		// -------------------------------------
