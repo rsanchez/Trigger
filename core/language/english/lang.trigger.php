@@ -6,7 +6,11 @@ $lang = array(
 'trigger_module_description'		=> 'Rapid development tool for EE',
 
 'command_window'					=> 'Command Window',
-'trigger_logs'						=> 'Logs'
+'trigger_logs'						=> 'Logs',
+'trigger_clear_logs'				=> 'Clear Logs',
+'trigger_export_logs'				=> 'Export Logs',
+
+'trigger_no_access'					=> 'You do not have access to this function'
 
 );
 

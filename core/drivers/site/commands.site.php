@@ -1,12 +1,31 @@
 <?php
 
+/**
+ * Trigger Site Driver
+ *
+ * Contains commands to change site settings and variables
+ *
+ * @package		Trigger
+ * @author		Adam Fairholm (Green Egg Media)
+ * @copyright	Copyright (c) 2010 - 2010, Green Egg Media
+ * @license		
+ * @link		http://trigger.ee
+ */
+
 class Commands_site
 {
+	/**
+	 * Driver slug
+	 */
+	var $driver 			= 'site';
+	
+	var $lang				= array();
+
+	// --------------------------------------------------------------------------
 
 	function __construct()
 	{
 		$this->EE =& get_instance();
-		
 	}
 
 	// --------------------------------------------------------------------------
@@ -18,11 +37,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('is_system_on', 'n') ):
 		
-			return "site is now offline";
+			return $this->lang['site_offline'];
 		
 		else:
 		
-			return "site is already offline";
+			return $this->lang['site_already_offline'];
 	
 		endif;
 	}
@@ -36,11 +55,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('is_system_on', 'y') ):
 		
-			return "site is now online";
+			return $this->lang['site_online'];
 		
 		else:
 		
-			return "site is already online";
+			return $this->lang['site_already_online'];
 	
 		endif;
 	}
@@ -54,11 +73,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('show_profiler', 'y') ):
 		
-			return "profiler enabled";
+			return $this->lang['profiler_enabled'];
 		
 		else:
 		
-			return "profiler is already enabled";
+			return $this->lang['profiler_already_enabled'];
 	
 		endif;
 	}
@@ -72,11 +91,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('show_profiler', 'n') ):
 		
-			return "profiler disabled";
+			return $this->lang['profiler_disabled'];
 		
 		else:
 		
-			return "profiler is already disabled";
+			return $this->lang['profiler_already_disabled'];
 	
 		endif;
 	}
@@ -90,11 +109,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('template_debugging', 'y') ):
 		
-			return "template debugging enabled";
+			return $this->lang['templ_debug_enabled'];
 		
 		else:
 		
-			return "template debugging is already enabled";
+			return $this->lang['templ_debug_already_enabled'];
 	
 		endif;
 	}
@@ -108,11 +127,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('template_debugging', 'n') ):
 		
-			return "template debugging disabled";
+			return $this->lang['templ_debug_disabled'];
 		
 		else:
 		
-			return "template debugging is already disabled";
+			return $this->lang['templ_debug_already_disabled'];
 	
 		endif;
 	}
@@ -123,11 +142,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '0') ):
 		
-			return "debugging set to 0";
+			return $this->lang['debug_set_0'];
 		
 		else:
 		
-			return "debugging is already set to 0";
+			return $this->lang['debug_already_set_0'];
 	
 		endif;
 	}
@@ -138,11 +157,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '1') ):
 		
-			return "debugging set to 1";
+			return $this->lang['debug_set_1'];
 		
 		else:
 		
-			return "debugging is already set to 1";
+			return $this->lang['debug_already_set_1'];
 	
 		endif;
 	}
@@ -153,11 +172,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '2') ):
 		
-			return "debugging set to 2";
+			return $this->lang['debug_set_2'];
 		
 		else:
 		
-			return "debugging is already set to 2";
+			return $this->lang['debug_already_set_2'];
 	
 		endif;
 	}
@@ -171,7 +190,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'all' );
 
-		return "cache files has been deleted";
+		return $this->lang['cache_files_deleted'];
 	}
 
 	// --------------------------------------------------------------------------
@@ -183,7 +202,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'page' );
 
-		return "page cache files has been deleted";
+		return $this->lang['cache_page_files_deleted'];
 	}
 
 	// --------------------------------------------------------------------------
@@ -195,7 +214,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'db' );
 
-		return "database cache files has been deleted";
+		return $this->lang['cache_db_files_deleted'];
 	}
 
 	// --------------------------------------------------------------------------
@@ -207,7 +226,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'relationships' );
 
-		return "the relationships entries cache has been deleted";
+		return $this->lang['cache_rel_files_deleted'];
 	}
 
 	// --------------------------------------------------------------------------
@@ -219,7 +238,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'tag' );
 
-		return "tag cache files have been deleted";
+		return $this->lang['cache_tag_files_deleted'];
 	}
 
 	// --------------------------------------------------------------------------
@@ -231,7 +250,7 @@ class Commands_site
 	{
 		if ( ! $this->EE->cp->allowed_group('can_access_tools') OR ! $this->EE->cp->allowed_group('can_access_data')):
 		
-			return "You do not have access to this function";
+			return $this->lang['trigger_no_access'];
 		
 		endif;
 
