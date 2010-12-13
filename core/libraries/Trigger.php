@@ -82,8 +82,6 @@ class Trigger
 		// -------------------------------------
 		// Load driver language
 		// -------------------------------------
-
-		$this->EE->load->helper('driver');
 		
 		$lang_file = PATH_THIRD . 'trigger/drivers/'.$driver.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver.'.php';
 		
