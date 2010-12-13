@@ -3,7 +3,10 @@
 $lang = array(
 
 'trigger_module_name'				=> 'Trigger',
-'trigger_module_description'		=> 'Rapid development tool for EE'
+'trigger_module_description'		=> 'Rapid development tool for EE',
+
+'command_window'					=> 'Command Window',
+'trigger_logs'						=> 'Logs'
 
 );
 

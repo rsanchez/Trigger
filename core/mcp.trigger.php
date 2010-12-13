@@ -5,17 +5,29 @@ class Trigger_mcp {
 	var $context 	= array();
 	
 	var $vars		= array();
-
+	
 	function Trigger_mcp()
 	{
 		$this->EE =& get_instance();
 		
 		$this->EE->load->library('Trigger');
+		
+		$this->EE->load->helper('log');
 
 		// -------------------------------------
-		// Catch the session cache data. Whatever.
-		// -------------------------------------
+		// Set the top right nav.
+		// -------------------------------------		
+
+		$this->nav 		= array(
+						'command_window' => 
+				BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger',
+						'trigger_logs' => 
+				BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=logs'
+			);
 		
+		// -------------------------------------
+		// Catch the session cache data. Whatever.
+		// -------------------------------------		
 		
 		if( ! isset($this->EE->session->cache['Trigger_mcp']['vars']) ):
 		
@@ -48,6 +60,8 @@ class Trigger_mcp {
 	
 	function index()
 	{
+		$this->EE->cp->set_right_nav( $this->nav );	
+	
 		// -------------------------------------
 		// Get some javascript
 		// -------------------------------------
@@ -209,6 +223,8 @@ class Trigger_mcp {
 				case 'root':
 				
 					$this->context = array('ee');
+
+					write_log($line, "(context set to root)");
 					
 					$this->_output_response( $this->EE->trigger->output_context( $this->context ) );
 					
@@ -239,12 +255,22 @@ class Trigger_mcp {
 					$call = str_replace(" ", "_", $rest);
 					$call = strtolower($call);
 					
+					// Check to see if the command exists. Issue error if it doesn't.
+					// Otherwise, run the command.
+					
 					if( !method_exists($obj, $call) ):
+					
+						write_log($line, "invalid command");
 
 						$this->_output_response( "invalid command\n" . $this->EE->trigger->output_context( $this->context ) );
+						
 					else:
+					
+						$response = $obj->$call();
 
-						$this->_output_response( $obj->$call() . "\n" . $this->EE->trigger->output_context( $this->context ) );
+						write_log($line, $response);
+
+						$this->_output_response( $response . "\n" . $this->EE->trigger->output_context( $this->context ) );
 					
 					endif;
 				
@@ -269,6 +295,83 @@ class Trigger_mcp {
 		// -------------------------------------
 	
 		$this->_output_response( $result . $this->EE->trigger->output_context( $this->context ) );
+	}
+
+	// --------------------------------------------------------------------------
+	
+	function logs()
+	{
+		$this->EE->cp->set_right_nav( $this->nav );	
+	
+		// -------------------------------------
+		// Get some javascript
+		// -------------------------------------
+		
+		$this->EE->load->library('javascript');
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_logs'));
+
+		// -------------------------------------
+		// Get an array of users
+		// -------------------------------------
+
+		$members_obj = $this->EE->db->get('members');
+
+		$members = $members_obj->result();
+
+		$vars['members'] = array();
+		
+		foreach( $members as $member ):
+		
+			$vars['members'][$member->member_id] = $member->screen_name;
+		
+		endforeach;
+
+		// -------------------------------------
+		// Get the Pagination and data
+		// -------------------------------------
+
+		if ( ! $rownum = $this->EE->input->get_post('rownum') )
+		{		
+			$rownum = 0;
+		}
+				
+		$per_page = 25;
+
+		$this->EE->load->library('pagination');
+		
+		$pag_config['base_url'] 				= BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=logs';
+		$pag_config['total_rows'] 				= $this->EE->db->count_all('trigger_log');
+		$pag_config['per_page'] 				= $per_page;
+		$pag_config['page_query_string'] 		= TRUE;
+		$pag_config['query_string_segment'] 	= 'rownum';
+		$pag_config['full_tag_open'] 			= '<p id="paginationLinks">';
+		$pag_config['full_tag_close'] 			= '</p>';
+		$pag_config['prev_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_prev_button.gif" width="13" height="13" alt="<" />';
+		$pag_config['next_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_next_button.gif" width="13" height="13" alt=">" />';
+		$pag_config['first_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_first_button.gif" width="13" height="13" alt="< <" />';
+		$pag_config['last_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_last_button.gif" width="13" height="13" alt="> >" />';
+		
+		$this->EE->pagination->initialize( $pag_config );
+	
+		$vars['pagination'] = $this->EE->pagination->create_links();
+	
+		$this->EE->db->order_by('log_time', 'desc');		
+		$db_obj = $this->EE->db->get('trigger_log', $per_page, $rownum);
+		
+		$vars['log_lines'] = $db_obj->result();
+
+		// -------------------------------------
+		// Load Table Library for layout
+		// -------------------------------------
+		
+		$this->EE->load->library('Table');
+		
+		// -------------------------------------
+		// Load trigger edit window
+		// -------------------------------------
+
+		return $this->EE->load->view('logs', $vars, TRUE); 
 	}
 
 	// --------------------------------------------------------------------------
