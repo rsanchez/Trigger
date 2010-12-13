@@ -13,6 +13,45 @@ class Trigger_upd {
 	   
     function install()
     {
+		$outcome = TRUE;
+		
+		$this->EE->load->dbforge();
+
+		// -------------------------------------
+		// Create the Log Table
+		// -------------------------------------
+			
+		$log_fields = array(
+            'log_time' 		=> array( 'type' => 'INT', 'constraint' => 11 ),
+            'user_id' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
+            'command' 		=> array( 'type' =>'VARCHAR', 'constraint' => '255'),
+            'result' 		=> array( 'type' => 'TEXT'));
+            
+        $this->dbforge->add_field( $log_fields );
+            
+		$this->dbforge->add_field( 'id' );
+		
+		$outcome = $this->dbforge->create_table('trigger_log');
+
+		// -------------------------------------
+		// Create the Scratch Table
+		// -------------------------------------
+	
+		$scratch_fields = array(
+            'created' 		=> array( 'type' => 'INT', 'constraint' => 11 ),
+            'user_id' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
+            'cache_data' 	=> array( 'type' => 'BLOB'));
+            
+        $this->dbforge->add_field( $scratch_fields );
+            
+		$this->dbforge->add_field( 'id' );
+		
+		$outcome = $this->dbforge->create_table('trigger_scratch');
+	
+		// -------------------------------------
+		// Register the Module
+		// -------------------------------------
+	
 		$data = array(
 			'module_name' => 'Trigger' ,
 			'module_version' => $this->version,
@@ -20,15 +59,16 @@ class Trigger_upd {
 			'has_publish_fields' => 'n'
 		);
 
-		$this->EE->db->insert('modules', $data);
+		$outcome = $this->EE->db->insert('modules', $data);
 		
-		return TRUE;
+		return $outcome;
     }
 
 	// --------------------------------------------------------------------------
 
 	function update($current = '')
 	{
+	
 		return FALSE;
 	}
 
@@ -36,7 +76,17 @@ class Trigger_upd {
 	
 	function uninstall()
 	{
-		return TRUE;
+		$outcome = TRUE;
+		
+		// Drop log table
+	
+		$outcome = $this->dbforge->drop_table('trigger_log');
+
+		// Drop scratch table
+
+		$outcome = $this->dbforge->drop_table('trigger_scratch');
+	
+		return $outcome;
 	}
 	
 }
