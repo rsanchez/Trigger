@@ -78,6 +78,38 @@ class Trigger
 			$this->_output_response( $error . $this->EE->trigger->output_context( $this->context ) );
 		
 		endif;
+
+		// -------------------------------------
+		// Load driver language
+		// -------------------------------------
+
+		$this->EE->load->helper('driver');
+		
+		$lang_file = PATH_THIRD . 'trigger/drivers/'.$driver.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver.'.php';
+		
+		if( ! file_exists($lang_file) ):
+		
+			// Looks like there is no language file. That's no good!
+			
+			$error = "no language file found for $driver driver";
+		
+			write_log($line, $error);
+
+			$this->_output_response( "$error\n" . $this->output_context( $this->context ) );
+			
+		else:
+		
+			@include($lang_file);
+		
+		endif;
+
+		// -------------------------------------
+		// Load master language & merge
+		// -------------------------------------
+		
+		@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
+		
+		$all_lang = array_merge($command_lang, $lang);
 		
 		// -------------------------------------
 		// Load driver
@@ -89,6 +121,10 @@ class Trigger
 		
 		$obj = new $driver_class();
 		
+		// Set the language
+		
+		$obj->lang = $all_lang;
+		
 		// Set driver to driver context position
 		
 		if( $driver != '' ):
@@ -96,7 +132,7 @@ class Trigger
 			$this->context[1] = $driver;
 		
 		endif;
-
+		
 		// -------------------------------------
 		// Determine Action
 		// -------------------------------------
