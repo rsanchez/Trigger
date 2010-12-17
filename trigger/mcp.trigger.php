@@ -13,6 +13,8 @@ class Trigger_mcp {
 		$this->EE->load->library('Trigger');
 		
 		$this->EE->load->helper('log');
+		
+		$this->module_base = $this->EE->config->item('base_url').'admin/'.BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
 
 		// -------------------------------------
 		// Set the top right nav.
@@ -131,6 +133,8 @@ class Trigger_mcp {
 	function logs()
 	{
 		$this->EE->cp->set_right_nav( $this->nav );	
+		
+		$vars['module_base'] = $this->module_base;
 	
 		// -------------------------------------
 		// Get some javascript
@@ -201,6 +205,38 @@ class Trigger_mcp {
 		// -------------------------------------
 
 		return $this->EE->load->view('logs', $vars, TRUE); 
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Clear Logs
+	 */
+	function clear_logs()
+	{
+		// -------------------------------------
+		// Process Delete
+		// -------------------------------------
+
+		if( $this->EE->input->get_post('clear_confirm') == TRUE ):
+		
+			clear_logs();
+			
+			$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('trigger_logs_cleared'));
+			
+			$this->EE->functions->redirect($this->module_base.AMP.'&method=logs');
+
+		else:
+
+			$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
+			
+			$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=logs', $this->EE->lang->line('trigger_logs'));
+			
+			$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_clear_logs'));				
+			
+			return $this->EE->load->view('clear_logs', '', TRUE);
+		
+		endif;
 	}
 
 }

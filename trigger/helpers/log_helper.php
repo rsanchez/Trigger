@@ -22,5 +22,21 @@ function write_log( $line, $result = '' )
 	$EE->db->query( $sql );
 }
 
+// --------------------------------------------------------------------------
+
+/**
+ * Clear Logs
+ *
+ * @access	public
+ * @return	void
+ */
+function clear_logs()
+{
+	$EE =& get_instance();
+
+	$EE->db->empty_table('exp_trigger_log');
+}
+
+
 /* End of file log_helper.php */
 /* Location: ./helpers/log_helper.php */
