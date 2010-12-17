@@ -10,7 +10,7 @@ $lang = array(
 'trigger_clear_logs'				=> "Clear Logs",
 'trigger_export_logs_as_csv'		=> "Export Logs as CSV file",
 'trigger_export_logs_as_seq'		=> "Export Logs as Trigger Sequence",
-
+'trigger_export_sequence'			=> "Export Sequence",
 
 'trigger_no_access'					=> "You do not have access to this function",
 

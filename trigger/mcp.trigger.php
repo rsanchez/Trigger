@@ -304,6 +304,101 @@ class Trigger_mcp {
 		force_download('Trigger_Export_'.date('mdy').'.csv', $csv);
 	}
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Get information before exporting a Trigger Sequence
+	 */
+	function export_log_sequence()
+	{	
+		// -------------------------------------
+		// Get Logs to Count Them
+		// -------------------------------------
+
+		$this->EE->db->order_by('log_time', 'desc');
+		
+		$db_obj = $this->EE->db->get('trigger_log');
+
+		$vars['log_rows_count'] = $db_obj->num_rows();
+
+		// -------------------------------------
+		// Load Page
+		// -------------------------------------
+
+		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
+		
+		$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=logs', $this->EE->lang->line('trigger_logs'));
+		
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_export_logs_as_seq'));				
+		
+		return $this->EE->load->view('export_trigger_sequence', $vars, TRUE);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Export a log into a Trigger Sequence
+	 */	
+	function do_log_sequence_export()
+	{
+		// -------------------------------------
+		// Check the sequence title
+		// -------------------------------------
+	
+		if( $this->EE->input->get_post('sequence_name') == '' ):
+		
+			show_error("The Sequence Title field is required.");
+		
+		endif;
+		
+		// -------------------------------------
+		// Get log items
+		// -------------------------------------
+
+		$this->EE->db->order_by('log_time', 'desc');
+		
+		$db_obj = $this->EE->db->get('trigger_log');
+
+		$log_lines = $db_obj->result();
+
+		// -------------------------------------
+		// Create Header
+		// -------------------------------------
+
+		$term = "\n";
+
+		$seq  = 'sequence name: '.$this->EE->input->get_post('sequence_name').$term;
+		
+		$seq .= 'lines: '.$db_obj->num_rows().$term;
+		
+		$seq .= 'created by: '.$this->EE->session->userdata('screen_name').$term;
+
+		$seq .= 'created: '.date('M j Y g:i:s a').$term;
+		
+		$seq .= $term;
+
+		// -------------------------------------
+		// Create Body
+		// -------------------------------------
+
+		$seq .= 'TRIGGER SEQUENCE START'.$term;
+		
+		foreach( $log_lines as $line ):
+		
+			$seq .= $line->command.$term;
+		
+		endforeach;
+		
+		$seq .= 'TRIGGER SEQUENCE END';
+
+		// -------------------------------------
+		// Force Download
+		// -------------------------------------
+		
+		$this->EE->load->helper('download');
+
+		force_download('Trigger_Sequence_'.date('mdy').'.txt', $seq);
+	}
 }
 
 /* End of file mcp.trigger.php */
