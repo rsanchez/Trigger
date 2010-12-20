@@ -192,6 +192,36 @@ class Trigger
 					$this->_output_response( $msg . $this->output_context( $this->context ) );
 					
 					break;
+					
+				case 'create':
+				
+					$this->context = array('ee', $driver);
+					
+					$call = 'create_'.$segs[1];
+					
+					if( method_exists($obj, $call) ):
+					
+						// Get the stack data & run call
+						
+						$this->EE->db->limit(1);
+						$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+						$this->EE->db->where('driver', $driver);
+						
+						$db = $this->EE->db->get('trigger_scratch');
+						
+						$raw = $db->row();
+					
+						$msg = $obj->$call( unserialize($raw->cache_data) )."\n";
+					
+					else:
+					
+						$msg = "Invalid create command.\n";
+					
+					endif;
+					
+					$this->_output_response( $msg . $this->output_context( $this->context ) );
+					
+					break;
 
 				default:
 				
