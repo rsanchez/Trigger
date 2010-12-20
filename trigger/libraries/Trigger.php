@@ -179,13 +179,17 @@ class Trigger
 				
 					$this->context = array('ee', $driver);
 					
-					if( ! $this->set_variable( $segs ) ):
+					if( ! $this->set_variable( $segs, $driver ) ):
 					
-						$error = "Unable to set variable\n";
+						$msg = "Unable to set variable\n";
+						
+					else:
+					
+						$msg = "Variable set successfully\n";
 					
 					endif;
 					
-					$this->_output_response( $error . $this->output_context( $this->context ) );
+					$this->_output_response( $msg . $this->output_context( $this->context ) );
 					
 					break;
 
@@ -284,7 +288,7 @@ class Trigger
 
 	// --------------------------------------------------------------------------
 	
-	function set_variable( $segs )
+	function set_variable( $segs, $driver )
 	{
 		$pair = $segs[1];
 		
@@ -296,19 +300,57 @@ class Trigger
 		
 		endif;
 		
-		if( ! isset($this->EE->session->cache['Trigger_mcp']['vars']) ):
+		// Get the scratch if there is one
 		
-			$existing = array();
+		$this->EE->db->limit(1);
+		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+		$this->EE->db->where('driver', $driver);
+		
+		$obj = $this->EE->db->get('trigger_scratch');
+		
+		// If there is no scratch, create one
+		
+		if( $obj->num_rows() == 0 ):
+		
+			$insert_data['created'] 		= time();
+			$insert_data['user_id']			= $this->EE->session->userdata('member_id');
+			$insert_data['driver']			= $driver;
+		
+			$this->EE->db->insert('trigger_scratch', $insert_data);
 			
-		else:
+			$scratch_id = $this->EE->db->insert_id();
+			
+			$cache = array();
 		
-			$existing = $this->EE->session->cache['Trigger_mcp']['vars'];
+		else:
+			
+			// Otherwise, pull the data
+		
+			$scratch = $obj->row();
+		
+			$scratch_id = $scratch->id;
+			
+			if( trim($scratch->cache_data) == '' ):
+			
+				$cache = array();
+				
+			else:
+			
+				$cache = unserialize($scratch->cache_data);
+		
+			endif;
 		
 		endif;
 		
-		$all = array_merge($existing, array(trim($vals[0]) => trim($vals[1])));
+		// Merge the cache. Will this overwrite existing array keys? Hmm...
 		
-		$this->EE->session->cache['Trigger_mcp']['vars'] = $all;
+		$new_cache = array_merge($cache, array(trim($vals[0]) => trim($vals[1])));
+
+		// Update the scratch
+		
+		$update_data['cache_data'] = serialize($new_cache);
+		
+		$this->EE->db->update('trigger_scratch', $update_data);		
 		
 		return TRUE;
 	}
