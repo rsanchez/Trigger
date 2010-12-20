@@ -212,6 +212,12 @@ class Trigger
 						$raw = $db->row();
 					
 						$msg = $obj->$call( unserialize($raw->cache_data) )."\n";
+						
+						// Get rid of the stack
+						
+						$this->EE->db->where('id', $raw->id);
+						
+						$this->EE->db->delete();
 					
 					else:
 					
