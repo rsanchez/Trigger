@@ -192,6 +192,41 @@ class Trigger
 					$this->_output_response( $msg . $this->output_context( $this->context ) );
 					
 					break;
+
+				// -------------------------------------
+				// Show stack
+				// -------------------------------------
+
+				case 'stack':
+					
+					$this->context = array('ee', $driver);
+					
+					$this->EE->db->limit(1);
+					$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+					$this->EE->db->where('driver', $driver);
+					
+					$db = $this->EE->db->get('trigger_scratch');
+					
+					$scratch = $db->row();
+					
+					$stack = $scratch->cache_data;
+					$stack = unserialize($stack);
+					
+					$stack_output = '';
+				
+					foreach( $stack as $var => $val ):
+					
+						$stack_output .= $var . " -> " . $val . "\n";
+					
+					endforeach;
+
+					$this->_output_response( $stack_output . $this->output_context( $this->context ) );
+				
+					break;
+
+				// -------------------------------------
+				// Create Command
+				// -------------------------------------
 					
 				case 'create':
 				
