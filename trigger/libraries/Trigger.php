@@ -160,6 +160,8 @@ class Trigger
 				// -------------------------------------
 				// Go back to the root
 				// -------------------------------------
+				// Sets the context back to the root
+				// -------------------------------------
 			
 				case 'root':
 				
@@ -196,7 +198,8 @@ class Trigger
 				// -------------------------------------
 				// Show stack
 				// -------------------------------------
-				// Show the current stack of commands
+				// Show the current stack of commands.
+				// Does not write log anything.
 				// -------------------------------------
 
 				case 'stack':
@@ -268,11 +271,15 @@ class Trigger
 						$msg = "stack has been flushed";
 						
 					endif;
+
+					write_log($line, $msg);
 					
 					$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
 
 				// -------------------------------------
 				// Create Command
+				// -------------------------------------
+				// Calls a create command in a driver
 				// -------------------------------------
 					
 				case 'create':
@@ -293,27 +300,33 @@ class Trigger
 						
 						$raw = $db->row();
 					
-						$msg = $obj->$call( unserialize($raw->cache_data) )."\n";
+						$msg = $obj->$call( unserialize($raw->cache_data) );
 						
 						// Get rid of the stack
 						
 						$this->EE->db->where('id', $raw->id);
-						
 						$this->EE->db->delete();
 					
 					else:
 					
-						$msg = "Invalid create command.\n";
+						$msg = "invalid create command";
 					
 					endif;
+
+					write_log($line, $msg);
 					
-					$this->_output_response( $msg . $this->output_context( $this->context ) );
+					$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
 					
 					break;
 
 				default:
 				
-					// Must be a command
+					// -------------------------------------
+					// Singular Command
+					// -------------------------------------
+					// This must be a custom command from a
+					// driver. This just runs and logs it.
+					// -------------------------------------
 				
 					$call = str_replace(" ", "_", $rest);
 					$call = strtolower($call);
@@ -323,17 +336,19 @@ class Trigger
 					
 					if( !method_exists($obj, $call) ):
 					
-						write_log($line, "invalid command");
+						$msg = "invalid command";
+					
+						write_log($line, $msg);
 
-						$this->_output_response( "invalid command\n" . $this->output_context( $this->context ) );
+						$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
 						
 					else:
 					
-						$response = $obj->$call();
+						$msg = $obj->$call();
 
-						write_log($line, $response);
+						write_log($line, $msg);
 
-						$this->_output_response( $response . "\n" . $this->output_context( $this->context ) );
+						$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
 					
 					endif;
 				
@@ -343,7 +358,7 @@ class Trigger
 		endif;
 		
 		// -------------------------------------
-		// All line ending to result
+		// Add line ending to result
 		// -------------------------------------
 		
 		if( $result ):
