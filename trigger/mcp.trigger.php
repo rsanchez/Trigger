@@ -5,6 +5,8 @@ class Trigger_mcp {
 	var $context 	= array();
 	
 	var $vars		= array();
+
+	// --------------------------------------------------------------------------
 	
 	function Trigger_mcp()
 	{
@@ -20,26 +22,30 @@ class Trigger_mcp {
 		// Set the top right nav.
 		// -------------------------------------		
 
-		$this->nav 		= array(
-						'command_window' => 
-				BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger',
-						'trigger_logs' => 
-				BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=logs'
-			);
+		$this->nav = array(
+			'command_window' => 
+				$this->module_base,
+			'trigger_sequences' =>
+				$this->module_base . AMP . 'method=sequences',
+			'trigger_logs' => 
+				$this->module_base . AMP . 'method=logs'
+		);
 		
 		// -------------------------------------
-		// Catch the session cache data. Whatever.
+		// Default page config
 		// -------------------------------------		
 		
-		if( ! isset($this->EE->session->cache['Trigger_mcp']['vars']) ):
-		
-			$this->vars = array();
-			
-		else:
-		
-			$this->vars = $this->EE->session->cache['Trigger_mcp']['vars'];
-		
-		endif;
+		$this->page_config = array(
+			'page_query_string' 	=> TRUE,
+			'query_string_segment' 	=> 'rownum',
+			'full_tag_open'			=> '<p id="paginationLinks">',
+			'full_tag_close'		=> '</p>',
+			'per_page'				=> 25,
+			'prev_link'				=> '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_prev_button.gif" width="13" height="13" alt="<" />',
+			'next_link'				=> '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_next_button.gif" width="13" height="13" alt=">" />',
+			'first_link'			=> '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_first_button.gif" width="13" height="13" alt="< <" />',
+			'last_link'				=> '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_last_button.gif" width="13" height="13" alt="> >" />'
+		);
 
 		// -------------------------------------
 
@@ -60,6 +66,9 @@ class Trigger_mcp {
 
 	// --------------------------------------------------------------------------
 	
+	/**
+	 * Trigger Command Window
+	 */
 	function index()
 	{
 		$this->EE->cp->add_to_head('<style type="text/css" media="screen">#trigger_content {background: none; border: none; padding: 2px; display: inline; color: #838D94; height: 200px;}</style>');
@@ -97,7 +106,11 @@ class Trigger_mcp {
 	// --------------------------------------------------------------------------
 	
 	/**
+	 * Parse the Ouput
+	 *
 	 * Handles the trigger input and output
+	 *
+	 * Accessed via AJAX
 	 */
 	function parse_trigger_output()
 	{
@@ -133,6 +146,8 @@ class Trigger_mcp {
 	// --------------------------------------------------------------------------
 	
 	/**
+	 * Logs
+	 *
 	 * View Trigger logs
 	 */
 	function logs()
@@ -174,28 +189,17 @@ class Trigger_mcp {
 			$rownum = 0;
 		}
 				
-		$per_page = 25;
-
 		$this->EE->load->library('pagination');
 		
-		$pag_config['base_url'] 				= BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=logs';
-		$pag_config['total_rows'] 				= $this->EE->db->count_all('trigger_log');
-		$pag_config['per_page'] 				= $per_page;
-		$pag_config['page_query_string'] 		= TRUE;
-		$pag_config['query_string_segment'] 	= 'rownum';
-		$pag_config['full_tag_open'] 			= '<p id="paginationLinks">';
-		$pag_config['full_tag_close'] 			= '</p>';
-		$pag_config['prev_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_prev_button.gif" width="13" height="13" alt="<" />';
-		$pag_config['next_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_next_button.gif" width="13" height="13" alt=">" />';
-		$pag_config['first_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_first_button.gif" width="13" height="13" alt="< <" />';
-		$pag_config['last_link'] 				= '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_last_button.gif" width="13" height="13" alt="> >" />';
+		$this->page_config['base_url'] 		= $this->module_base . AMP . 'method=logs';
+		$this->page_config['total_rows'] 	= $this->EE->db->count_all('trigger_log');
 		
-		$this->EE->pagination->initialize( $pag_config );
+		$this->EE->pagination->initialize( $this->page_config );
 	
 		$vars['pagination'] = $this->EE->pagination->create_links();
 	
 		$this->EE->db->order_by('log_time', 'desc');		
-		$db_obj = $this->EE->db->get('trigger_log', $per_page, $rownum);
+		$db_obj = $this->EE->db->get('trigger_log', $this->page_config['per_page'], $rownum);
 		
 		$vars['log_lines'] = $db_obj->result();
 
@@ -403,6 +407,63 @@ class Trigger_mcp {
 		$this->EE->load->helper('download');
 
 		force_download('Trigger_Sequence_'.date('mdy').'.txt', $seq);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Sequence
+	 *
+	 * View sequences.
+	 */	
+	function sequences()
+	{
+		$this->EE->cp->set_right_nav( $this->nav );
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequences'));
+		
+		$vars['module_base'] = $this->module_base;
+
+		// -------------------------------------
+		// Get sequences & paginate
+		// -------------------------------------
+
+		if ( ! $rownum = $this->EE->input->get_post('rownum') )
+		{		
+			$rownum = 0;
+		}
+				
+		$this->EE->load->library('pagination');
+		
+		$this->page_config['base_url'] 		= $this->module_base . AMP . 'method=sequences';
+		$this->page_config['total_rows'] 	= $this->EE->db->count_all('trigger_sequences');
+		
+		$this->EE->pagination->initialize( $this->page_config );
+	
+		$vars['pagination'] = $this->EE->pagination->create_links();
+		
+		$this->EE->db->order_by('sequence_name', 'desc');		
+		$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
+		
+		$vars['sequences'] = $db_obj->result();
+
+		// -------------------------------------
+		// Load trigger edit window
+		// -------------------------------------
+
+		return $this->EE->load->view('sequences', $vars, TRUE); 		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Import Sequence
+	 *
+	 * Imports a sequence into the sequence database
+	 */	
+	function import()
+	{
+	
 	}
 }
 
