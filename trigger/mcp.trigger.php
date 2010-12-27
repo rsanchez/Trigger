@@ -73,6 +73,11 @@ class Trigger_mcp {
 		$this->EE->load->library('javascript');
 
 		$this->EE->cp->load_package_js('trigger');
+		$this->EE->cp->load_package_js('elastic');
+		
+		$this->EE->javascript->output("$('textarea#trigger_content').elastic();");
+		
+		$this->EE->javascript->compile();
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_module_name'));
 
