@@ -392,7 +392,7 @@ class Trigger
 			@header('Content-Type: text/html; charset=UTF-8');	
 		}
 		
-		exit( strtolower($output) );
+		exit( $output );
 	}
 
 	// --------------------------------------------------------------------------
