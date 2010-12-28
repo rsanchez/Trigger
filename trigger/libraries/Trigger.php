@@ -423,15 +423,65 @@ class Trigger
 	
 	function set_variable( $segs, $driver )
 	{
-		$pair = $segs[1];
+		// -------------------------------------
+		// Find set values
+		// -------------------------------------
+
+		// Go through and trim values
 		
-		$vals = explode("=", $pair);
+		foreach( $segs as $key => $value ):
 		
-		if(count($vals) != 2):
+			$segs[$key] = trim($value);
+		
+		endforeach;
+
+		// Go through and see if one of the 
+		// values is our set value operator
+		
+		$opp_key = FALSE;
+
+		foreach( $segs as $key => $value ):
+		
+			if( $value == '=>' ):
+			
+				$opp_key = $key;
+				
+				break;
+			
+			endif;
+		
+		endforeach;
+				
+		// If we have no operator, get out!
+		
+		if( !$opp_key ):
 		
 			return FALSE;
 		
 		endif;
+		
+		// Else, let's make sure we have something on both sides
+		// and that the front one is not the set command
+		
+		if( !isset($segs[$opp_key-1]) || !isset($segs[$opp_key+1]) || $segs[$opp_key-1] == 'set' ):
+		
+			return FALSE;
+		
+		endif;
+		
+		// Put them into vars
+		
+		$set_value 	= $segs[$opp_key+1];
+		$variable	= $segs[$opp_key-1];
+		
+		// Trim '"' off of the we're setting value
+		
+		$set_value 	= ltrim($set_value, '"');
+		$set_value 	= rtrim($set_value, '"');
+
+		// -------------------------------------
+		// Process set values
+		// -------------------------------------
 		
 		// Get the scratch if there is one
 		
@@ -477,7 +527,7 @@ class Trigger
 		
 		// Merge the cache. Will this overwrite existing array keys? Hmm...
 		
-		$new_cache = array_merge($cache, array(trim($vals[0]) => trim($vals[1])));
+		$new_cache = array_merge($cache, array($variable => $set_value));
 
 		// Update the scratch
 		
