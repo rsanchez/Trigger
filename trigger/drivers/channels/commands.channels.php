@@ -6,14 +6,37 @@ class Commands_channels
 	function Commands_channels()
 	{
 		$this->EE =& get_instance();
+		
+		// -------------------------------------
+		// Load the Channel Structure API
+		// -------------------------------------
+		// We're using the API for this dealio
+		// -------------------------------------
+		
+		$this->EE->load->library( 'Api' );
+		
+		$this->EE->api->instantiate( 'channel_structure' );
 	}
 
-	function create_channel( $params )
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Create a channel
+	 *
+	 * @access	public
+	 * @param	array
+	 * @return	string
+	 */
+	public function create_channel( $data )
 	{
-		$insert_data['channel_name'] 	= $params['channel_name'];
-		$insert_data['channel_title']	= $params['channel_title'];
+		// Use the current site ID
+		$channel_data['site_id']		= $this->EE->config->item('site_id');
 		
-		if( $this->EE->db->insert('channels', $insert_data) ):
+		// Get some channel data
+		$channel_data['channel_name'] 	= $data['channel_name'];
+		$channel_data['channel_title']	= $data['channel_title'];
+		
+		if( $this->EE->api->create_channel( $channel_data ) ):
 		
 			return "Channel added successfully.";
 			
@@ -22,6 +45,29 @@ class Commands_channels
 			return "Error in adding channel.";
 		
 		endif;
+	}
+	
+	function channels()
+	{
+		$call = $this->EE->api_channel_structure->get_channels();
+		
+		if( !$call ):
+		
+			return "there are no channels";
+		
+		endif;
+		
+		$channels = $call->result();
+		
+		$out = "\n";
+		
+		foreach( $channels as $channel ):
+		
+			$out .= "$channel->channel_name => $channel->channel_title\n";
+		
+		endforeach;
+		
+		return $out;
 	}
 
 }
