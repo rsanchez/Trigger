@@ -42,9 +42,28 @@ class Trigger
 			$this->_output_response( $this->output_context( $this->context ) );
 					
 		endif;
+
+		// -------------------------------------
+		// Load our Variables
+		// -------------------------------------
+		
+		$this->EE->load->library('Vars');
+
+		// -------------------------------------
+		// See if they just want a variable. If
+		// they do, then we just output that
+		// -------------------------------------
+
+		if( method_exists($this->EE->vars, trim($parts[1]) )):
+		
+			$action = trim($parts[1]);
+				
+			$this->_output_response( $this->EE->vars->$action() . "\n" . $this->output_context( $this->context ) );
+					
+		endif;
 		
 		// -------------------------------------
-		// Check for driver
+		// Check for driver/command
 		// -------------------------------------
 		
 		if( trim($parts[1]) == '' ):
@@ -64,72 +83,87 @@ class Trigger
 		$driver = trim($parts[1]);
 		
 		// -------------------------------------
-		// Validate Driver
+		// Check for Driver
 		// -------------------------------------
 		
-		if( ! file_exists(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php') ):
+		if( file_exists(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php') ):
 		
 			// -------------------------------------
-			// If there is no driver, exit to error
+			// Load driver language
 			// -------------------------------------
 			
-			$error = "'" . $driver . "' driver does not exist\n";
+			$lang_file = PATH_THIRD . 'trigger/drivers/'.$driver.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver.'.php';
 			
-			$this->_output_response( $error . $this->EE->trigger->output_context( $this->context ) );
-		
+			if( ! file_exists($lang_file) ):
+			
+				// Looks like there is no language file. That's no good!
+				
+				$error = "no language file found for $driver driver";
+			
+				write_log($line, $error);
+	
+				$this->_output_response( "$error\n" . $this->output_context( $this->context ) );
+				
+			else:
+			
+				@include($lang_file);
+			
+			endif;
+	
+			// -------------------------------------
+			// Load master language & merge
+			// -------------------------------------
+			
+			@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
+			
+			$all_lang = array_merge($command_lang, $lang);
+
+			// -------------------------------------
+			// Load Vars if they exist
+			// -------------------------------------
+
+			
+			// -------------------------------------
+			// Load driver
+			// -------------------------------------
+			
+			@include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
+			
+			$driver_class = 'Commands_'.$driver;
+			
+			$obj = new $driver_class();
+			
+			// Set the language
+			
+			$obj->lang = $all_lang;
+			
+			// Set driver to driver context position
+			
+			if( $driver != '' ):
+			
+				$this->context[1] = $driver;
+			
+			endif;
+			
 		endif;
 
 		// -------------------------------------
-		// Load driver language
+		// Parse Action Variables
 		// -------------------------------------
-		
-		$lang_file = PATH_THIRD . 'trigger/drivers/'.$driver.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver.'.php';
-		
-		if( ! file_exists($lang_file) ):
-		
-			// Looks like there is no language file. That's no good!
-			
-			$error = "no language file found for $driver driver";
-		
-			write_log($line, $error);
 
-			$this->_output_response( "$error\n" . $this->output_context( $this->context ) );
+		$methods = get_class_methods($this->EE->vars);
+		
+		foreach( $methods as $method ):
+		
+			$variable_val = $this->EE->vars->$method();
 			
-		else:
+			foreach( $parts as $key => $part ):
+			
+				$parts[$key] = str_replace(LD.$method.RD, $variable_val, $part);
+			
+			endforeach;
 		
-			@include($lang_file);
-		
-		endif;
-
-		// -------------------------------------
-		// Load master language & merge
-		// -------------------------------------
-		
-		@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
-		
-		$all_lang = array_merge($command_lang, $lang);
-		
-		// -------------------------------------
-		// Load driver
-		// -------------------------------------
-		
-		@include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
-		
-		$driver_class = 'Commands_'.$driver;
-		
-		$obj = new $driver_class();
-		
-		// Set the language
-		
-		$obj->lang = $all_lang;
-		
-		// Set driver to driver context position
-		
-		if( $driver != '' ):
-		
-			$this->context[1] = $driver;
-		
-		endif;
+		endforeach;
 		
 		// -------------------------------------
 		// Determine Action
@@ -172,7 +206,7 @@ class Trigger
 					$this->_output_response( $this->output_context( $this->context ) );
 					
 					break;
-
+				
 				// -------------------------------------
 				// Set a variable
 				// -------------------------------------
