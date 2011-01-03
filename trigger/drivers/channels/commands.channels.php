@@ -46,7 +46,15 @@ class Commands_channels
 		
 		endif;
 	}
-	
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Show Channels
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
 	function channels()
 	{
 		$call = $this->EE->api_channel_structure->get_channels();
