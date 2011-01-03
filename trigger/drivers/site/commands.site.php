@@ -7,21 +7,13 @@
  *
  * @package		Trigger
  * @author		Adam Fairholm (Green Egg Media)
- * @copyright	Copyright (c) 2010 - 2010, Green Egg Media
+ * @copyright	Copyright (c) 2010 - 2011, Green Egg Media
  * @license		
- * @link		http://trigger.ee
+ * @link		
  */
 
 class Commands_site
 {
-	/**
-	 * Driver slug
-	 */
-	var $driver 			= 'site';
-	
-	var $lang				= array();
-
-	// --------------------------------------------------------------------------
 
 	function __construct()
 	{
