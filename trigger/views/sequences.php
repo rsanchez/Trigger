@@ -1,16 +1,9 @@
 <?php if( $sequences ): ?>
-
-	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=clear_logs"><?=lang('trigger_clear_logs');?></a> 
-	</div> 
 	
 	<div class="cp_button"> 
 		<a href="<?=$module_base.AMP;?>method=export_log_csv"><?=lang('trigger_export_logs_as_csv');?></a> 
 	</div> 
-	
-	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=export_log_sequence"><?=lang('trigger_export_logs_as_seq');?></a> 
-	</div> 
+
 
 <?php
 	$this->table->set_template($cp_table_template);
@@ -31,6 +24,6 @@
 
 <?php else: ?>
 
-	<p>There are no sequences to display.</p>
+	<p>There are no sequences to display. You can <a href="<?=$module_base.AMP;?>method=import">import one</a> to get started.</p>
 
 <?php endif; ?>

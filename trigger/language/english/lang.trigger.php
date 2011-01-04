@@ -10,8 +10,11 @@ $lang = array(
 'trigger_sequences'					=> "Sequences",
 'trigger_clear_logs'				=> "Clear Logs",
 'trigger_export_logs_as_csv'		=> "Export Logs as CSV file",
-'trigger_export_logs_as_seq'		=> "Export Logs as Trigger Sequence",
+'trigger_export_logs_as_seq_file'	=> "Export as Sequence File",
+'trigger_export_to_seqs'			=> "Export to Sequences",
 'trigger_export_sequence'			=> "Export Sequence",
+'trigger_import'					=> "Import",
+'trigger_sequence_file'				=> "Sequence File",
 
 'trigger_no_access'					=> "You do not have access to this function",
 

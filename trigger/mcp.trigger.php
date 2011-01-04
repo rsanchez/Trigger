@@ -253,69 +253,6 @@ class Trigger_mcp {
 	}
 
 	// --------------------------------------------------------------------------
-	
-	/**
-	 * Export logs as a CSV file
-	 */
-	function export_log_csv()
-	{
-		// -------------------------------------
-		// Get Logs
-		// -------------------------------------
-
-		$this->EE->db->order_by('log_time', 'desc');
-		
-		$db_obj = $this->EE->db->get('trigger_log');
-		
-		$log_lines = $db_obj->result();
-
-		// -------------------------------------
-		// Get an array of users
-		// -------------------------------------
-
-		$members_obj = $this->EE->db->get('members');
-
-		$members_result = $members_obj->result();
-
-		$members = array();
-		
-		foreach( $members_result as $member ):
-		
-			$members[$member->member_id] = $member->screen_name;
-		
-		endforeach;
-
-		// -------------------------------------
-		// Create CSV
-		// -------------------------------------
-
-		$terminate 			= "\n";
-		$encap_left			= "";
-		$encap_right		= "";
-		$separate			= ", ";
-
-		$csv = $encap_left.'ID'.$encap_right.$separate.$encap_left.'User'.$encap_right.$separate.$encap_left.'When'.$encap_right.$separate.$encap_left.'Command'.$encap_right.$separate.$encap_left.'Result'.$terminate;
-		
-		foreach( $log_lines as $line ):
-		
-			$csv .= $encap_left.$line->id.$encap_right.$separate.
-			$encap_left.$members[$line->user_id].$encap_right.$separate.
-			$encap_left.date('M j Y g:i:s a', $line->log_time).$encap_right.$separate.
-			$encap_left.$line->command.$encap_right.$separate.
-			$encap_left.$line->result.$encap_right.$terminate;
-		
-		endforeach;
-
-		// -------------------------------------
-		// Force Download
-		// -------------------------------------
-		
-		$this->EE->load->helper('download');
-
-		force_download('Trigger_Export_'.date('mdy').'.csv', $csv);
-	}
-
-	// --------------------------------------------------------------------------
 
 	/**
 	 * Get information before exporting a Trigger Sequence
@@ -461,11 +398,23 @@ class Trigger_mcp {
 	/**
 	 * Import Sequence
 	 *
-	 * Imports a sequence into the sequence database
+	 * Imports a sequence into the sequence database by pasting it in
 	 */	
 	function import()
 	{
-	
+		$this->EE->cp->set_right_nav( $this->nav );
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequences'));
+		
+		$vars['module_base'] = $this->module_base;
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_import'));
+
+		// -------------------------------------
+		// 
+		// -------------------------------------
+
+		return $this->EE->load->view('import', $vars, TRUE); 
 	}
 }
 
