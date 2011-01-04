@@ -25,7 +25,7 @@
 				$members[$line->user_id],
 				date('M j Y g:i:s a', $line->log_time),
 				$line->command,
-				$line->result
+				'<pre>'.trim($line->result).'</pre>'
 			);
 	}
 ?>

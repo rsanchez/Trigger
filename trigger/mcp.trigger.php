@@ -152,6 +152,8 @@ class Trigger_mcp {
 	 */
 	function logs()
 	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">pre {margin: 0;}</style>');
+
 		$this->EE->cp->set_right_nav( $this->nav );	
 		
 		$vars['module_base'] = $this->module_base;
