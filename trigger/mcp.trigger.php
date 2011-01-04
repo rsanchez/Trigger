@@ -317,9 +317,15 @@ class Trigger_mcp {
 		// Check the sequence title
 		// -------------------------------------
 	
-		if( $this->EE->input->get_post('sequence_name') == '' ):
+		if( $this->EE->input->get_post('title') == '' ):
 		
 			show_error("The Sequence Title field is required.");
+		
+		endif;
+
+		if( $this->EE->input->get_post('name') == '' ):
+		
+			show_error("The Sequence Name field is required.");
 		
 		endif;
 		
@@ -345,7 +351,11 @@ class Trigger_mcp {
 			// Create Header
 			// -------------------------------------
 	
-			$seq  = 'sequence name: '.$this->EE->input->get_post('sequence_name').$term;
+			$seq  = 'sequence title: '.$this->EE->input->get_post('title').$term;
+
+			$seq  = 'sequence name: '.$this->EE->input->get_post('name').$term;
+
+			$seq  = 'sequence description: '.$this->EE->input->get_post('description').$term;
 			
 			$seq .= 'lines: '.$db_obj->num_rows().$term;
 			
@@ -397,7 +407,9 @@ class Trigger_mcp {
 			
 			// Save to the Sequences table
 			
-			$insert_data['sequence_name'] 	= $this->EE->input->get_post('sequence_name');
+			$insert_data['title'] 			= $this->EE->input->get_post('title');
+			$insert_data['name'] 			= $this->EE->input->get_post('name');
+			$insert_data['description'] 	= $this->EE->input->get_post('description');
 			$insert_data['lines']			= $db_obj->num_rows();
 			$insert_data['created_by']		= $this->EE->session->userdata('screen_name');
 			$insert_data['created']			= date('Y-m-d H:i:s');
@@ -449,7 +461,7 @@ class Trigger_mcp {
 	
 		$vars['pagination'] = $this->EE->pagination->create_links();
 		
-		$this->EE->db->order_by('sequence_name', 'desc');		
+		$this->EE->db->order_by('name', 'desc');		
 		$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
 		
 		$vars['sequences'] = $db_obj->result();

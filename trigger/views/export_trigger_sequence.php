@@ -11,10 +11,28 @@
 <tbody>
 	<tr>
 		<td width="40%">
-			<strong>Sequence Name</strong> 
+			<strong>Sequence Title</strong><br />
+			<div class="subtext">A title for your sequence</div>
 		</td>
 		<td>
-			<?=form_input(array('id'=>'sequence_name','name'=>'sequence_name','class'=>'fullfield'))?>
+			<?=form_input(array('id'=>'title','name'=>'title','class'=>'fullfield'))?>
+		</td>
+	</tr>
+	<tr>
+		<td width="40%">
+			<strong>Sequence Name</strong><br />
+			<div class="subtext">All lower case, no spaces. Underscores allowed.</div>
+		</td>
+		<td>
+			<?=form_input(array('id'=>'name','name'=>'name','class'=>'fullfield'))?>
+		</td>
+	</tr>
+	<tr>
+		<td width="40%">
+			<strong>Sequence Description</strong>
+		</td>
+		<td>
+			<?=form_input(array('id'=>'description','name'=>'description','class'=>'fullfield'))?>
 		</td>
 	</tr>
 	<tr>

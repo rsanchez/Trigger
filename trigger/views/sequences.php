@@ -8,16 +8,18 @@
 <?php
 	$this->table->set_template($cp_table_template);
 	$this->table->set_heading(
-		'Sequence Name', 'Lines', 'Created By', ''
+		'Sequence Title', 'Sequence Name', 'Sequence Description', 'Lines', 'Created By', ''
 	);
 
 	foreach($sequences as $sequence)
 	{
 		$this->table->add_row(
-				$sequence->sequence_name,
+				$sequence->title,
+				$sequence->name,
+				$sequence->description,
 				$sequence->lines,
 				$sequence->created_by,
-				''
+				'<a href="'.$module_base.AMP.'method=run_sequence'.AMP.'sequence_id='.$sequence->id.'">Run</a>'
 			);
 	}
 ?>
