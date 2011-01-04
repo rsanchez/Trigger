@@ -257,8 +257,34 @@ class Trigger_mcp {
 	/**
 	 * Get information before exporting a Trigger Sequence
 	 */
-	function export_log_sequence()
+	function export()
 	{	
+		// -------------------------------------
+		// Find out where this is going to
+		// -------------------------------------
+
+		$vars['to'] = $this->EE->input->get_post('to');
+		
+		// Make sure we got something we can use
+
+		if( $vars['to'] == '' || ($vars['to'] != 'file' && $vars['to'] != 'sequences') ):
+		
+			$vars['to'] = 'sequences';
+		
+		endif;
+	
+		// Set page title accordingly
+		
+		if( $vars['to'] == 'sequences' ):
+
+			$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_export_to_seqs'));				
+		
+		else:
+
+			$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_export_logs_as_seq_file'));
+		
+		endif;
+
 		// -------------------------------------
 		// Get Logs to Count Them
 		// -------------------------------------
@@ -276,8 +302,6 @@ class Trigger_mcp {
 		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
 		
 		$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=logs', $this->EE->lang->line('trigger_logs'));
-		
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_export_logs_as_seq'));				
 		
 		return $this->EE->load->view('export_trigger_sequence', $vars, TRUE);
 	}
@@ -309,43 +333,87 @@ class Trigger_mcp {
 
 		$log_lines = $db_obj->result();
 
-		// -------------------------------------
-		// Create Header
-		// -------------------------------------
-
 		$term = "\n";
 
-		$seq  = 'sequence name: '.$this->EE->input->get_post('sequence_name').$term;
-		
-		$seq .= 'lines: '.$db_obj->num_rows().$term;
-		
-		$seq .= 'created by: '.$this->EE->session->userdata('screen_name').$term;
-
-		$seq .= 'created: '.date('M j Y g:i:s a').$term;
-		
-		$seq .= $term;
-
 		// -------------------------------------
-		// Create Body
+		// Export to a File
 		// -------------------------------------
 
-		$seq .= 'TRIGGER SEQUENCE START'.$term;
-		
-		foreach( $log_lines as $line ):
-		
-			$seq .= $line->command.$term;
-		
-		endforeach;
-		
-		$seq .= 'TRIGGER SEQUENCE END';
+		if( $this->EE->input->get_post('to') == 'file' ):
 
-		// -------------------------------------
-		// Force Download
-		// -------------------------------------
+			// -------------------------------------
+			// Create Header
+			// -------------------------------------
+	
+			$seq  = 'sequence name: '.$this->EE->input->get_post('sequence_name').$term;
+			
+			$seq .= 'lines: '.$db_obj->num_rows().$term;
+			
+			$seq .= 'created by: '.$this->EE->session->userdata('screen_name').$term;
+	
+			$seq .= 'created: '.date('M j Y g:i:s a').$term;
+			
+			$seq .= $term;
+	
+			// -------------------------------------
+			// Create Body
+			// -------------------------------------
+	
+			$seq .= 'TRIGGER SEQUENCE START'.$term;
+			
+			foreach( $log_lines as $line ):
+			
+				$seq .= $line->command.$term;
+			
+			endforeach;
+			
+			$seq .= 'TRIGGER SEQUENCE END';
+	
+			// -------------------------------------
+			// Force Download
+			// -------------------------------------
+			
+			$this->EE->load->helper('download');
+	
+			force_download('Trigger_Sequence_'.date('mdy').'.txt', $seq);
+			
+		else:
 		
-		$this->EE->load->helper('download');
+		// -------------------------------------
+		// Export to Sequences
+		// -------------------------------------
 
-		force_download('Trigger_Sequence_'.date('mdy').'.txt', $seq);
+			// -------------------------------------
+			// Get the Sequence
+			// -------------------------------------
+	
+			$seq = '';
+		
+			foreach( $log_lines as $line ):
+			
+				$seq .= $line->command.$term;
+			
+			endforeach;
+			
+			// Save to the Sequences table
+			
+			$insert_data['sequence_name'] 	= $this->EE->input->get_post('sequence_name');
+			$insert_data['lines']			= $db_obj->num_rows();
+			$insert_data['created_by']		= $this->EE->session->userdata('screen_name');
+			$insert_data['created']			= date('Y-m-d H:i:s');
+			$insert_data['sequence']		= $seq;
+			
+			$sql = $this->EE->db->insert_string('trigger_sequences', $insert_data);
+
+			$this->EE->db->query( $sql );
+			
+			// -------------------------------------
+			// Redirect To Sequence
+			// -------------------------------------
+		
+			$this->EE->functions->redirect($this->module_base.AMP.'method=sequences');
+		
+		endif;
 	}
 
 	// --------------------------------------------------------------------------
@@ -385,6 +453,12 @@ class Trigger_mcp {
 		$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
 		
 		$vars['sequences'] = $db_obj->result();
+
+		// -------------------------------------
+		// Load Table Library for layout
+		// -------------------------------------
+		
+		$this->EE->load->library('Table');
 
 		// -------------------------------------
 		// Load trigger edit window

@@ -33,6 +33,8 @@
 </tbody>	
 </table>
 		
+<input type="hidden" name="to" value="<?=$to;?>" />
+		
 <p><?=form_submit('submit', lang('trigger_export_sequence'), 'class="submit"')?></p>
 
 <?=form_close()?>

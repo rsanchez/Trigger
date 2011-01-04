@@ -1,20 +1,23 @@
 <?php if( $sequences ): ?>
 	
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=export_log_csv"><?=lang('trigger_export_logs_as_csv');?></a> 
+		<a href="<?=$module_base.AMP;?>method=export_log_csv"><?=lang('trigger_import_sequence');?></a> 
 	</div> 
 
 
 <?php
 	$this->table->set_template($cp_table_template);
 	$this->table->set_heading(
-		'Sequence Name'
+		'Sequence Name', 'Lines', 'Created By', ''
 	);
 
 	foreach($sequences as $sequence)
 	{
 		$this->table->add_row(
-				$sequence->sequence_name
+				$sequence->sequence_name,
+				$sequence->lines,
+				$sequence->created_by,
+				''
 			);
 	}
 ?>

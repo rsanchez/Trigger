@@ -5,11 +5,11 @@
 	</div> 
 	
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=dsf"><?=lang('trigger_export_to_seqs');?></a> 
+		<a href="<?=$module_base.AMP;?>method=export&to=sequences"><?=lang('trigger_export_to_seqs');?></a> 
 	</div> 
 	
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=export_log_sequence"><?=lang('trigger_export_logs_as_seq_file');?></a> 
+		<a href="<?=$module_base.AMP;?>method=export&to=file"><?=lang('trigger_export_logs_as_seq_file');?></a> 
 	</div> 
 
 <?php
