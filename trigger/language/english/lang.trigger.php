@@ -15,6 +15,9 @@ $lang = array(
 'trigger_import'					=> "Import",
 'trigger_import_sequence'			=> "Import Sequence",
 'trigger_sequence_file'				=> "Sequence File",
+'trigger_run_sequence'				=> "Run Sequence",
+'trigger_run'						=> "Run",
+'trigger_sequence_results'			=> "Sequence Results",
 
 'trigger_no_access'					=> "You do not have access to this function",
 

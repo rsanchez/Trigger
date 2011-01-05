@@ -15,16 +15,31 @@
 <?php
 	$this->table->set_template($cp_table_template);
 	$this->table->set_heading(
-		'ID', 'User', 'When', 'Comand', 'Result'
+		'ID', 'User', 'When', 'Command', 'Result'
 	);
-
+	
 	foreach($log_lines as $line)
 	{
+		$start	= '';
+		$end 	= '';
+		
+		if( $line->type == 'start' ):
+		
+			$start 	= '<span class="go_notice">';
+			$end	= '</span>';
+		
+		elseif( $line->type == 'end' ):
+	
+			$start 	= '<span class="notice">';
+			$end	= '</span>';
+		
+		endif;
+
 		$this->table->add_row(
 				$line->id,
 				$members[$line->user_id],
 				date('M j Y g:i:s a', $line->log_time),
-				$line->command,
+				$start.$line->command.$end,
 				'<pre>'.trim($line->result).'</pre>'
 			);
 	}

@@ -482,6 +482,114 @@ class Trigger_mcp {
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Presents a choice before running a sequence
+	 */
+	function run_sequence()
+	{
+		$vars['sequence'] = $this->validate_sequence_data( $this->EE->input->get_post('sequence_id') );
+	
+		// -------------------------------------
+		// Ask if we want to run it
+		// -------------------------------------
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_run_sequence'));
+
+		return $this->EE->load->view('run_sequence', $vars, TRUE); 		
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Checks and Validates Sequence Data
+	 *
+	 * @access	private
+	 * @param	int
+	 * @return	obj
+	 */
+	private function validate_sequence_data( $sequence_id )
+	{
+		// -------------------------------------
+		// Get the sequence ID
+		// -------------------------------------
+		
+		if( !is_numeric($sequence_id) ):
+		
+			show_error("Invalid Sequence ID.");
+		
+		endif;
+		
+		// -------------------------------------
+		// Get the data
+		// -------------------------------------
+		
+		$this->EE->db->limit(1);
+		$this->EE->db->where('id', $sequence_id);
+		
+		$db_obj = $this->EE->db->get('trigger_sequences');
+		
+		if( $db_obj->num_rows() == 0 ):
+			
+			show_error("Couldn't find sequence.");
+		
+		endif;
+		
+		return $db_obj->row_array();
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Do the actual sequence running
+	 */
+	function do_run_sequence()
+	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">pre {margin: 0;}</style>');
+
+		$vars['sequence'] = $this->validate_sequence_data( $this->EE->input->get_post('sequence_id') );
+
+		// -------------------------------------
+		// Send it to the Sequences library
+		// to run
+		// -------------------------------------
+		
+		$this->EE->load->library('Sequence');
+		
+		$vars['log_lines'] = $this->EE->sequence->run_sequence( $vars['sequence'] );
+
+		// -------------------------------------
+		// Load Table Library for layout
+		// -------------------------------------
+		
+		$this->EE->load->library('Table');
+
+		// -------------------------------------
+		// Get an array of users
+		// -------------------------------------
+
+		$members_obj = $this->EE->db->get('members');
+
+		$members = $members_obj->result();
+
+		$vars['members'] = array();
+		
+		foreach( $members as $member ):
+		
+			$vars['members'][$member->member_id] = $member->screen_name;
+		
+		endforeach;
+						
+		// -------------------------------------
+		// Display the Results
+		// -------------------------------------
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequence_results'));
+
+		return $this->EE->load->view('run_sequence_results', $vars, TRUE); 		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Import Sequence
 	 *
 	 * Imports a sequence into the sequence database by pasting it in

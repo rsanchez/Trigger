@@ -3,6 +3,12 @@
 class Trigger
 {
 	var $context 		= array();
+	
+	/**
+	 * Should we end it when we process a line?
+	 * If we do it is coming via an AJAX request
+	 */
+	var $end_it			= TRUE;
 
 	// --------------------------------------------------------------------------
 
@@ -18,15 +24,18 @@ class Trigger
 	 *
 	 * @access	public
 	 * @param	line
+	 * @param	bool
 	 */
-	function process_line( $line )
+	function process_line( $line, $end_it = TRUE )
 	{
 		$result = null;
-	
+		
+		$this->end_it = $end_it;
+			
 		// -------------------------------------
 		// Get context
 		// -------------------------------------
-
+		
 		$this->context[0] = 'ee';
 		
 		$parts = explode(":", $line);
@@ -127,7 +136,7 @@ class Trigger
 			// Load driver
 			// -------------------------------------
 			
-			@include(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
+			@require_once(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
 			
 			$driver_class = 'Commands_'.$driver;
 			
@@ -419,14 +428,19 @@ class Trigger
 	 */	
 	function _output_response( $output )
 	{
-		$this->EE->output->enable_profiler(FALSE);
-
-		if ($this->EE->config->item('send_headers') == 'y')
-		{
-			@header('Content-Type: text/html; charset=UTF-8');	
-		}
+		if( $this->end_it === TRUE ):
+	
+			$this->EE->output->enable_profiler(FALSE);
+	
+			if ($this->EE->config->item('send_headers') == 'y'):
+			
+				@header('Content-Type: text/html; charset=UTF-8');	
+			
+			endif;
+			
+			exit( $output );
 		
-		exit( $output );
+		endif;
 	}
 
 	// --------------------------------------------------------------------------

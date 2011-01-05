@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+// --------------------------------------------------------------------------
+
 /**
  * Write a log file
  *
@@ -14,6 +16,7 @@ function write_log( $line, $result = '' )
 
 	$log_data['log_time']	= time();
 	$log_data['user_id']	= $EE->session->userdata('member_id');
+	$log_data['type']		= 'comm';
 	$log_data['command']	= $line;
 	$log_data['result']		= $result;
 	
@@ -21,6 +24,35 @@ function write_log( $line, $result = '' )
 	
 	$EE->db->query( $sql );
 }
+
+// --------------------------------------------------------------------------
+
+/**
+ * Write Mark Log Entry
+ *
+ * @access	public
+ * @param	string (start or end)
+ * @param	string
+ * @return	void
+ */
+function write_log_mark( $type, $sequence_name )
+{
+	$EE =& get_instance();
+
+	$log_data['log_time']	= time();
+	$log_data['user_id']	= $EE->session->userdata('member_id');
+	$log_data['type']		= $type;
+	$log_data['command']	= $sequence_name . ' run ' . $type;
+	
+	$sql = $EE->db->insert_string('trigger_log', $log_data);
+	
+	$EE->db->query( $sql );
+	
+	// Return the insert id
+	
+	return $EE->db->insert_id();
+}
+
 
 // --------------------------------------------------------------------------
 
