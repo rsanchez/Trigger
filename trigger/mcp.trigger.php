@@ -49,19 +49,7 @@ class Trigger_mcp {
 
 		// -------------------------------------
 
-		$theme_url = $this->EE->config->item('theme_folder_url') . 'third_party/trigger';
-		
-		$this->EE->cp->add_to_head("<link rel='stylesheet' href='{$theme_url}/css/trigger.css'>");
-
-		// -------------------------------------
-		// Set default context if none set
-		// -------------------------------------
-
-		if ( ! isset($this->EE->session->cache['trigger']['context']) ):
-			
-			$this->EE->session->cache['trigger']['context'] = array('ee');
-			
-		endif;		
+		$theme_url = $this->EE->config->item('theme_folder_url') . 'third_party/trigger';		
 	}
 
 	// --------------------------------------------------------------------------
@@ -89,12 +77,6 @@ class Trigger_mcp {
 		$this->EE->javascript->compile();
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_module_name'));
-
-		// -------------------------------------
-		// Set the context for the view
-		// -------------------------------------
-		
-		$this->EE->cp->set_variable('context', $this->EE->session->cache['trigger']['context']);
 
 		// -------------------------------------
 		// Load trigger edit window

@@ -454,8 +454,6 @@ class Trigger
 	 */
 	function output_context( $context )
 	{
-		$this->EE->session->cache['trigger']['context'] == $context;
-	
 		$output = null;
 	
 		foreach( $context as $cont ):
