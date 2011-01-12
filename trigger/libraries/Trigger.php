@@ -83,8 +83,6 @@ class Trigger
 			
 			$error = "Please specify a driver\n";
 			
-			//$this->EE->session->cache['trigger']['context'] = array('ee');
-			
 			$this->_output_response( $error . $this->output_context( $this->context ) );
 			
 		endif;
