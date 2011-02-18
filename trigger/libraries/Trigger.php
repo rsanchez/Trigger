@@ -54,12 +54,6 @@ class Trigger
 		$this->line 	= $line;
 			
 		// -------------------------------------
-		// Get context
-		// -------------------------------------
-		
-		$this->context[0] = 'ee';
-
-		// -------------------------------------
 		// Explode and Clean Line
 		// -------------------------------------
 		
@@ -504,8 +498,8 @@ class Trigger
 	public function show_error( $error )
 	{
 		write_log($this->line, $error);
-		
-		$this->_output_response( "$error\n", $this->output_context( $this->context ) );
+
+		$this->_output_response( "$error\n" . $this->output_context() );
 	}
 
 	// --------------------------------------------------------------------------
@@ -522,14 +516,14 @@ class Trigger
 		$output = null;
 		
 		// Just root if none provided
-		if( $context ):
+		if( empty($this->context) ):
 		
-			$context = array('ee');
+			$this->context = array('ee');
 		
 		endif;
 		
 		// Output the context
-		foreach( $context as $cont ):
+		foreach( $this->context as $cont ):
 		
 			$output .= $cont . " : ";
 		
