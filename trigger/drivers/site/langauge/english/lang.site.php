@@ -1,6 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$command_lang = array(
+$driver_lang = array(
+
+	'driver_name'					 	=> "Site",
+	'driver_desc'						=> "Manipulates site variables and processes.",
+
+	// --------------------------------------------------------------------------	
 
 	'site_offline'						=> "site is now offline",
 	'site_already_offline'				=> "site is already offline",

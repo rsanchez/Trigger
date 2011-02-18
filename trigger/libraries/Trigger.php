@@ -2,13 +2,34 @@
 
 class Trigger
 {
-	var $context 		= array();
+
+	/**
+	 * Context
+	 *
+	 * Array that determines the string output
+	 * when exiting the function
+	 */
+	var $context 				= array();
+
+	// --------------------------------------------------------------------------
 	
 	/**
+	 * End It
+	 *
 	 * Should we end it when we process a line?
 	 * If we do it is coming via an AJAX request
 	 */
-	var $end_it			= TRUE;
+	var $end_it					= TRUE;
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * System Commands
+	 *
+	 * Array of commands that the system
+	 * understands and parses
+	 */
+	var $system_commands 		= array('flush', 'drivers', 'stack');
 
 	// --------------------------------------------------------------------------
 
@@ -28,23 +49,36 @@ class Trigger
 	 */
 	function process_line( $line, $end_it = TRUE )
 	{
-		$result = null;
+		$this->end_it 	= $end_it;
 		
-		$this->end_it = $end_it;
+		$this->line 	= $line;
 			
 		// -------------------------------------
 		// Get context
 		// -------------------------------------
 		
 		$this->context[0] = 'ee';
-		
-		$parts = explode(":", $line);
 
 		// -------------------------------------
-		// Easy out for "root" in the 1 context
+		// Explode and Clean Line
 		// -------------------------------------
 		
-		if( trim($parts[1]) == 'root' ):
+		$parts = explode(":", $line);
+		
+		foreach( $parts as $key => $part ):
+		
+			$parts[$key] = trim($part);
+		
+		endforeach;
+
+		// -------------------------------------
+		// Easy out for "root"
+		// -------------------------------------
+		// Root is special because it just means
+		// get me out of here and forget it.
+		// -------------------------------------
+		
+		if( isset($parts[2]) && $parts[2] == 'root' ):
 		
 			$this->context = array('ee');
 			
@@ -59,55 +93,335 @@ class Trigger
 		$this->EE->load->library('Vars');
 
 		// -------------------------------------
-		// See if they just want a variable. If
-		// they do, then we just output that
+		// Insert Variables
+		// -------------------------------------
+		// Replaces {} curly braced variables
+		// With system variables 
+		// -------------------------------------
+		
+		$this->system_var_methods = get_class_methods($this->EE->vars);
+		
+		foreach( $this->system_var_methods as $method ):
+		
+			$variable_val = $this->EE->vars->$method();
+			
+			foreach( $parts as $key => $part ):
+			
+				$parts[$key] = str_replace(LD.$method.RD, $variable_val, $part);
+			
+			endforeach;
+		
+		endforeach;
+		
+		// -------------------------------------
+		// Check Segment Numbers
 		// -------------------------------------
 
-		if( method_exists($this->EE->vars, trim($parts[1]) )):
+		$total_segments = count($parts);
 		
-			$action = trim($parts[1]);
+		// Should we do something about more segments than possible here?
+
+		// -------------------------------------
+		// Single Segment Processing
+		// -------------------------------------
+	
+		if( $total_segments == 2 ):
+		
+			$segment = $parts[1];
+		
+			// Is this a system variable?
+			
+			$this->_is_variable( $segment );
+			
+			$this->_is_system_command( $segment, array('drivers') );
+			
+			$this->_load_driver( $segment );
+			
+			// Looks like the command could not be understood. Bummer.
+			$this->show_error( "unknown command" );
+		
+		elseif( $total_segments == 3 ):
+
+		// -------------------------------------
+		// Double Segment Processing
+		// -------------------------------------
+
+			$driver_slug = $parts[1];
+			
+			$segment = $parts[2];
+
+			// We know there has to be a driver.
+			// If there isn't throw dem flagz up!
+			
+			if( !$this->_load_driver( $driver_slug ) ):
+			
+				$this->show_error( "$driver_slug driver not found" );
+			
+			endif;
+			
+			// Set the context to the driver. Other functions
+			// will set it back if need be.
+
+			$this->context = array( 'ee', $this->driver->driver_slug );
+			
+			// -------------------------------------
+			// Replace driver variables
+			// -------------------------------------
+			
+			// TODO
+
+			// -------------------------------------
+
+			$this->_is_system_command( $segment );
+		
+			$this->_is_variable( $segment, $this->driver );
+
+			$this->_is_singular_command( $segment );
+
+			$this->_is_set_var_command( $segment );
+		
+		// End Segment Processing
+		endif;
+		
+		// -------------------------------------
+		// Add line ending to result
+		// -------------------------------------
+		
+		if( $result ):
+		
+			$result = $result . "\n";
+		
+		endif;
+		
+		// -------------------------------------
+		// Last Resort Data Output Data
+		// -------------------------------------
+	
+		$this->_output_response( $result . $this->EE->trigger->output_context( $this->context ) );
+	}
+
+	// --------------------------------------------------------------------------
+
+	private function _is_action_command()
+	{
+		$actions = array('new', 'update', 'delete');
+	
+		// Check to see if there is an action
+		
+		//if()
+		
+			// Call the action function
+			
+			// Do we have all the variables we need in the stack?
+		
+		
+		//endif;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Is This a Set Var Command?
+	 *
+	 * Set var commands are values separated by a "=" sign
+	 *
+	 * @access	private
+	 * @param	string
+	 * @return	mixed
+	 */	
+	private function _is_set_var_command( $segment )
+	{
+		// See if we have two values with a "=" in between
+		
+		$parts = explode("=", $segment);
+		
+		if( count($parts)==3 && trim($parts[1]) == '=' ):
+		
+			$this->set_variable( trim($parts[0]), trim($parts[2]) );
+			
+			write_log($this->line, $msg = trim($parts[0])." variable set");
+	
+			$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
+		
+		endif;
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Is this a Singular Command?
+	 *
+	 * @access	private
+	 * @param	string
+	 * @return	void
+	 */
+	private function _is_singular_command( $segment )
+	{
+		$call = str_replace(" ", "_", $segment);
+		$call = strtolower($call);
+		
+		// Check to see if the command exists. Issue error if it doesn't.
+		// Otherwise, run the command.
+		
+		if( method_exists($this->driver, $call) ):
+		
+			$msg = $obj->$call();
+	
+			write_log($this->line, $msg);
+	
+			$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
+		
+		endif;
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Is This a System Command?
+	 *
+	 * Checks to see if the input is a system command
+	 * and if it is allowed to be run in this spot
+	 *
+	 * @access	private
+	 * @param	string
+	 * @param	[array]
+	 * @return	mixed
+	 */
+	private function _is_system_command( $segment, $allowed = array() )
+	{
+		if( empty($allowed) ):
+		
+			$allowed = $this->system_commands;
+		
+		endif;
+		
+		// Does this command exist and is allowed?
+		// If so, run it.
+		
+		if( in_array($segment, $allowed) ):
+		
+			$call = 'system_'.$segment;
+		
+			$this->$call();
+		
+		endif;
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * See if something is a variable and return the value if needed
+	 *
+	 * @access	private
+	 * @param	string
+	 * @param	obj
+	 * @return	string
+	 */
+	private function _is_variable( $segment = '', $driver_obj = FALSE )
+	{
+		if( $driver_obj === FALSE ):
+
+			// -------------------------------------
+			// No Driver Obj
+			// -------------------------------------
+			// No driver object means it could be
+			// a system variable
+			// -------------------------------------
+			
+			if( in_array($segment, $this->system_var_methods) ):
+			
+				$this->_output_response( $this->EE->vars->$segment() . "\nee : " );
+						
+			endif;
+
+		else:
+		
+			// -------------------------------------
+			// Driver Variable
+			// -------------------------------------
+			// Could be a driver variable
+			// -------------------------------------
+		
+		
+		
+		endif;
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Loads a driver
+	 *
+	 * Checks to see if there is a driver folder before loading
+	 * all of the necessary items.
+	 *
+	 * @access	private
+	 * @param	string
+	 * @return	mixed
+	 */
+	private function _load_driver( $driver_slug )
+	{
+		$driver_folder = PATH_THIRD . '/trigger/drivers/';
+	
+		if( is_dir($driver_folder.$driver_slug) ):
+
+			// -------------------------------------
+			// Load driver file
+			// -------------------------------------
+			
+			$driver_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.driver.php';
+			
+			if( file_exists($driver_file) ):
+
+				@require_once($driver_file);
+	
+				$driver_class = 'Driver_'.$driver;
 				
-			$this->_output_response( $this->EE->vars->$action() . "\n" . $this->output_context( $this->context ) );
-					
-		endif;
-		
-		// -------------------------------------
-		// Check for driver/command
-		// -------------------------------------
-		
-		if( trim($parts[1]) == '' ):
-		
+				$this->driver = new $driver_class();
+			
+			else:
+			
+				// We can't go on without a driver file
+
+				$this->_output_response( "Missing driver file\n" . $this->output_context() );
+			
+			endif;
+
 			// -------------------------------------
-			// If there is no driver, exit to error
+			// Load Commands
 			// -------------------------------------
 			
-			$error = "Please specify a driver\n";
+			$commands_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.commands.php';
 			
-			$this->_output_response( $error . $this->output_context( $this->context ) );
+			if( file_exists($commands_file) ):
 			
-		endif;
-		
-		$driver = trim($parts[1]);
-		
-		// -------------------------------------
-		// Check for Driver
-		// -------------------------------------
-		
-		if( file_exists(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php') ):
+				@require_once($commands_file);
+				
+				$commands_class = 'Commands_'.$driver_slug;
+				
+				$this->driver->commands = new $commands_class();
+
+				$this->driver->has_commands = TRUE;
+			
+			else:
+				
+				$this->driver->has_commands = FALSE;
+			
+			endif;
 		
 			// -------------------------------------
 			// Load driver language
 			// -------------------------------------
 			
-			$lang_file = PATH_THIRD . 'trigger/drivers/'.$driver.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver.'.php';
+			$lang_file = $driver_folder.$driver_slug.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver_slug.'.php';
 			
 			if( ! file_exists($lang_file) ):
 			
 				// Looks like there is no language file. That's no good!
 				
-				$error = "no language file found for $driver driver";
+				$error = "no language file found for $driver_slug driver";
 			
-				write_log($line, $error);
+				write_log($this->line, $error);
 	
 				$this->_output_response( "$error\n" . $this->output_context( $this->context ) );
 				
@@ -123,296 +437,48 @@ class Trigger
 			
 			@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
 			
-			$all_lang = array_merge($command_lang, $lang);
+			$this->driver->lang = array_merge($driver_lang, $lang);
+			
+			// Set up some class variables
+			
+			$this->driver->driver_name 	= $this->driver->lang['driver_name'];
+			$this->driver->driver_desc 	= $this->driver->lang['driver_desc'];
 
 			// -------------------------------------
-			// Load Vars if they exist
+			// Load Commands
 			// -------------------------------------
+			
+			$vars_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.vars.php';
+			
+			if( file_exists($vars_file) ):
+			
+				@require_once($vars_file);
+				
+				$vars_class = 'Vars_'.$driver_slug;
+				
+				$this->driver->vars = new $vars_class();
 
+				$this->driver->has_vars = TRUE;
 			
+			else:
+				
+				$this->driver->has_vars = FALSE;
+			
+			endif;			
+						
 			// -------------------------------------
-			// Load driver
-			// -------------------------------------
-			
-			@require_once(PATH_THIRD . '/trigger/drivers/'.$driver.'/commands.'.$driver.'.php');
-			
-			$driver_class = 'Commands_'.$driver;
-			
-			$obj = new $driver_class();
-			
-			// Set the language
-			
-			$obj->lang = $all_lang;
-			
 			// Set driver to driver context position
+			// -------------------------------------
 			
 			if( $driver != '' ):
 			
-				$this->context[1] = $driver;
+				$this->context[1] = $driver_slug;
 			
 			endif;
 			
 		endif;
-
-		// -------------------------------------
-		// Parse Action Variables
-		// -------------------------------------
-
-		$methods = get_class_methods($this->EE->vars);
 		
-		foreach( $methods as $method ):
-		
-			$variable_val = $this->EE->vars->$method();
-			
-			foreach( $parts as $key => $part ):
-			
-				$parts[$key] = str_replace(LD.$method.RD, $variable_val, $part);
-			
-			endforeach;
-		
-		endforeach;
-		
-		// -------------------------------------
-		// Determine Action
-		// -------------------------------------
-		
-		if( isset($parts[2]) ):
-		
-			$rest = trim($parts[2]);
-			
-		else:
-			
-			$rest = FALSE;
-		
-		endif;
-		
-		if( $rest ):
-		
-			$segs = explode(" ", $rest);
-		
-			$action = trim($segs[0]);
-
-			// -------------------------------------
-			// Parse which type of action
-			// -------------------------------------
-		
-			switch( $action )
-			{
-				// -------------------------------------
-				// Go back to the root
-				// -------------------------------------
-				// Sets the context back to the root
-				// -------------------------------------
-			
-				case 'root':
-				
-					$this->context = array('ee');
-
-					write_log($line, "(context set to root)");
-					
-					$this->_output_response( $this->output_context( $this->context ) );
-					
-					break;
-				
-				// -------------------------------------
-				// Set a variable
-				// -------------------------------------
-
-				case 'set':
-				
-					$this->context = array('ee', $driver);
-					
-					if( ! $this->set_variable( $segs, $driver ) ):
-					
-						$msg = "Unable to set variable\n";
-						
-					else:
-					
-						$msg = "Variable set successfully\n";
-					
-					endif;
-					
-					$this->_output_response( $msg . $this->output_context( $this->context ) );
-					
-					break;
-
-				// -------------------------------------
-				// Show stack
-				// -------------------------------------
-				// Show the current stack of commands.
-				// Does not write log anything.
-				// -------------------------------------
-
-				case 'stack':
-					
-					$this->context = array('ee', $driver);
-					
-					$this->EE->db->limit(1);
-					$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-					$this->EE->db->where('driver', $driver);
-					
-					$db = $this->EE->db->get('trigger_scratch');
-					
-					if( $db->num_rows() == 0 ):
-					
-						$stack_output = "Stack is empty\n";
-					
-					else:
-					
-					$scratch = $db->row();
-					
-					$stack = $scratch->cache_data;
-					$stack = unserialize($stack);
-					
-					$stack_output = '';
-				
-					foreach( $stack as $var => $val ):
-					
-						$stack_output .= $var . " -> " . $val . "\n";
-					
-					endforeach;
-					
-					endif;
-
-					$this->_output_response( $stack_output . $this->output_context( $this->context ) );
-				
-					break;
-
-				// -------------------------------------
-				// Clear stack
-				// -------------------------------------
-				// Clear whatever is in the stack
-				// for a certain driver
-				// -------------------------------------
-
-				case 'flush':
-				
-					$this->context = array('ee', $driver);
-					
-					// See if there is anything to delete
-					
-					$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-					$this->EE->db->where('driver', $driver);
-					
-					$db = $this->EE->db->get('trigger_scratch');
-					
-					if( $db->num_rows() == 0 ):
-					
-						$msg = "stack is already empty";
-					
-					else:
-					
-						// Delete the stack entries.
-						// (This will delete all of them for a driver)
-					
-						$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-						$this->EE->db->where('driver', $driver);
-						$this->EE->db->delete('trigger_scratch');
-						
-						$msg = "stack has been flushed";
-						
-					endif;
-
-					write_log($line, $msg);
-					
-					$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
-
-				// -------------------------------------
-				// Create Command
-				// -------------------------------------
-				// Calls a create command in a driver
-				// -------------------------------------
-					
-				case 'create':
-				
-					$this->context = array('ee', $driver);
-					
-					$call = 'create_'.$segs[1];
-					
-					if( method_exists($obj, $call) ):
-					
-						// Get the stack data & run call
-						
-						$this->EE->db->limit(1);
-						$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-						$this->EE->db->where('driver', $driver);
-						
-						$db = $this->EE->db->get('trigger_scratch');
-						
-						$raw = $db->row();
-					
-						$msg = $obj->$call( unserialize($raw->cache_data) );
-						
-						// Get rid of the stack
-						
-						$this->EE->db->where('id', $raw->id);
-						$this->EE->db->delete();
-					
-					else:
-					
-						$msg = "invalid create command";
-					
-					endif;
-
-					write_log($line, $msg);
-					
-					$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
-					
-					break;
-
-				default:
-				
-					// -------------------------------------
-					// Singular Command
-					// -------------------------------------
-					// This must be a custom command from a
-					// driver. This just runs and logs it.
-					// -------------------------------------
-				
-					$call = str_replace(" ", "_", $rest);
-					$call = strtolower($call);
-					
-					// Check to see if the command exists. Issue error if it doesn't.
-					// Otherwise, run the command.
-					
-					if( !method_exists($obj, $call) ):
-					
-						$msg = "invalid command";
-					
-						write_log($line, $msg);
-
-						$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
-						
-					else:
-					
-						$msg = $obj->$call();
-
-						write_log($line, $msg);
-
-						$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
-					
-					endif;
-				
-					break;
-			}
-		
-		endif;
-		
-		// -------------------------------------
-		// Add line ending to result
-		// -------------------------------------
-		
-		if( $result ):
-		
-			$result = $result . "\n";
-		
-		endif;
-		
-		// -------------------------------------
-		// Output Data
-		// -------------------------------------
-	
-		$this->_output_response( $result . $this->EE->trigger->output_context( $this->context ) );
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------------
@@ -442,6 +508,21 @@ class Trigger
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Shows an error
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function show_error( $error )
+	{
+		write_log($this->line, $error);
+		
+		$this->_output_response( "$error\n", $this->output_context( $this->context ) );
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Outputs the context in the correct format
@@ -450,10 +531,18 @@ class Trigger
 	 * @param	array
 	 * @return	string
 	 */
-	function output_context( $context )
+	function output_context( $context = FALSE )
 	{
 		$output = null;
-	
+		
+		// Just root if none provided
+		if( $context ):
+		
+			$context = array('ee');
+		
+		endif;
+		
+		// Output the context
 		foreach( $context as $cont ):
 		
 			$output .= $cont . " : ";
@@ -465,73 +554,23 @@ class Trigger
 
 	// --------------------------------------------------------------------------
 	
-	function set_variable( $segs, $driver )
-	{
-		// -------------------------------------
-		// Find set values
-		// -------------------------------------
-
-		// Go through and trim values
-		
-		foreach( $segs as $key => $value ):
-		
-			$segs[$key] = trim($value);
-		
-		endforeach;
-
-		// Go through and see if one of the 
-		// values is our set value operator
-		
-		$opp_key = FALSE;
-
-		foreach( $segs as $key => $value ):
-		
-			if( $value == '=>' ):
-			
-				$opp_key = $key;
-				
-				break;
-			
-			endif;
-		
-		endforeach;
-				
-		// If we have no operator, get out!
-		
-		if( !$opp_key ):
-		
-			return FALSE;
-		
-		endif;
-		
-		// Else, let's make sure we have something on both sides
-		// and that the front one is not the set command
-		
-		if( !isset($segs[$opp_key-1]) || !isset($segs[$opp_key+1]) || $segs[$opp_key-1] == 'set' ):
-		
-			return FALSE;
-		
-		endif;
-		
-		// Put them into vars
-		
-		$set_value 	= $segs[$opp_key+1];
-		$variable	= $segs[$opp_key-1];
-		
-		// Trim '"' off of the we're setting value
-		
-		$set_value 	= ltrim($set_value, '"');
-		$set_value 	= rtrim($set_value, '"');
-
-		// -------------------------------------
-		// Process set values
-		// -------------------------------------
-		
+	/**
+	 * Set a variable
+	 *
+	 * Updates the driver cache with a new variable and value
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string
+	 * @return	bool
+	 */ 
+	public function set_variable( $variable, $value )
+	{		
 		// Get the scratch if there is one
 		
 		$this->EE->db->limit(1);
 		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-		$this->EE->db->where('driver', $driver);
+		$this->EE->db->where('driver', $this->driver->driver_slug);
 		
 		$obj = $this->EE->db->get('trigger_scratch');
 		
@@ -539,9 +578,9 @@ class Trigger
 		
 		if( $obj->num_rows() == 0 ):
 		
-			$insert_data['created'] 		= time();
+			$insert_data['created'] 		= $this->EE->localize->now();
 			$insert_data['user_id']			= $this->EE->session->userdata('member_id');
-			$insert_data['driver']			= $driver;
+			$insert_data['driver']			= $this->driver->driver_slug;
 		
 			$this->EE->db->insert('trigger_scratch', $insert_data);
 			
@@ -571,7 +610,7 @@ class Trigger
 		
 		// Merge the cache. Will this overwrite existing array keys? Hmm...
 		
-		$new_cache = array_merge($cache, array($variable => $set_value));
+		$new_cache = array_merge($cache, array($variable => $value));
 
 		// Update the scratch
 		
@@ -580,6 +619,89 @@ class Trigger
 		$this->EE->db->update('trigger_scratch', $update_data);		
 		
 		return TRUE;
+	}
+
+	// --------------------------------------------------------------------------
+	// System Commands	
+	// --------------------------------------------------------------------------	
+	
+	/**
+	 * Stack
+	 *
+	 * Outputs the stack
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function system_stack()
+	{		
+		$this->EE->db->limit(1);
+		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+		$this->EE->db->where('driver', $driver);
+		
+		$db = $this->EE->db->get('trigger_scratch');
+		
+		if( $db->num_rows() == 0 ):
+		
+			$stack_output = "Stack is empty\n";
+		
+		else:
+		
+		$scratch = $db->row();
+		
+		$stack = $scratch->cache_data;
+		$stack = unserialize($stack);
+		
+		$stack_output = '';
+	
+		foreach( $stack as $var => $val ):
+		
+			$stack_output .= $var . " -> " . $val . "\n";
+		
+		endforeach;
+		
+		endif;
+	
+		$this->_output_response( $stack_output . $this->output_context( $this->context ) );
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Flush Stack
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function system_flush()
+	{
+		// See if there is anything to delete
+		
+		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+		$this->EE->db->where('driver', $driver);
+		
+		$db = $this->EE->db->get('trigger_scratch');
+		
+		if( $db->num_rows() == 0 ):
+		
+			$msg = "stack is already empty";
+		
+		else:
+		
+			// Delete the stack entries.
+			// (This will delete all of them for a driver)
+		
+			$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
+			$this->EE->db->where('driver', $driver);
+			$this->EE->db->delete('trigger_scratch');
+			
+			$msg = "stack has been flushed";
+			
+		endif;
+	
+		write_log($this->line, $msg);
+		
+		$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
 	}
 
 }

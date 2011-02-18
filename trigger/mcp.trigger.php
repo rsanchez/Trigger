@@ -32,7 +32,7 @@ class Trigger_mcp {
 		);
 		
 		// -------------------------------------
-		// Default page config
+		// Default pagination config
 		// -------------------------------------		
 		
 		$this->page_config = array(
