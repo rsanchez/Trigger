@@ -187,11 +187,13 @@ class Trigger
 		// Add line ending to result
 		// -------------------------------------
 		
-		if( $result ):
+		if( !$result ):
 		
-			$result = $result . "\n";
+			$result = '';
 		
 		endif;
+		
+		$result = $result . "\n";
 		
 		// -------------------------------------
 		// Last Resort Data Output Data
