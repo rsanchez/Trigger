@@ -63,9 +63,19 @@ class Vars
 	 * @access	public
 	 * @return	string
 	 */
-	public function license_number()
+	public function license_key()
 	{
-		return $this->EE->config->item('license_number');
+		$key = $this->EE->config->item('license_number');
+	
+		if( !$key ):
+		
+			return "key is empty";
+		
+		else:
+		
+			return $key;
+		
+		endif;
 	}
 
 	// --------------------------------------------------------------------------
