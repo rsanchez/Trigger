@@ -63,7 +63,7 @@ class Trigger
 		// Explode and Clean Line
 		// -------------------------------------
 		
-		$parts = explode(":", $line);
+		$parts = explode(":", $line, 3);
 		
 		foreach( $parts as $key => $part ):
 		
@@ -119,8 +119,6 @@ class Trigger
 
 		$total_segments = count($parts);
 		
-		// Should we do something about more segments than possible here?
-
 		// -------------------------------------
 		// Single Segment Processing
 		// -------------------------------------
