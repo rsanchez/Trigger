@@ -12,8 +12,8 @@
  
 class Driver_site
 {
-	public var $driver_version		= "0.9 Beta";
-	public var $driver_slug			= "site";
+	var $driver_version			= "0.9 Beta";
+	var $driver_slug			= "site";
 }
 
 /* End of file site.driver.php */
