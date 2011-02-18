@@ -179,27 +179,11 @@ class Trigger
 			$this->_is_singular_command( $segment );
 
 			$this->_is_set_var_command( $segment );
+
+			$this->show_error( "unknown command" );
 		
 		// End Segment Processing
 		endif;
-		
-		// -------------------------------------
-		// Add line ending to result
-		// -------------------------------------
-		
-		if( !$result ):
-		
-			$result = '';
-		
-		endif;
-		
-		$result = $result . "\n";
-		
-		// -------------------------------------
-		// Last Resort Data Output Data
-		// -------------------------------------
-	
-		$this->_output_response( $result . $this->EE->trigger->output_context( $this->context ) );
 	}
 
 	// --------------------------------------------------------------------------
