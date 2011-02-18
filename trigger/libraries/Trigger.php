@@ -52,6 +52,12 @@ class Trigger
 		$this->end_it 	= $end_it;
 		
 		$this->line 	= $line;
+
+		// -------------------------------------
+		// Set 0 context to 'ee'
+		// -------------------------------------
+
+		$this->context[0] = 'ee';
 			
 		// -------------------------------------
 		// Explode and Clean Line
@@ -124,15 +130,25 @@ class Trigger
 			$segment = $parts[1];
 		
 			// Is this a system variable?
-			
 			$this->_is_variable( $segment );
-			
+						
+			// Maybe a system command?
 			$this->_is_system_command( $segment, array('drivers') );
+	
+			if( ! $this->_load_driver( $segment ) ):
+
+				// Not a driver?
+				// Well, looks like the command could not be
+				// understood. Bummer.
+				$this->show_error( "unknown command" );
 			
-			$this->_load_driver( $segment );
+			else:
+
+				
+				// We will go quiety with no errors.
+				$this->_output_response( $this->output_context( $this->context ) );
 			
-			// Looks like the command could not be understood. Bummer.
-			$this->show_error( "unknown command" );
+			endif;
 		
 		elseif( $total_segments == 3 ):
 
@@ -353,16 +369,15 @@ class Trigger
 			
 			if( file_exists($driver_file) ):
 
-				@require_once($driver_file);
+				require_once($driver_file);
 	
-				$driver_class = 'Driver_'.$driver;
+				$driver_class = 'Driver_'.$driver_slug;
 				
 				$this->driver = new $driver_class();
 			
 			else:
 			
 				// We can't go on without a driver file
-
 				$this->_output_response( "Missing driver file\n" . $this->output_context() );
 			
 			endif;
@@ -425,7 +440,7 @@ class Trigger
 			$this->driver->driver_desc 	= $this->driver->lang['driver_desc'];
 
 			// -------------------------------------
-			// Load Commands
+			// Load Variables
 			// -------------------------------------
 			
 			$vars_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.vars.php';
@@ -450,11 +465,9 @@ class Trigger
 			// Set driver to driver context position
 			// -------------------------------------
 			
-			if( $driver != '' ):
+			$this->context[1] = $driver_slug;
 			
-				$this->context[1] = $driver_slug;
-			
-			endif;
+			return TRUE;
 			
 		endif;
 		
@@ -603,6 +616,19 @@ class Trigger
 
 	// --------------------------------------------------------------------------
 	// System Commands	
+	// --------------------------------------------------------------------------	
+	
+	/**
+	 * Drivers
+	 *
+	 * Lists out the drivers that are installed
+	 */
+	public function system_drivers()
+	{
+		
+	
+	}
+
 	// --------------------------------------------------------------------------	
 	
 	/**
