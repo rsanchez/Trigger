@@ -14,7 +14,7 @@ class Trigger_mcp {
 		
 		$this->EE->load->library('Trigger');
 		
-		$this->EE->load->helper('log');
+		$this->EE->load->helper( array('log', 'trigger') );
 		
 		$this->module_base = $this->EE->config->item('base_url').'admin/'.BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
 

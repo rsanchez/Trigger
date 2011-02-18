@@ -176,7 +176,11 @@ class Trigger
 			// Replace driver variables
 			// -------------------------------------
 			
-			// TODO
+			if( $this->driver->has_vars === TRUE ):
+			
+				// TO DO
+			
+			endif;
 
 			// -------------------------------------
 
@@ -257,9 +261,9 @@ class Trigger
 		// Check to see if the command exists. Issue error if it doesn't.
 		// Otherwise, run the command.
 		
-		if( method_exists($this->driver, $call) ):
+		if( method_exists($this->driver->commands, $call) ):
 		
-			$msg = $obj->$call();
+			$msg = $this->driver->commands->$call();
 	
 			write_log($this->line, $msg);
 	
@@ -367,7 +371,7 @@ class Trigger
 			
 			if( file_exists($driver_file) ):
 
-				require_once($driver_file);
+				@require_once($driver_file);
 	
 				$driver_class = 'Driver_'.$driver_slug;
 				
@@ -430,10 +434,12 @@ class Trigger
 			
 			@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
 			
-			$this->driver->lang = array_merge($driver_lang, $lang);
+			$this->driver->lang 		= array_merge($driver_lang, $lang);
 			
+			// Copy for wider use
+			$this->EE->trigger_lang		= $this->driver->lang;
+						
 			// Set up some class variables
-			
 			$this->driver->driver_name 	= $this->driver->lang['driver_name'];
 			$this->driver->driver_desc 	= $this->driver->lang['driver_desc'];
 
