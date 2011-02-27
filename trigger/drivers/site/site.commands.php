@@ -28,11 +28,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('is_system_on', 'n') ):
 		
-			return $this->lang['site_offline'];
+			return trigger_lang('site_offline');
 		
 		else:
 		
-			return $this->lang['site_already_offline'];
+			return trigger_lang('site_already_offline');
 	
 		endif;
 	}
@@ -46,11 +46,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('is_system_on', 'y') ):
 		
-			return $this->lang['site_online'];
+			return trigger_lang('site_online');
 		
 		else:
 		
-			return $this->lang['site_already_online'];
+			return trigger_lang('site_already_online');
 	
 		endif;
 	}
@@ -64,11 +64,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('show_profiler', 'y') ):
 		
-			return $this->lang['profiler_enabled'];
+			return trigger_lang('profiler_enabled');
 		
 		else:
 		
-			return $this->lang['profiler_already_enabled'];
+			return trigger_lang('profiler_already_enabled');
 	
 		endif;
 	}
@@ -82,11 +82,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('show_profiler', 'n') ):
 		
-			return $this->lang['profiler_disabled'];
+			return trigger_lang('profiler_disabled');
 		
 		else:
 		
-			return $this->lang['profiler_already_disabled'];
+			return trigger_lang('profiler_already_disabled');
 	
 		endif;
 	}
@@ -100,11 +100,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('template_debugging', 'y') ):
 		
-			return $this->lang['templ_debug_enabled'];
+			return trigger_lang('templ_debug_enabled');
 		
 		else:
 		
-			return $this->lang['templ_debug_already_enabled'];
+			return trigger_lang('templ_debug_already_enabled');
 	
 		endif;
 	}
@@ -118,11 +118,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('template_debugging', 'n') ):
 		
-			return $this->lang['templ_debug_disabled'];
+			return trigger_lang('templ_debug_disabled');
 		
 		else:
 		
-			return $this->lang['templ_debug_already_disabled'];
+			return trigger_lang('templ_debug_already_disabled');
 	
 		endif;
 	}
@@ -133,11 +133,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '0') ):
 		
-			return $this->lang['debug_set_0'];
+			return trigger_lang('debug_set_0');
 		
 		else:
 		
-			return $this->lang['debug_already_set_0'];
+			return trigger_lang('debug_already_set_0');
 	
 		endif;
 	}
@@ -148,11 +148,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '1') ):
 		
-			return $this->lang['debug_set_1'];
+			return trigger_lang('debug_set_1');
 		
 		else:
 		
-			return $this->lang['debug_already_set_1'];
+			return trigger_lang('debug_already_set_1');
 	
 		endif;
 	}
@@ -163,11 +163,11 @@ class Commands_site
 	{
 		if( $this->_change_preference('debug', '2') ):
 		
-			return $this->lang['debug_set_2'];
+			return trigger_lang('debug_set_2');
 		
 		else:
 		
-			return $this->lang['debug_already_set_2'];
+			return trigger_lang('debug_already_set_2');
 	
 		endif;
 	}
@@ -181,7 +181,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'all' );
 
-		return $this->lang['cache_files_deleted'];
+		return trigger_lang('cache_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -193,7 +193,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'page' );
 
-		return $this->lang['cache_page_files_deleted'];
+		return trigger_lang('cache_page_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -205,7 +205,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'db' );
 
-		return $this->lang['cache_db_files_deleted'];
+		return trigger_lang('cache_db_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -217,7 +217,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'relationships' );
 
-		return $this->lang['cache_rel_files_deleted'];
+		return trigger_lang('cache_rel_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -229,7 +229,7 @@ class Commands_site
 	{
 		$this->_cache_clear( 'tag' );
 
-		return $this->lang['cache_tag_files_deleted'];
+		return trigger_lang('cache_tag_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -241,7 +241,7 @@ class Commands_site
 	{
 		if ( ! $this->EE->cp->allowed_group('can_access_tools') OR ! $this->EE->cp->allowed_group('can_access_data')):
 		
-			return $this->lang['trigger_no_access'];
+			return trigger_lang('trigger_no_access');
 		
 		endif;
 
