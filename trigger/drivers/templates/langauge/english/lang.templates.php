@@ -1,11 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$command_lang = array(
+$driver_lang = array(
 
-	'site_offline'						=> "site is now offline",
-	'site_already_offline'				=> "site is already offline"
+	'driver_name'					 	=> "Templates",
+	'driver_desc'						=> "Controls EE templates actions.",
+
+	// --------------------------------------------------------------------------	
+
+	'templates_synced'					=> "templates synced",
+	'no_saved_as_files'					=> "templates cannot be saved as files",
+	'basepath_not_set'					=> "templates file basepath not set",
 
 );
 
-/* End of file lang.channels.php */
-/* Location: ./system/expressionengine/third_party/trigger/drivers/channels/language/english/lang.channels.php */
+/* End of file lang.templates.php */

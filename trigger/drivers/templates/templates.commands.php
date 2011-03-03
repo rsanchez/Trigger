@@ -34,13 +34,13 @@ class Commands_templates
 	
 		if ( $this->EE->config->item('save_tmpl_files') != 'y' ):
 		
-			return "templates cannot be saved as files";
+			return trigger_lang('no_saved_as_files');
 		
 		endif;
 
 		if ( $this->EE->config->item('tmpl_file_basepath') == '' ):
 		
-			return "templates file basepath not set";
+			return trigger_lang('basepath_not_set');
 		
 		endif;
 		
@@ -48,7 +48,7 @@ class Commands_templates
 		
 		$this->EE->sync->sync_all();
 		
-		return "templates synced";
+		return trigger_lang('templates_synced');
 	}
 
 }
