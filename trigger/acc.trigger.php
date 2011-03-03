@@ -29,7 +29,7 @@ class Trigger_acc {
 
 		$this->EE->cp->load_package_js('trigger_acc');
 
-		$this->sections['Trigger'] = '<form id="trigger_form"><textarea name="trigger_acc_content" id="trigger_acc_content">ee : </textarea><div id="trigger_target"></div></form>'; 
+		$this->sections['Trigger'] = '<form id="trigger_form"><textarea name="trigger_acc_content" id="trigger_acc_content">ee : </textarea><div id="trigger_acc_target"></div></form>'; 
 	}
 }
 

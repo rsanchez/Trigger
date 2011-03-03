@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	$(window).keypress(function(e) {
+	$('#trigger_acc_content').keypress(function(e) {
 	    
 	if(e.keyCode == 13) {
 	    
