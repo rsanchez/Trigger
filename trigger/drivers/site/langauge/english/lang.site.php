@@ -43,4 +43,3 @@ $driver_lang = array(
 );
 
 /* End of file lang.site.php */
-/* Location: ./system/expressionengine/third_party/terminal/drivers/site/language/english/terminal_lang.php */
