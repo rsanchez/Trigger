@@ -15,9 +15,10 @@ class Sequence
 	 * Takes sequence data, runs it, and returns the results.
 	 *
 	 * @param	array
+	 * @param	string 'log' or 'log_string'
 	 * @return	obj
 	 */
-	function run_sequence( $seq )
+	function run_sequence( $seq, $output = 'log' )
 	{
 		// -------------------------------------
 		// Break down into lines
@@ -35,13 +36,17 @@ class Sequence
 		// Feed each line through the processor
 		// -------------------------------------
 		
+		$out = '';
+		
 		foreach( $lines as $line ):
 		
 			$line = trim($line);
 		
 			if( $line != '' ):
+			
+				$out .= $line."\n";
 		
-				$this->EE->trigger->process_line( $line, FALSE );
+				$out .= $this->EE->trigger->process_line($line)."\n";
 			
 			endif;
 		
@@ -53,17 +58,25 @@ class Sequence
 		
 		$end_id = write_log_mark( 'end', $seq['name'] );
 		
-		// -------------------------------------
-		// Get logs from start to finish
-		// -------------------------------------
-	
-		$this->EE->db->order_by('log_time', 'desc');		
-		$this->EE->db->where('id >=', $start_id);
-		$this->EE->db->where('id <=', $end_id);
+		if($output == 'log'):
 		
-		$db_obj = $this->EE->db->get('trigger_log');
+			// -------------------------------------
+			// Get logs from start to finish
+			// -------------------------------------
 		
-		return $db_obj->result();
+			$this->EE->db->order_by('log_time', 'desc');		
+			$this->EE->db->where('id >=', $start_id);
+			$this->EE->db->where('id <=', $end_id);
+			
+			$db_obj = $this->EE->db->get('trigger_log');
+			
+			return $db_obj->result();
+		
+		else:
+		
+			return $out;
+		
+		endif;
 	}
 	
 }
