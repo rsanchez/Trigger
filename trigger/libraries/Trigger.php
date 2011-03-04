@@ -221,7 +221,7 @@ class Trigger
 				return $this->out;
 			
 			endif;
-
+			
 			// Could very well possibly be a singular command.
 			if($this->_is_singular_command( $segment )):
 			
@@ -550,12 +550,26 @@ class Trigger
 	{
 		if(strpos($string, VARS_LEFT) !== FALSE && strpos($string, VARS_RIGHT) !== FALSE):
 		
-			$open 	= strpos($string, VARS_LEFT, 0) + strlen('[');
+			$open 	= strpos($string, VARS_LEFT, 0) + strlen(VARS_LEFT);
 			$close 	= strpos($string, VARS_RIGHT, 0);
 			
-			$this->variable = substr($string, $open, $close-$open);
+			$tmp_var = trim(substr($string, $open, $close-$open));
 			
-			return trim(str_replace(VARS_LEFT.$this->variable.VARS_RIGHT, '', $string));
+			// See if it is an array of values
+			$vars = explode(VAR_SEP, $tmp_var);
+			
+			if(count($vars)==1):
+			
+				// Just a string.
+				$this->variable = $tmp_var;
+			
+			else:
+			
+				$this->variable = $vars;
+			
+			endif;
+			
+			return trim(str_replace(VARS_LEFT.$tmp_var.VARS_RIGHT, '', $string));
 		
 		endif;
 		
