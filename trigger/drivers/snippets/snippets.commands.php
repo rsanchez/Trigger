@@ -11,12 +11,53 @@ class Commands_snippets
 	// --------------------------------------------------------------------------
 
 	/**
+	 * List snippets
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	public function _comm_list()
+	{
+		// Get our snippets
+		$db_obj = $this->EE->db->where('site_id', $this->EE->config->item('site_id'))->get('snippets');
+		
+		$total = $db_obj->num_rows();
+		
+		if($total == 0):
+		
+			return trigger_lang('no_snippets');
+		
+		endif;
+		
+		$out = '';
+		$count = 1;
+		
+		foreach($db_obj->result() as $snippet):
+		
+			$out = $snippet->snippet_name;
+			
+			if($total > $count):
+			
+				$out .= "\n";
+		
+			endif;
+			
+			$count++;
+		
+		endforeach;
+		
+		return $out;
+	}	
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Create a snippet
 	 *
 	 * @access	public
 	 * @return	string
 	 */	
-	function _comm_new($snippet_name)
+	public function _comm_new($snippet_name)
 	{
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
@@ -69,7 +110,7 @@ class Commands_snippets
 	 * @access	public
 	 * @return	string
 	 */	
-	function _comm_delete($snippet_name)
+	public function _comm_delete($snippet_name)
 	{
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
@@ -94,5 +135,5 @@ class Commands_snippets
 	
 }
 
-/* End of file commands.channels.php */
-/* Location: ./trigger/core/drivers/channels/commands.channels.php */
+/* End of file commands.snippets.php */
+/* Location: ./trigger/core/drivers/channels/commands.snippets.php */
