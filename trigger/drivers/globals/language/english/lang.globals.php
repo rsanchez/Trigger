@@ -12,7 +12,8 @@ $driver_lang = array(
 	'var_already_exits'			=> "this global variable already exists",
 	'global_add_success'		=> "global variable added successfully",
 	'global_add_error'			=> "there was a problem adding your global variable",
-	'no_variables'				=> "no global variables found"
+	'no_variables'				=> "no global variables found",
+	'globals_delete_success'	=> "global variable deleted"
 
 );
 
