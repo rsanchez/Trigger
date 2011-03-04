@@ -23,6 +23,16 @@ class Trigger
 	// --------------------------------------------------------------------------
 	
 	/**
+	 * Bracketed Variable
+	 *
+	 * If there is a bracketed variable it will be
+	 * found and put into this variable.
+	 */
+	public $variable			= FALSE;
+
+	// --------------------------------------------------------------------------
+	
+	/**
 	 * System Commands
 	 *
 	 * Array of commands that the system
@@ -117,7 +127,7 @@ class Trigger
 		// -------------------------------------
 
 		$total_segments = count($parts);
-		
+
 		// -------------------------------------
 		// Single Segment Processing
 		// -------------------------------------
@@ -125,14 +135,18 @@ class Trigger
 		if( $total_segments == 2 ):
 		
 			$segment = $parts[1];
-		
+	
 			// Is this a system variable?
-			$this->_is_variable( $segment );
+			$this->_is_variable($segment);
+
+			// See if we have a bracketed [] variable
+			// If we do, we set it to a variables
+			$segment = $this->_extract_var($segment);
 						
 			// Maybe a system command?
-			$this->_is_system_command( $segment, array('drivers') );
+			$this->_is_system_command($segment, array('drivers'));
 	
-			if( ! $this->_load_driver( $segment ) ):
+			if( ! $this->_load_driver($segment) ):
 
 				// Not a driver?
 				// Well, looks like the command could not be
@@ -140,7 +154,6 @@ class Trigger
 				$this->show_error( "unknown command" );
 			
 			else:
-
 				
 				// We will go quiety with no errors.
 				$this->_output_response( $this->output_context( $this->context ) );
@@ -158,17 +171,18 @@ class Trigger
 			$segment = $parts[2];
 
 			// We know there has to be a driver.
-			// If there isn't throw dem flagz up!
-			
+			// If there isn't throw dem flagz up!			
 			if( !$this->_load_driver( $driver_slug ) ):
 			
 				$this->show_error( "$driver_slug driver not found" );
 			
 			endif;
 			
+			// Find the bracketed variable
+			$segment = $this->_extract_var($segment);
+			
 			// Set the context to the driver. Other functions
 			// will set it back if need be.
-
 			$this->context = array( 'ee', $this->driver->driver_slug );
 			
 			// -------------------------------------
@@ -255,14 +269,17 @@ class Trigger
 	private function _is_singular_command( $segment )
 	{
 		$call = str_replace(" ", "_", $segment);
-		$call = strtolower($call);
+		
+		// All commands have a prefix so we can use things like list
+		// and new without gettin' out shit all mixed up
+		$call = '_comm_'.strtolower($call);
 		
 		// Check to see if the command exists. Issue error if it doesn't.
 		// Otherwise, run the command.
 		
 		if( method_exists($this->driver->commands, $call) ):
 		
-			$msg = $this->driver->commands->$call();
+			$msg = $this->driver->commands->$call($this->variable);
 	
 			write_log($this->line, $msg);
 	
@@ -299,7 +316,7 @@ class Trigger
 		
 			$call = 'system_'.$segment;
 		
-			$this->$call();
+			$this->$call($this->variable);
 		
 		endif;
 	}
@@ -358,7 +375,7 @@ class Trigger
 	 */
 	private function _load_driver( $driver_slug )
 	{
-		$driver_folder = PATH_THIRD . '/trigger/drivers/';
+		$driver_folder = PATH_THIRD.'trigger/drivers/';
 	
 		if( is_dir($driver_folder.$driver_slug) ):
 
@@ -409,7 +426,7 @@ class Trigger
 			// Load driver language
 			// -------------------------------------
 			
-			$lang_file = $driver_folder.$driver_slug.'/langauge/'.$this->EE->config->item('deft_lang').'/lang.'.$driver_slug.'.php';
+			$lang_file = $driver_folder.$driver_slug.'/language/'.$this->EE->config->item('deft_lang').'/lang.'.$driver_slug.'.php';
 			
 			if( ! file_exists($lang_file) ):
 			
@@ -501,6 +518,31 @@ class Trigger
 			exit( $output );
 		
 		endif;
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Find a bracketed variable
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return 	string
+	 */
+	public function _extract_var($string)
+	{
+		if(strpos($string, '[') !== FALSE && strpos($string, ']') !== FALSE):
+		
+			$open 	= strpos($string, '[', 0) + strlen('[');
+			$close 	= strpos($string, ']', 0);
+			
+			$this->variable = substr($string, $open, $close-$open);
+			
+			return trim(str_replace('['.$this->variable.']', '', $string));
+		
+		endif;
+		
+		return $string;
 	}
 
 	// --------------------------------------------------------------------------
