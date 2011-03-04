@@ -184,8 +184,16 @@ class Trigger
 			// We know there has to be a driver.
 			// If there isn't throw dem flagz up!			
 			if( !$this->_load_driver( $driver_slug ) ):
-			
-				$this->show_error( "$driver_slug driver not found" );
+
+				if($this->out != ''):
+				
+					return $this->out;
+				
+				else:
+				
+					return "$driver_slug driver not found";
+				
+				endif;
 			
 			endif;
 			
@@ -439,7 +447,9 @@ class Trigger
 			else:
 			
 				// We can't go on without a driver file
-				$this->_output_response( "Missing driver file\n" . $this->output_context() );
+				$this->out = "missing driver file";
+				
+				return FALSE;
 			
 			endif;
 
@@ -479,7 +489,9 @@ class Trigger
 			
 				write_log($this->line, $error);
 	
-				$this->_output_response( "$error\n" . $this->output_context( $this->context ) );
+				$this->out = $error;
+				
+				return FALSE;
 				
 			else:
 			
