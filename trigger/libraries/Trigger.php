@@ -8,17 +8,16 @@ class Trigger
 	 * Array that determines the string output
 	 * when exiting the function
 	 */
-	var $context 				= array();
+	public $context 				= array();
 
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * End It
+	 * Out
 	 *
-	 * Should we end it when we process a line?
-	 * If we do it is coming via an AJAX request
+	 * Contains the string we want to return
 	 */
-	var $end_it					= TRUE;
+	public $out					= TRUE;
 
 	// --------------------------------------------------------------------------
 	
@@ -38,7 +37,7 @@ class Trigger
 	 * Array of commands that the system
 	 * understands and parses
 	 */
-	var $system_commands 		= array('flush', 'drivers', 'stack');
+	public $system_commands 		= array('flush', 'drivers', 'stack');
 
 	// --------------------------------------------------------------------------
 
@@ -56,10 +55,8 @@ class Trigger
 	 * @param	line
 	 * @param	bool
 	 */
-	function process_line( $line, $end_it = TRUE )
+	function process_line( $line, $hey = '' )
 	{
-		$this->end_it 	= $end_it;
-		
 		$this->line 	= $line;
 
 		// -------------------------------------
@@ -91,7 +88,7 @@ class Trigger
 		
 			$this->context = array('ee');
 			
-			$this->_output_response( $this->output_context( $this->context ) );
+			return;
 					
 		endif;
 
@@ -135,28 +132,36 @@ class Trigger
 		if( $total_segments == 2 ):
 		
 			$segment = $parts[1];
-	
+			
 			// Is this a system variable?
-			$this->_is_variable($segment);
-
+			if($this->_is_variable($segment)):
+			
+				return $this->out;
+			
+			endif;
+	
 			// See if we have a bracketed [] variable
 			// If we do, we set it to a variables
 			$segment = $this->_extract_var($segment);
 						
 			// Maybe a system command?
-			$this->_is_system_command($segment, array('drivers'));
+			if($this->_is_system_command($segment, array('drivers'))):
+			
+				return $this->out;
+			
+			endif;
 	
 			if( ! $this->_load_driver($segment) ):
 
 				// Not a driver?
 				// Well, looks like the command could not be
 				// understood. Bummer.
-				$this->show_error( "unknown command" );
+				return "unknown command";
 			
 			else:
 				
 				// We will go quiety with no errors.
-				$this->_output_response( $this->output_context( $this->context ) );
+				return;
 			
 			endif;
 		
@@ -197,15 +202,33 @@ class Trigger
 
 			// -------------------------------------
 
-			$this->_is_system_command( $segment );
+			// Could this be a system command?
+			if($this->_is_system_command($segment)):
+			
+				return $this->out;
+			
+			endif;
 		
-			$this->_is_variable( $segment, $this->driver );
+			// Perhaps a driver variable?
+			if($this->_is_variable( $segment, $this->driver )):
+			
+				return $this->out;
+			
+			endif;
 
-			$this->_is_singular_command( $segment );
+			// Could very well possibly be a singular command.
+			if($this->_is_singular_command( $segment )):
+			
+				return $this->out;
+			
+			endif;
 
 			$this->_is_set_var_command( $segment );
 
-			$this->show_error( "unknown command" );
+			// This is an unknown command. Just write a log
+			// entry and get out of here.
+			write_log($this->line, $error);
+			return "unknown command";
 		
 		// End Segment Processing
 		endif;
@@ -213,7 +236,7 @@ class Trigger
 
 	// --------------------------------------------------------------------------
 
-	private function _is_action_command()
+	/*private function _is_action_command()
 	{
 		$actions = array('new', 'update', 'delete');
 	
@@ -227,7 +250,7 @@ class Trigger
 		
 		
 		//endif;
-	}
+	}*/
 
 	// --------------------------------------------------------------------------
 
@@ -282,10 +305,14 @@ class Trigger
 			$msg = $this->driver->commands->$call($this->variable);
 	
 			write_log($this->line, $msg);
-	
-			$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
+			
+			$this->out = $msg;
+			
+			return TRUE;
 		
 		endif;
+		
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------------
@@ -317,8 +344,12 @@ class Trigger
 			$call = 'system_'.$segment;
 		
 			$this->$call($this->variable);
+			
+			return TRUE;
 		
 		endif;
+		
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------------
@@ -331,7 +362,7 @@ class Trigger
 	 * @param	obj
 	 * @return	string
 	 */
-	private function _is_variable( $segment = '', $driver_obj = FALSE )
+	private function _is_variable($segment = '', $driver_obj = FALSE)
 	{
 		if( $driver_obj === FALSE ):
 
@@ -344,7 +375,11 @@ class Trigger
 			
 			if( in_array($segment, $this->system_var_methods) ):
 			
-				$this->_output_response( $this->EE->vars->$segment() . "\nee : " );
+				$this->context = array('ee');
+			
+				$this->out = $this->EE->vars->$segment();
+				
+				return TRUE;
 						
 			endif;
 
@@ -359,6 +394,8 @@ class Trigger
 		
 		
 		endif;
+		
+		return FALSE;
 	}
 
 	// --------------------------------------------------------------------------
@@ -497,32 +534,6 @@ class Trigger
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Output a response by bypassing the control panel
-	 *
-	 * @access	private
-	 * @param	string
-	 * @return	void
-	 */	
-	function _output_response( $output )
-	{
-		if( $this->end_it === TRUE ):
-	
-			$this->EE->output->enable_profiler(FALSE);
-	
-			if ($this->EE->config->item('send_headers') == 'y'):
-			
-				@header('Content-Type: text/html; charset=UTF-8');	
-			
-			endif;
-			
-			exit( $output );
-		
-		endif;
-	}
-
-	// --------------------------------------------------------------------------
-	
-	/**
 	 * Find a bracketed variable
 	 *
 	 * @access	public
@@ -546,18 +557,33 @@ class Trigger
 	}
 
 	// --------------------------------------------------------------------------
-
+	
 	/**
-	 * Shows an error
+	 * Output a response by bypassing the control panel
 	 *
-	 * @access	public
+	 * @access	private
+	 * @param	string
 	 * @return	void
-	 */
-	public function show_error( $error )
+	 */	
+	function output_response( $output )
 	{
-		write_log($this->line, $error);
+		$this->EE->output->enable_profiler(FALSE);
 
-		$this->_output_response( "$error\n" . $this->output_context() );
+		if ($this->EE->config->item('send_headers') == 'y'):
+		
+			@header('Content-Type: text/html; charset=UTF-8');	
+		
+		endif;
+		
+		if(trim($output) == ''):
+		
+			exit($this->output_context());
+		
+		else:
+
+			exit($output."\n".$this->output_context());
+		
+		endif;
 	}
 
 	// --------------------------------------------------------------------------
@@ -569,7 +595,7 @@ class Trigger
 	 * @param	array
 	 * @return	string
 	 */
-	function output_context( $context = FALSE )
+	function output_context()
 	{
 		$output = null;
 		
@@ -713,7 +739,7 @@ class Trigger
 		
 		endif;
 	
-		$this->_output_response( $stack_output . $this->output_context( $this->context ) );
+		$this->out = $stack_output;
 	}
 
 	// --------------------------------------------------------------------------
@@ -752,7 +778,7 @@ class Trigger
 	
 		write_log($this->line, $msg);
 		
-		$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
+		$this->out = $msg;
 	}
 
 }
