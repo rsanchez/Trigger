@@ -33,7 +33,19 @@ class Commands_globals
 		
 		foreach($db_obj->result() as $variable):
 		
-			$out .= $variable->variable_name.' ('.$variable->variable_data.')'."\n";
+			$out .= $variable->variable_name.' (';
+			
+			if(trim($variable->variable_data)==''):
+			
+				$out .= 'NULL';
+			
+			else:
+			
+				$out .= $variable->variable_data;
+			
+			endif;
+			
+			$out .= ')'."\n";
 			
 		endforeach;
 
