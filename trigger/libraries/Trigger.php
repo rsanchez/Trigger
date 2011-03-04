@@ -227,7 +227,7 @@ class Trigger
 
 			// This is an unknown command. Just write a log
 			// entry and get out of here.
-			write_log($this->line, $error);
+			write_log($this->line, "unknown command");
 			return "unknown command";
 		
 		// End Segment Processing
