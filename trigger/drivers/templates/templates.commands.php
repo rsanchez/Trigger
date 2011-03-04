@@ -26,7 +26,7 @@ class Commands_templates
 	 * @access	public
 	 * @return	string
 	 */	
-	function sync()
+	function _comm_sync()
 	{
 		// -------------------------------------
 		// Pre-sync Checks

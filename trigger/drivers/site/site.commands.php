@@ -24,7 +24,7 @@ class Commands_site
 	/**
 	 * Take the site offline
 	 */
-	function offline()
+	function _comm_offline()
 	{
 		if( $this->_change_preference('is_system_on', 'n') ):
 		
@@ -42,7 +42,7 @@ class Commands_site
 	/**
 	 * Take the site online
 	 */
-	function online()
+	function _comm_online()
 	{
 		if( $this->_change_preference('is_system_on', 'y') ):
 		
@@ -60,7 +60,7 @@ class Commands_site
 	/**
 	 * Enable the site profiler
 	 */
-	function enable_output_profiler()
+	function _comm_enable_output_profiler()
 	{
 		if( $this->_change_preference('show_profiler', 'y') ):
 		
@@ -78,7 +78,7 @@ class Commands_site
 	/**
 	 * Disable the site profiler
 	 */
-	function disable_output_profiler()
+	function _comm_disable_output_profiler()
 	{
 		if( $this->_change_preference('show_profiler', 'n') ):
 		
@@ -96,7 +96,7 @@ class Commands_site
 	/**
 	 * Enable template debugging
 	 */
-	function enable_template_debug()
+	function _comm_enable_template_debug()
 	{
 		if( $this->_change_preference('template_debugging', 'y') ):
 		
@@ -114,7 +114,7 @@ class Commands_site
 	/**
 	 * Disable template debugging
 	 */
-	function disable_template_debug()
+	function _comm_disable_template_debug()
 	{
 		if( $this->_change_preference('template_debugging', 'n') ):
 		
@@ -129,7 +129,7 @@ class Commands_site
 
 	// --------------------------------------------------------------------------
 	
-	function debug_0()
+	function _comm_debug_0()
 	{
 		if( $this->_change_preference('debug', '0') ):
 		
@@ -144,7 +144,7 @@ class Commands_site
 
 	// --------------------------------------------------------------------------
 	
-	function debug_1()
+	function _comm_debug_1()
 	{
 		if( $this->_change_preference('debug', '1') ):
 		
@@ -159,7 +159,7 @@ class Commands_site
 
 	// --------------------------------------------------------------------------
 	
-	function debug_2()
+	function _comm_debug_2()
 	{
 		if( $this->_change_preference('debug', '2') ):
 		
@@ -177,7 +177,7 @@ class Commands_site
 	/**
 	 * Clear all the cache files
 	 */
-	function clear_cache()
+	function _comm_clear_cache()
 	{
 		$this->_cache_clear( 'all' );
 
@@ -189,7 +189,7 @@ class Commands_site
 	/**
 	 * Clear page cache files
 	 */
-	function clear_page_cache()
+	function _comm_clear_page_cache()
 	{
 		$this->_cache_clear( 'page' );
 
@@ -201,7 +201,7 @@ class Commands_site
 	/**
 	 * Clear database cache files
 	 */
-	function clear_db_cache()
+	function _comm_clear_db_cache()
 	{
 		$this->_cache_clear( 'db' );
 
@@ -213,7 +213,7 @@ class Commands_site
 	/**
 	 * Clear relationship cache files
 	 */
-	function clear_rel_cache()
+	function _comm_clear_rel_cache()
 	{
 		$this->_cache_clear( 'relationships' );
 
@@ -225,7 +225,7 @@ class Commands_site
 	/**
 	 * Clear tag cache files
 	 */
-	function clear_tag_cache()
+	function _comm_clear_tag_cache()
 	{
 		$this->_cache_clear( 'tag' );
 
