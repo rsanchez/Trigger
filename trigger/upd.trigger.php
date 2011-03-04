@@ -60,7 +60,7 @@ class Trigger_upd {
 			'description' 	=> array( 'type' => 'VARCHAR', 'constraint' => 255 ),
 			'lines' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
 			'created_by' 	=> array( 'type' => 'VARCHAR', 'constraint' => 200 ),
- 			'sequence' 		=> array( 'type' => 'LONGTEXT' )
+ 			'sequence' 		=> array( 'type' => 'LONGTEXT' ));
           
         $this->dbforge->add_field($sequence_fields);
             
