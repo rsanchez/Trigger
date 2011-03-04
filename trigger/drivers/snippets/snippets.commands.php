@@ -18,6 +18,14 @@ class Commands_snippets
 	 */	
 	function _comm_new($snippet_name)
 	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
+	
+		// Check for data
 		if(!$snippet_name):
 		
 			return trigger_lang('no_name');
@@ -52,15 +60,7 @@ class Commands_snippets
 		
 		endif;
 	}
-
-	function _check_access()
-	{
-		if ( ! $this->EE->allowed_group('can_access_design') OR ! $this->EE->allowed_group('can_admin_templates'))
-		{
-			return trigger_lang();
-		}
-	}
-
+	
 }
 
 /* End of file commands.channels.php */
