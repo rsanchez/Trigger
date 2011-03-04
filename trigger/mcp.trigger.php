@@ -122,7 +122,10 @@ class Trigger_mcp {
 		
 		endforeach;
 		
-		$this->EE->trigger->process_line( $line );
+		$output = $this->EE->trigger->process_line($line);
+		
+		// Get the output out there
+		$this->EE->trigger->output_response($output);
 	}
 
 	// --------------------------------------------------------------------------
