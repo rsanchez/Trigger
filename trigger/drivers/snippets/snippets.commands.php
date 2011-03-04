@@ -29,24 +29,15 @@ class Commands_snippets
 		
 		endif;
 		
-		$out = '';
-		$count = 1;
+		$out = TRIGGER_BUFFER."\n";
 		
 		foreach($db_obj->result() as $snippet):
 		
-			$out = $snippet->snippet_name;
-			
-			if($total > $count):
-			
-				$out .= "\n";
-		
-			endif;
-			
-			$count++;
+			$out .= $snippet->snippet_name."\n";
 		
 		endforeach;
 		
-		return $out;
+		return $out .= TRIGGER_BUFFER;
 	}	
 
 	// --------------------------------------------------------------------------

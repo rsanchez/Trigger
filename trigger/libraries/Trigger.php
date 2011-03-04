@@ -43,7 +43,13 @@ class Trigger
 
 	function __construct()
 	{
-		$this->EE =& get_instance();	
+		$this->EE =& get_instance();
+		
+		// Define some things
+		define('TRIGGER_BUFFER', '------------------');
+		define('VARS_LEFT', '[');
+		define('VARS_RIGHT', ']');
+		define('VAR_SEP', ',');	
 	}
 
 	// --------------------------------------------------------------------------
@@ -542,14 +548,14 @@ class Trigger
 	 */
 	public function _extract_var($string)
 	{
-		if(strpos($string, '[') !== FALSE && strpos($string, ']') !== FALSE):
+		if(strpos($string, VARS_LEFT) !== FALSE && strpos($string, VARS_RIGHT) !== FALSE):
 		
-			$open 	= strpos($string, '[', 0) + strlen('[');
-			$close 	= strpos($string, ']', 0);
+			$open 	= strpos($string, VARS_LEFT, 0) + strlen('[');
+			$close 	= strpos($string, VARS_RIGHT, 0);
 			
 			$this->variable = substr($string, $open, $close-$open);
 			
-			return trim(str_replace('['.$this->variable.']', '', $string));
+			return trim(str_replace(VARS_LEFT.$this->variable.VARS_RIGHT, '', $string));
 		
 		endif;
 		

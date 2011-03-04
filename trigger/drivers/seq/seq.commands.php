@@ -29,24 +29,15 @@ class Commands_seq
 		
 		endif;
 		
-		$out = '';
-		$count = 1;
+		$out = TRIGGER_BUFFER."\n";
 		
 		foreach($db_obj->result() as $sequence):
 		
-			$out = $sequence->name;
-			
-			if($total > $count):
-			
-				$out .= "\n";
-		
-			endif;
-			
-			$count++;
+			$out .= $sequence->name."\n";
 		
 		endforeach;
 		
-		return $out;
+		return $out .= TRIGGER_BUFFER;
 	}	
 
 	// --------------------------------------------------------------------------

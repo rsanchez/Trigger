@@ -29,7 +29,7 @@ class Commands_globals
 		
 		endif;
 		
-		$out = '--------'."\n";
+		$out = TRIGGER_BUFFER."\n";
 		
 		foreach($db_obj->result() as $variable):
 		
@@ -37,7 +37,7 @@ class Commands_globals
 			
 		endforeach;
 
-		$out .= '--------';
+		$out .= TRIGGER_BUFFER;
 		
 		return $out;
 	}	
