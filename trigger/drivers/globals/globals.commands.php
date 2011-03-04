@@ -68,18 +68,26 @@ class Commands_globals
 		
 		// We need our site ID
 		$site_id = $this->EE->config->item('site_id');
-		
-		// Break up the values
-		$vals = explode(",", $var_data);
-		
-		if(!isset($vals[0])):
+
+		if( (is_array($var_data) and !isset($var_data[0])) or $var_data == '' ):
 		
 			return trigger_lang('no_name');
 		
 		endif;
 		
+		// Set global name
+		if(is_array($var_data)):
+		
+			$global_name = $var_data[0];
+		
+		else:
+		
+			$global_name = $var_data;
+		
+		endif;
+		
 		// Make sure it doesn't exist
-		$this->EE->db->where('site_id', $site_id)->where('variable_name', $vals[0]);
+		$this->EE->db->where('site_id', $site_id)->where('variable_name', $global_name);
 		$db_obj = $this->EE->db->limit(1)->get('global_variables');
 		
 		if($db_obj->num_rows() == 1):
@@ -90,12 +98,12 @@ class Commands_globals
 		
 		// Add it
 		$global_data['site_id']			= $site_id;
-		$global_data['variable_name']	= $vals[0];
+		$global_data['variable_name']	= $global_name;
 		
 		// Add data if it was provided
-		if(isset($vals[1])):
+		if(is_array($var_data) and isset($var_data[1])):
 		
-			$global_data['variable_data']	= trim($vals[1]);
+			$global_data['variable_data']	= trim($var_data[1]);
 		
 		endif;
 		
