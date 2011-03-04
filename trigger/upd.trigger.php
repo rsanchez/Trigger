@@ -47,6 +47,26 @@ class Trigger_upd {
 		$this->dbforge->add_field( 'id' );
 		
 		$outcome = $this->dbforge->create_table('trigger_scratch');
+
+		// -------------------------------------
+		// Create the Trigger Sequences Table
+		// -------------------------------------
+	
+		$sequence_fields = array(
+			'site_id' 		=> array( 'type' => 'INT', 'constraint' => 11 ),
+			'created' 		=> array( 'type' => 'DATETIME' ),
+			'title' 		=> array( 'type' => 'VARCHAR', 'constraint' => 200 ),
+			'name' 			=> array( 'type' => 'VARCHAR', 'constraint' => 200 ),
+			'description' 	=> array( 'type' => 'VARCHAR', 'constraint' => 255 ),
+			'lines' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
+			'created_by' 	=> array( 'type' => 'VARCHAR', 'constraint' => 200 ),
+ 			'sequence' 		=> array( 'type' => 'LONGTEXT' )
+          
+        $this->dbforge->add_field($sequence_fields);
+            
+		$this->dbforge->add_field('id');
+		
+		$outcome = $this->dbforge->create_table('trigger_sequences');
 	
 		// -------------------------------------
 		// Register the Module
