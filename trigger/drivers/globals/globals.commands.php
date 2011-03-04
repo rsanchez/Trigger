@@ -57,7 +57,7 @@ class Commands_globals
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Create a snippet
+	 * Create a global variable
 	 *
 	 * @access	public
 	 * @return	string
@@ -133,13 +133,20 @@ class Commands_globals
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Delete a snippet
+	 * Delete a global var
 	 *
 	 * @access	public
 	 * @return	string
 	 */	
 	public function _comm_delete($global_name)
 	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
+
 		// Check for data
 		if(!$global_name or is_array($global_name)):
 		
@@ -153,7 +160,58 @@ class Commands_globals
 		
 		return trigger_lang('globals_delete_success');
 	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Create a global variable
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	public function _comm_set($var_data)
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
 	
+		// Check for the right data
+		if(!$var_data or !is_array($var_data) or count($var_data)!=2):
+		
+			return trigger_lang('no_data');
+		
+		endif;
+
+		$site_id = $this->EE->config->item('site_id');
+		
+		// Make sure it exists
+		$this->EE->db->where('site_id', $site_id)->where('variable_name', $var_data[0]);
+		$db_obj = $this->EE->db->limit(1)->get('global_variables');
+		
+		if($db_obj->num_rows() == 0):
+		
+			return trigger_lang('var_not_found');
+		
+		endif;
+		
+		// Update it
+		$this->EE->db->where('site_id', $site_id)->where('variable_name', $var_data[0]);
+		$global_data['variable_data']	= trim($var_data[1]);
+		
+		if($this->EE->db->update('global_variables', $global_data)):
+		
+			return trigger_lang('global_set_success');
+		
+		else:
+		
+			return trigger_lang('global_set_error');
+		
+		endif;
+	}
+
 }
 
 /* End of file commands.snippets.php */
