@@ -61,6 +61,37 @@ class Commands_snippets
 		endif;
 	}
 	
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Delete a snippet
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_delete($snippet_name)
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
+	
+		// Check for data
+		if(!$snippet_name):
+		
+			return trigger_lang('trigger_no_data');
+		
+		endif;
+		
+		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
+		$this->EE->db->where('snippet_name', $snippet_name);
+		$this->EE->db->delete('snippets');
+		
+		return trigger_lang('snippet_delete_success');
+	}
+	
 }
 
 /* End of file commands.channels.php */

@@ -20,6 +20,7 @@ $lang = array(
 'trigger_sequence_results'			=> "Sequence Results",
 
 'trigger_no_access'					=> "You do not have access to this function",
+'trigger_no_data'					=> "No data provided",
 
 'trigger_logs_cleared'				=> "Logs cleared successfully",
 'trigger_clear_logs_confirm'		=> "Are you sure you want to clear your Trigger logs?"
