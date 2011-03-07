@@ -314,9 +314,9 @@ class Trigger
 		// Check to see if the command exists. Issue error if it doesn't.
 		// Otherwise, run the command.
 		
-		if( method_exists($this->driver->commands, $call) ):
+		if( method_exists($this->driver, $call) ):
 		
-			$msg = $this->driver->commands->$call($this->variable);
+			$msg = $this->driver->$call($this->variable);
 	
 			write_log($this->line, $msg);
 			
@@ -454,19 +454,14 @@ class Trigger
 			endif;
 
 			// -------------------------------------
-			// Load Commands
+			// See if we have commands
+			// -------------------------------------
+			// Commands are just methods in the
+			// driver file.
 			// -------------------------------------
 			
-			$commands_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.commands.php';
+			if(get_class_methods($this->driver)):
 			
-			if( file_exists($commands_file) ):
-			
-				@require_once($commands_file);
-				
-				$commands_class = 'Commands_'.$driver_slug;
-				
-				$this->driver->commands = new $commands_class();
-
 				$this->driver->has_commands = TRUE;
 			
 			else:
