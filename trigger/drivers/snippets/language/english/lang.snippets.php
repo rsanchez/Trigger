@@ -12,7 +12,8 @@ $driver_lang = array(
 	'snippet_add_error'			=> "there was an error adding your snippet",
 	'snippet_already_exits'		=> "this snippet already exits",
 	'snippet_delete_success'	=> "snippet deleted successfully",
-	'no_snippets'				=> "no snippets found"
+	'no_snippets'				=> "no snippets found",
+	'all_snippets_deleted'		=> "all snippets deleted"
 
 );
 

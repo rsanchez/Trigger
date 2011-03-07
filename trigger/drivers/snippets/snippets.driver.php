@@ -138,6 +138,29 @@ class Driver_snippets
 		return trigger_lang('snippet_delete_success');
 	}
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Delete all the snippets
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	public function _comm_delete_all()
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
+	
+		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
+		$this->EE->db->delete('snippets');
+		
+		return trigger_lang('all_snippets_deleted');
+	}
+
 }
 
 /* End of file snippets.driver.php */
