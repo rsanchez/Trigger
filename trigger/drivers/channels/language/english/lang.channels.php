@@ -15,7 +15,7 @@ $driver_lang = array(
 	'no_variables'				=> "no global variables found",
 	'globals_delete_success'	=> "global variable deleted",
 	'global_set_success'		=> "global variable set successfully",
-	'global_set_error'			=> "there was a problem setting this global variable",
+	'global_set_error'			=> "there was a problem setting this global variable"
 
 );
 
