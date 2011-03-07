@@ -226,6 +226,30 @@ class Driver_globals
 		endif;
 	}
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Delete all global variables
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	public function _comm_delete_all()
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return trigger_lang('trigger_no_access');
+			
+		endif;
+	
+		// Delete 'em all
+		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
+		$this->EE->db->delete('global_variables');
+
+		return trigger_lang('all_globals_deleted');
+	}
+
 }
 
 /* End of file globals.driver.php */

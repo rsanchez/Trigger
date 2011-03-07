@@ -16,6 +16,7 @@ $driver_lang = array(
 	'globals_delete_success'	=> "global variable deleted",
 	'global_set_success'		=> "global variable set successfully",
 	'global_set_error'			=> "there was a problem setting this global variable",
+	'all_globals_deleted'		=> "all global variables deleted"
 
 );
 
