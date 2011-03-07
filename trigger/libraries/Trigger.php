@@ -47,8 +47,8 @@ class Trigger
 		
 		// Define some things
 		define('TRIGGER_BUFFER', '------------------');
-		define('VARS_LEFT', '[');
-		define('VARS_RIGHT', ']');
+		define('VARS_LEFT', '(');
+		define('VARS_RIGHT', ')');
 		define('VAR_SEP', ',');	
 	}
 
