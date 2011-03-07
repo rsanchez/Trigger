@@ -26,6 +26,23 @@ class Vars
 	// --------------------------------------------------------------------------
 	
 	/**
+	 * EE Server Path
+	 *
+	 * Returns the EE server path
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function ee_path()
+	{
+		$server = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]);
+	
+		return $server.'/expressionengine/';
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
 	 * Server Name
 	 *
 	 * Returns the name of the server from SERVER_NAME
