@@ -63,7 +63,7 @@ class Driver_site
 	/**
 	 * Enable the site profiler
 	 */
-	function _comm_enable_output_profiler()
+	function _comm_enable_op()
 	{
 		if( $this->_change_preference('show_profiler', 'y') ):
 		
@@ -81,7 +81,7 @@ class Driver_site
 	/**
 	 * Disable the site profiler
 	 */
-	function _comm_disable_output_profiler()
+	function _comm_disable_op()
 	{
 		if( $this->_change_preference('show_profiler', 'n') ):
 		
