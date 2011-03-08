@@ -37,7 +37,7 @@ class Trigger
 	 * Array of commands that the system
 	 * understands and parses
 	 */
-	public $system_commands 		= array('flush', 'drivers', 'stack');
+	public $system_commands 		= array('drivers');
 
 	// --------------------------------------------------------------------------
 
@@ -210,7 +210,7 @@ class Trigger
 			
 			if( $this->driver->has_vars === TRUE ):
 			
-				// TO DO
+				// TODO
 			
 			endif;
 
@@ -237,60 +237,12 @@ class Trigger
 			
 			endif;
 
-			$this->_is_set_var_command( $segment );
-
 			// This is an unknown command. Just write a log
 			// entry and get out of here.
 			write_log($this->line, "unknown command");
 			return "unknown command";
 		
 		// End Segment Processing
-		endif;
-	}
-
-	// --------------------------------------------------------------------------
-
-	/*private function _is_action_command()
-	{
-		$actions = array('new', 'update', 'delete');
-	
-		// Check to see if there is an action
-		
-		//if()
-		
-			// Call the action function
-			
-			// Do we have all the variables we need in the stack?
-		
-		
-		//endif;
-	}*/
-
-	// --------------------------------------------------------------------------
-
-	/**
-	 * Is This a Set Var Command?
-	 *
-	 * Set var commands are values separated by a "=" sign
-	 *
-	 * @access	private
-	 * @param	string
-	 * @return	mixed
-	 */	
-	private function _is_set_var_command( $segment )
-	{
-		// See if we have two values with a "=" in between
-		
-		$parts = explode("=", $segment);
-		
-		if( count($parts)==3 && trim($parts[1]) == '=' ):
-		
-			$this->set_variable( trim($parts[0]), trim($parts[2]) );
-			
-			write_log($this->line, $msg = trim($parts[0])." variable set");
-	
-			$this->_output_response( "$msg\n" . $this->output_context( $this->context ) );
-		
 		endif;
 	}
 
@@ -405,7 +357,7 @@ class Trigger
 			// Could be a driver variable
 			// -------------------------------------
 		
-		
+			// TODO
 		
 		endif;
 		
@@ -644,75 +596,6 @@ class Trigger
 	}
 
 	// --------------------------------------------------------------------------
-	
-	/**
-	 * Set a variable
-	 *
-	 * Updates the driver cache with a new variable and value
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 * @return	bool
-	 */ 
-	public function set_variable( $variable, $value )
-	{		
-		// Get the scratch if there is one
-		
-		$this->EE->db->limit(1);
-		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-		$this->EE->db->where('driver', $this->driver->driver_slug);
-		
-		$obj = $this->EE->db->get('trigger_scratch');
-		
-		// If there is no scratch, create one
-		
-		if( $obj->num_rows() == 0 ):
-		
-			$insert_data['created'] 		= $this->EE->localize->now();
-			$insert_data['user_id']			= $this->EE->session->userdata('member_id');
-			$insert_data['driver']			= $this->driver->driver_slug;
-		
-			$this->EE->db->insert('trigger_scratch', $insert_data);
-			
-			$scratch_id = $this->EE->db->insert_id();
-			
-			$cache = array();
-		
-		else:
-			
-			// Otherwise, pull the data
-		
-			$scratch = $obj->row();
-		
-			$scratch_id = $scratch->id;
-			
-			if( trim($scratch->cache_data) == '' ):
-			
-				$cache = array();
-				
-			else:
-			
-				$cache = unserialize($scratch->cache_data);
-		
-			endif;
-		
-		endif;
-		
-		// Merge the cache. Will this overwrite existing array keys? Hmm...
-		
-		$new_cache = array_merge($cache, array($variable => $value));
-
-		// Update the scratch
-		
-		$update_data['cache_data'] = serialize($new_cache);
-		
-		$this->EE->db->update('trigger_scratch', $update_data);		
-		
-		return TRUE;
-	}
-
-	// --------------------------------------------------------------------------
 	// System Commands	
 	// --------------------------------------------------------------------------	
 	
@@ -723,89 +606,7 @@ class Trigger
 	 */
 	public function system_drivers()
 	{
-		
-	
-	}
-
-	// --------------------------------------------------------------------------	
-	
-	/**
-	 * Stack
-	 *
-	 * Outputs the stack
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function system_stack()
-	{		
-		$this->EE->db->limit(1);
-		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-		$this->EE->db->where('driver', $driver);
-		
-		$db = $this->EE->db->get('trigger_scratch');
-		
-		if( $db->num_rows() == 0 ):
-		
-			$stack_output = "Stack is empty\n";
-		
-		else:
-		
-		$scratch = $db->row();
-		
-		$stack = $scratch->cache_data;
-		$stack = unserialize($stack);
-		
-		$stack_output = '';
-	
-		foreach( $stack as $var => $val ):
-		
-			$stack_output .= $var . " -> " . $val . "\n";
-		
-		endforeach;
-		
-		endif;
-	
-		$this->out = $stack_output;
-	}
-
-	// --------------------------------------------------------------------------
-	
-	/**
-	 * Flush Stack
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function system_flush()
-	{
-		// See if there is anything to delete
-		
-		$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-		$this->EE->db->where('driver', $driver);
-		
-		$db = $this->EE->db->get('trigger_scratch');
-		
-		if( $db->num_rows() == 0 ):
-		
-			$msg = "stack is already empty";
-		
-		else:
-		
-			// Delete the stack entries.
-			// (This will delete all of them for a driver)
-		
-			$this->EE->db->where('user_id', $this->EE->session->userdata('member_id'));
-			$this->EE->db->where('driver', $driver);
-			$this->EE->db->delete('trigger_scratch');
-			
-			$msg = "stack has been flushed";
-			
-		endif;
-	
-		write_log($this->line, $msg);
-		
-		$this->out = $msg;
+		// TODO
 	}
 
 }
