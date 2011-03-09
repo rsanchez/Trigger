@@ -90,7 +90,7 @@ class Trigger
 		// get me out of here and forget it.
 		// -------------------------------------
 		
-		if( isset($parts[2]) && $parts[2] == 'root' ):
+		if( isset($parts[2]) and ($parts[2] == 'root' or $parts[2] == 'r') ):
 		
 			$this->context = array('ee');
 			
