@@ -2,7 +2,7 @@
 
 class Trigger_upd { 
 
-    var $version        = '0.1 Alpha'; 
+    var $version        = '0.1'; 
      
     function Trigger_upd() 
     { 
@@ -32,21 +32,6 @@ class Trigger_upd {
 		$this->dbforge->add_field( 'id' );
 		
 		$outcome = $this->dbforge->create_table('trigger_log');
-
-		// -------------------------------------
-		// Create the Scratch Table
-		// -------------------------------------
-	
-		$scratch_fields = array(
-            'created' 		=> array( 'type' => 'INT', 'constraint' => 11 ),
-            'user_id' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
-            'cache_data' 	=> array( 'type' => 'BLOB'));
-            
-        $this->dbforge->add_field( $scratch_fields );
-            
-		$this->dbforge->add_field( 'id' );
-		
-		$outcome = $this->dbforge->create_table('trigger_scratch');
 
 		// -------------------------------------
 		// Create the Trigger Sequences Table
@@ -88,7 +73,6 @@ class Trigger_upd {
 
 	function update($current = '')
 	{
-	
 		return FALSE;
 	}
 
@@ -98,13 +82,11 @@ class Trigger_upd {
 	{
 		$outcome = TRUE;
 		
-		// Drop log table
-	
+		// Drop log table	
 		$outcome = $this->dbforge->drop_table('trigger_log');
 
-		// Drop scratch table
-
-		$outcome = $this->dbforge->drop_table('trigger_scratch');
+		// Drop sequences table
+		$outcome = $this->dbforge->drop_table('trigger_sequences');
 	
 		return $outcome;
 	}
