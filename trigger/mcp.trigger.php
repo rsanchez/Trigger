@@ -433,6 +433,8 @@ class Trigger_mcp {
 	 */	
 	function sequences()
 	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">'.$this->EE->load->view('css/table', '', TRUE).'</style>');
+
 		$this->EE->cp->set_right_nav( $this->nav );
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequences'));
