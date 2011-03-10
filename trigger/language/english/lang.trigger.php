@@ -7,6 +7,7 @@ $lang = array(
 
 'command_window'					=> "Command Window",
 'trigger_logs'						=> "Logs",
+'trigger_packages'					=> "Packages",
 'trigger_sequences'					=> "Sequences",
 'trigger_clear_logs'				=> "Clear Logs",
 'trigger_export_logs_as_seq_file'	=> "Export as Sequence File",

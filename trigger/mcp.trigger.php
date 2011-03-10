@@ -16,7 +16,11 @@ class Trigger_mcp {
 		
 		$this->EE->load->helper( array('log', 'trigger') );
 		
+		$this->EE->load->model('package_mdl');
+		
 		$this->module_base = $this->EE->config->item('base_url').'admin/'.BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
+		
+		$this->img_base = $this->EE->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/img/';
 
 		// -------------------------------------
 		// Set the top right nav.
@@ -25,6 +29,8 @@ class Trigger_mcp {
 		$this->nav = array(
 			'command_window' => 
 				$this->module_base,
+			'trigger_packages' =>
+				$this->module_base . AMP . 'method=packages',
 			'trigger_sequences' =>
 				$this->module_base . AMP . 'method=sequences',
 			'trigger_logs' => 
@@ -59,7 +65,12 @@ class Trigger_mcp {
 	 */
 	function index()
 	{
-		$this->EE->cp->add_to_head('<style type="text/css" media="screen">#trigger_content {background: none; border: none; padding: 2px; display: inline; color: #838D94; height: 200px;}</style>');
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">
+		
+		#trigger_content {background: none; border: none; padding: 2px; display: inline; color: #838D94; height: 200px;}
+		table.trigger_table td {padding: 5px; background: red;}
+			
+		</style>');
 	
 		$this->EE->cp->set_right_nav( $this->nav );	
 	
@@ -458,10 +469,42 @@ class Trigger_mcp {
 		$this->EE->load->library('Table');
 
 		// -------------------------------------
-		// Load trigger edit window
+		// Load view sequences window
 		// -------------------------------------
 
 		return $this->EE->load->view('sequences', $vars, TRUE); 		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Packages
+	 *
+	 * List packages
+	 */	
+	function packages()
+	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">'.$this->EE->load->view('css/table', '', TRUE).'</style>');
+
+		$this->EE->cp->set_right_nav($this->nav);
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_packages'));
+		
+		$vars['module_base'] = $this->module_base;
+
+		// -------------------------------------
+		// Get Packages
+		// -------------------------------------
+
+		$vars['packages'] = $this->EE->package_mdl->get_packages();
+		
+		$vars['package_icon'] = $this->img_base.'block.png';
+		
+		// -------------------------------------
+		// Load list of packages
+		// -------------------------------------
+
+		return $this->EE->load->view('list_packages', $vars, TRUE); 		
 	}
 
 	// --------------------------------------------------------------------------
@@ -590,7 +633,7 @@ class Trigger_mcp {
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_import'));
 
 		// -------------------------------------
-		// 
+		// Load import screen
 		// -------------------------------------
 
 		return $this->EE->load->view('import', $vars, TRUE); 
