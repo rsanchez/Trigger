@@ -38,35 +38,39 @@ class Driver_channels
 	 * Create a channel
 	 *
 	 * @access	public
-	 * @param	array
+	 * @param	string
+	 * @param	[string]
+	 * @param	[string]
 	 * @return	string
 	 */
-	public function _comm_new( $data )
+	public function _comm_new($channel_title, $channel_name = '', $channel_content = '')
 	{
-		$this->EE->load->helper('url');
+		
+		if(!$channel_title):
 
-		// Use the current site ID
+			return trigger_lang('no_name');
+		
+		endif;
+
 		$channel_data['site_id']		= $this->EE->config->item('site_id');
-	
-		if(!is_array($data)):
-		
-			// Looks like we just have a title. Use it as a string.
-			$channel_data['channel_title'] 	= $data;
-			$channel_data['channel_name']	= url_title($data, 'underscore', TRUE);
-		
-		elseif(isset($data[0]) && isset($data[1])):
-		
-			$channel_data['channel_name'] 	= $data[0];
-			$channel_data['channel_title']	= $data[1];
+		$channel_data['channel_title'] 	= $channel_title;
+
+		// We will just guess the name if we don't have it
+		if(!$channel_name)
+
+			$this->EE->load->helper('url');
+
+			$channel_data['channel_name']	= url_title($channel_name, 'dash', TRUE);
 		
 		else:
 		
-			return "insufficient data";
-
+			$channel_data['channel_name']	= $channel_name;
+		
 		endif;
-	
+		
+		// TODO: Check and see if this already exists
+		
 		// Create the channel	
-
 		if($this->EE->api_channel_structure->create_channel($channel_data)):
 		
 			return "channel added successfully";
@@ -120,8 +124,11 @@ class Driver_channels
 	function _comm_delete($channel_name)
 	{
 		// Get the ID
-		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
-		$query = $this->EE->db->limit(1)->where('channel_name', $channel_name)->get('channels');
+		$query = $this->EE->db
+							->where('site_id', $this->EE->config->item('site_id'))
+							->limit(1)
+							->where('channel_name', $channel_name)
+							->get('channels');
 	
 		if($query->num_rows() == 0):
 		

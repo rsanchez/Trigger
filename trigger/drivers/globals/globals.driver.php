@@ -76,7 +76,7 @@ class Driver_globals
 	 * @access	public
 	 * @return	string
 	 */	
-	public function _comm_new($var_data)
+	public function _comm_new($global_name, $global_value = '')
 	{
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
@@ -85,38 +85,23 @@ class Driver_globals
 			
 		endif;
 	
-		// Check for data
-		if(!$var_data):
+		// Check for a global name at least
+		if(!$global_name):
 		
 			return trigger_lang('no_data');
 		
 		endif;
 		
-		// We need our site ID
 		$site_id = $this->EE->config->item('site_id');
-
-		if( (is_array($var_data) and !isset($var_data[0])) or $var_data == '' ):
-		
-			return trigger_lang('no_name');
-		
-		endif;
-		
-		// Set global name
-		if(is_array($var_data)):
-		
-			$global_name = $var_data[0];
-		
-		else:
-		
-			$global_name = $var_data;
-		
-		endif;
-		
+				
 		// Make sure it doesn't exist
-		$this->EE->db->where('site_id', $site_id)->where('variable_name', $global_name);
-		$db_obj = $this->EE->db->limit(1)->get('global_variables');
+		$query = $this->EE->db
+						->where('site_id', $site_id)
+						->where('variable_name', $global_name)
+						->limit(1)
+						->get('global_variables');
 		
-		if($db_obj->num_rows() == 1):
+		if($query->num_rows() == 1):
 		
 			return trigger_lang('var_already_exits');
 		
@@ -126,10 +111,10 @@ class Driver_globals
 		$global_data['site_id']			= $site_id;
 		$global_data['variable_name']	= $global_name;
 		
-		// Add data if it was provided
-		if(is_array($var_data) and isset($var_data[1])):
+		// Do we have a value as well?
+		if($global_value):
 		
-			$global_data['variable_data']	= trim($var_data[1]);
+			$global_data['variable_data']	= $global_value;
 		
 		endif;
 		
@@ -162,15 +147,16 @@ class Driver_globals
 		endif;
 
 		// Check for data
-		if(!$global_name or is_array($global_name)):
+		if(!$global_name):
 		
 			return trigger_lang('no_data');
 		
 		endif;
 		
-		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
-		$this->EE->db->where('variable_name', $global_name);
-		$this->EE->db->delete('global_variables');
+		$this->EE->db
+					->where('site_id', $this->EE->config->item('site_id'))
+					->where('variable_name', $global_name)
+					->delete('global_variables');
 		
 		return trigger_lang('globals_delete_success');
 	}
@@ -183,7 +169,7 @@ class Driver_globals
 	 * @access	public
 	 * @return	string
 	 */	
-	public function _comm_set($var_data)
+	public function _comm_set($global_name, $global_value = '')
 	{
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
@@ -193,7 +179,9 @@ class Driver_globals
 		endif;
 	
 		// Check for the right data
-		if(!$var_data or !is_array($var_data) or count($var_data)!=2):
+		// We do NOT check for the value because you can set it
+		// without a second value to clear it
+		if(!$global_name):
 		
 			return trigger_lang('no_data');
 		
@@ -202,8 +190,11 @@ class Driver_globals
 		$site_id = $this->EE->config->item('site_id');
 		
 		// Make sure it exists
-		$this->EE->db->where('site_id', $site_id)->where('variable_name', $var_data[0]);
-		$db_obj = $this->EE->db->limit(1)->get('global_variables');
+		$db_obj = $this->EE->db
+						->where('site_id', $site_id)
+						->where('variable_name', $global_name)
+						->limit(1)
+						->get('global_variables');
 		
 		if($db_obj->num_rows() == 0):
 		
@@ -212,8 +203,9 @@ class Driver_globals
 		endif;
 		
 		// Update it
-		$this->EE->db->where('site_id', $site_id)->where('variable_name', $var_data[0]);
-		$global_data['variable_data']	= trim($var_data[1]);
+		$this->EE->db->where('site_id', $site_id)->where('variable_name', $global_name);
+		
+		$global_data['variable_data']	= $global_value;
 		
 		if($this->EE->db->update('global_variables', $global_data)):
 		
@@ -244,8 +236,9 @@ class Driver_globals
 		endif;
 	
 		// Delete 'em all
-		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
-		$this->EE->db->delete('global_variables');
+		$this->EE->db
+					->where('site_id', $this->EE->config->item('site_id'))
+					->delete('global_variables');
 
 		return trigger_lang('all_globals_deleted');
 	}

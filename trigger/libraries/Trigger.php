@@ -260,16 +260,45 @@ class Trigger
 		$call = str_replace(" ", "_", $segment);
 		
 		// All commands have a prefix so we can use things like list
-		// and new without gettin' out shit all mixed up
+		// and new without gettin' out shit all wickity-wacked up
 		$call = '_comm_'.strtolower($call);
 		
-		// Check to see if the command exists. Issue error if it doesn't.
-		// Otherwise, run the command.
-		
+		// Check to see if the command exists. Return flase to issue error
+		// if it doesn't. Otherwise, run the command.
 		if( method_exists($this->driver, $call) ):
 		
-			$msg = $this->driver->$call($this->variable);
-	
+			// We can return up to 10 variables
+			$args_num = count($this->variable);
+			
+			// Get our vars
+			extract($this->variable, EXTR_PREFIX_INVALID, 'arg');
+			
+			// This may get boring. Sorry. Not very elegant.
+			switch($args_num):
+				case 1:
+					$msg = $this->driver->$call($arg_0); break;
+				case 2:
+					$msg = $this->driver->$call($arg_0, $arg_1); break;
+				case 3:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2); break;
+				case 4:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3); break;
+				case 5:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4); break;
+				case 6:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5); break;
+				case 7:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5, $arg_6); break;
+				case 8:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5, $arg_6, $arg_7); break;
+				case 9:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5, $arg_6, $arg_7, $arg_8); break;
+				case 10:
+					$msg = $this->driver->$call($arg_0, $arg_1, $arg_2, $arg_3, $arg_4, $arg_5, $arg_6, $arg_7, $arg_8, $arg_9); break;
+				default:
+					break;
+			endswitch;
+				
 			write_log($this->line, $msg);
 			
 			$this->out = $msg;
@@ -507,6 +536,8 @@ class Trigger
 	 */
 	public function _extract_var($string)
 	{
+		// Find the vars between the markers and then explode
+		// The values therein into an array
 		if(strpos($string, VARS_LEFT) !== FALSE && strpos($string, VARS_RIGHT) !== FALSE):
 		
 			$open 	= strpos($string, VARS_LEFT, 0) + strlen(VARS_LEFT);
@@ -514,20 +545,11 @@ class Trigger
 			
 			$tmp_var = trim(substr($string, $open, $close-$open));
 			
-			// See if it is an array of values
-			$vars = explode(VAR_SEP, $tmp_var);
+			// Even if it's just one, we still use it in
+			// sending the values to the function
+			$this->variable = explode(VAR_SEP, $tmp_var);
 			
-			if(count($vars)==1):
-			
-				// Just a string.
-				$this->variable = $tmp_var;
-			
-			else:
-			
-				$this->variable = $vars;
-			
-			endif;
-			
+			// Get rid of the variable stuff so we can just call the command
 			return trim(str_replace(VARS_LEFT.$tmp_var.VARS_RIGHT, '', $string));
 		
 		endif;

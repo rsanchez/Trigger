@@ -82,8 +82,11 @@ class Driver_snippets
 		$site_id = $this->EE->config->item('site_id');
 		
 		// Make sure it doesn't exist
-		$this->EE->db->where('site_id', $site_id)->where('snippet_name', $snippet_name);
-		$db_obj = $this->EE->db->limit(1)->get('snippets');
+		$db_obj = $this->EE->db
+					->where('site_id', $site_id)
+					->where('snippet_name', $snippet_name)
+					->limit(1)
+					->get('snippets');
 		
 		if($db_obj->num_rows() == 1):
 		
@@ -131,9 +134,10 @@ class Driver_snippets
 		
 		endif;
 		
-		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
-		$this->EE->db->where('snippet_name', $snippet_name);
-		$this->EE->db->delete('snippets');
+		$this->EE->db
+					->where('site_id', $this->EE->config->item('site_id'))
+					->where('snippet_name', $snippet_name)
+					->delete('snippets');
 		
 		return trigger_lang('snippet_delete_success');
 	}
@@ -155,8 +159,9 @@ class Driver_snippets
 			
 		endif;
 	
-		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
-		$this->EE->db->delete('snippets');
+		$this->EE->db
+					->where('site_id', $this->EE->config->item('site_id'))
+					->delete('snippets');
 		
 		return trigger_lang('all_snippets_deleted');
 	}
@@ -164,4 +169,3 @@ class Driver_snippets
 }
 
 /* End of file snippets.driver.php */
-/* Location: ./Trigger/trigger/drivers/snippets/snippets.driver.php */
