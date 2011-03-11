@@ -146,9 +146,12 @@ class Trigger
 			
 			endif;
 	
-			// See if we have a bracketed [] variable
-			// If we do, we set it to a variables
+			// See if we have a parenthesis () variable
+			// If we do, we get the info from it
 			$segment = $this->_extract_var($segment);
+
+			// Ex: d becomes delete
+			$segment = $this->_expand_shortcuts($segment);
 						
 			// Maybe a system command?
 			if($this->_is_system_command($segment, array('drivers'))):
@@ -183,7 +186,7 @@ class Trigger
 
 			// We know there has to be a driver.
 			// If there isn't throw dem flagz up!			
-			if( !$this->_load_driver( $driver_slug ) ):
+			if(!$this->_load_driver($driver_slug)):
 
 				if($this->out != ''):
 				
@@ -199,6 +202,8 @@ class Trigger
 			
 			// Find the bracketed variable
 			$segment = $this->_extract_var($segment);
+
+			$segment = $this->_expand_shortcuts($segment);
 			
 			// Set the context to the driver. Other functions
 			// will set it back if need be.
@@ -222,7 +227,7 @@ class Trigger
 				return $this->out;
 			
 			endif;
-		
+			
 			// Perhaps a driver variable?
 			if($this->_is_variable( $segment, $this->driver )):
 			
@@ -338,7 +343,7 @@ class Trigger
 		
 			$call = 'system_'.$segment;
 		
-			$this->$call($this->variable);
+			$this->$call();
 			
 			return TRUE;
 		
@@ -534,7 +539,7 @@ class Trigger
 	 * @param	string
 	 * @return 	string
 	 */
-	public function _extract_var($string)
+	private function _extract_var($string)
 	{
 		// Find the vars between the markers and then explode
 		// The values therein into an array
@@ -549,12 +554,99 @@ class Trigger
 			// sending the values to the function
 			$this->variable = explode(VAR_SEP, $tmp_var);
 			
+			// Trim our vars
+			foreach($this->variable as $k => $v):
+			
+				$this->variable[$k] = trim($v);
+			
+			endforeach;
+			
+			// -------------------------------------
+			// Process Vars			
+			// -------------------------------------	
+			// Now we are going to see if these
+			// vars are package files or anything
+			// else that might be special 
+			// -------------------------------------	
+			
+			$this->EE->load->helper('file');
+			
+			foreach($this->variable as $key => $val):
+			
+				if(!trim($val)):
+				
+					continue;
+				
+				endif;
+			
+				// Do we have a package file call?
+				$p_call = substr($val, 0, 2);
+				
+				if($p_call == 'p.'):
+				
+					//return "HELLO";
+				
+					$call = substr($val, 2);
+					
+					// If they didn't put an extension on there, we add in
+					if(strpos($call, '.html') === FALSE and strpos($call, '.txt') === FALSE):
+					
+						$call .= '.html';
+					
+					endif;
+					
+					if($file_contents = read_file(APPPATH.'third_party/trigger/packages/'.$call)):
+					
+						$this->variable[$key] = $file_contents;
+						
+					else:
+					
+						$this->variable[$key] = 'Error Reading File.';
+					
+					endif;
+				
+				endif;
+			
+			endforeach;
+					
 			// Get rid of the variable stuff so we can just call the command
 			return trim(str_replace(VARS_LEFT.$tmp_var.VARS_RIGHT, '', $string));
 		
 		endif;
 		
 		return $string;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Expand Shortcuts
+	 *
+	 * Shortcuts are:
+	 *
+	 * l => list
+	 * d => delete
+	 * da => delete all
+	 * n => new
+	 */	
+	private function _expand_shortcuts($segment)
+	{
+		switch($segment):
+			case 'l':
+				return 'list';
+				break;
+			case 'd':
+				return 'delete';
+				break;
+			case 'da':
+				return 'delete all';
+				break;
+			case 'n':
+				return 'new';
+				break;
+			default:
+				return $segment;
+		endswitch;
 	}
 
 	// --------------------------------------------------------------------------
