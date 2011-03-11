@@ -601,7 +601,9 @@ class Trigger
 						
 					else:
 					
-						$this->variable[$key] = 'Error Reading File.';
+						// Setting this to something unique so someone doesn't
+						// set this as template content or something
+						$this->variable[$key] = 'TRIGGER_FILE_READ_ERR';
 					
 					endif;
 				

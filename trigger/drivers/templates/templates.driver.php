@@ -66,6 +66,117 @@ class Driver_templates
 	}
 
 	// --------------------------------------------------------------------------
+	
+	/**
+	 * New Template
+	 *
+	 * Creates a template and sometimes groups.
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	[string]
+	 * @param	[string]
+	 * @param	[string]
+	 * @param	[string]
+	 * @return	string
+	 */	
+	public function _comm_new($template_name, $group = '', $template_data = '', $template_as_file = 'n', $template_type = 'webpage')
+	{
+		// We need a template name
+		if(!$template_name):
+		
+			return "no template name provided";
+		
+		endif;
+	
+		// If we have a template read error, then we need to get
+		// out of here:
+		if($template_data == 'TRIGGER_FILE_READ_ERR'):
+		
+			return "error reading template file";
+		
+		endif;
+		
+		$insert_data['site_id'] 			= $this->EE->config->item('site_id');
+		$insert_data['template_name']		= $template_name;
+		$insert_data['save_template_file']	= $template_as_file;
+		$insert_data['template_data'] 		= $template_data;
+		$insert_data['template_type'] 		= $template_type;
+		
+		// -------------------------------------		
+		// Template Group Processing
+		// -------------------------------------		
+		
+		// An option is to pass a numeric value for the group.
+		if(is_numeric($group)):
+		
+			// See if the group exists
+			$query = $this->EE->db->limit(1)->get_where('template_groups', array('group_id' => $group));
+
+			if($query->num_rows() == 0):
+			
+				return "unable to find template group";
+			
+			endif;
+
+			$insert_data['group_id'] 	= $group;
+			
+		elseif(!$group):
+		
+			// They have passed us a blank value. We are now going
+			// to use the default group
+			$query = $this->EE->db->limit(1)->get_where('template_groups', array('is_site_default' => 'y'));
+			
+			if($query->num_rows() == 0):
+			
+				return "unable to find default template group";
+			
+			endif;
+			
+			$row = $query->row();
+			$insert_data['group_id'] 	= $row->group_id;
+			
+		else:
+
+			// This must be a name
+			$group = strtolower($group);
+			$query = $this->EE->db->limit(1)->get_where('template_groups', array('group_name' => $group));
+		
+			if($query->num_rows() == 0):
+			
+				// Normally we'd just give up, but we're better
+				// than that. This time, we are going to create the group.
+				// Hardcore. I just spent a whole comment line on this word.
+				$this->EE->load->model('template_model');
+				
+				$group_data['is_site_default']		= 'n';
+				$group_data['group_name']			= strtolower($group);
+				$group_data['site_id']				= $this->EE->config->item('site_id');
+				
+				$insert_data['group_id'] = $this->EE->template_model->create_group($group_data);
+				
+			else:
+
+				$row = $query->row();
+				$insert_data['group_id'] 	= $row->group_id;
+			
+			endif;
+
+		endif;
+
+		// Damn. We're ready. Do it!
+		if(!$this->EE->db->insert('templates', $insert_data)):
+		
+			return "error creating template";
+		
+		else:
+		
+			return "template created";
+		
+		endif;
+	}
+
+	// --------------------------------------------------------------------------
 
 	/**
 	 * Set templates to be allowed as files
