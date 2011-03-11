@@ -179,6 +179,76 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Delete a template
+	 */
+	public function _comm_delete($template, $group)
+	{
+		if(!$group):
+		
+			return "no group provided";
+		
+		endif;
+
+		if(!$template):
+		
+			return "no template data provided";
+		
+		endif;
+		
+		// Make sure the group exists and get the id
+		$query = $this->EE->db->where('group_name', strtolower($group))->get('template_groups');
+		
+		if($query->num_rows()==0):
+		
+			return "group not found";
+		
+		endif;
+		
+		$row = $query->row();
+		$group_id = $row->group_id;
+		
+		// We can either take an id or a string
+		if(is_numeric($template)):
+		
+			$check = $this->EE->db->where('template_id', $template)->get('templates');
+			
+			if($check->num_rows()==0):
+			
+				return "template not found";
+			
+			endif;
+			
+			$this->EE->db->where('template_id', $template);
+		
+		else:
+			
+			$template = strtolower($template);
+		
+			$check = $this->EE->db
+								->where('template_name', $template)
+								->where('group_id', $group_id)
+								->get('templates');
+			
+			if($check->num_rows()==0):
+			
+				return "template not found";
+			
+			endif;
+			
+			$this->EE->db	
+					->where('group_id', $group_id)
+					->where('template_name', $template);
+
+		endif;
+		
+		$this->EE->db->delete('templates');
+		
+		return "template deleted";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Set templates to be allowed as files
 	 */	
 	function _comm_allow_as_files()
