@@ -20,8 +20,10 @@ class Package_mdl extends CI_Model
 	 * @access	public
 	 * @return	array
 	 */
-	function get_packages()
+	function get_packages($img_base)
 	{
+		$this->img_base = $img_base;
+	
 		$this->load->helper('directory');
 	
 		$types = new stdClass;
@@ -88,6 +90,18 @@ class Package_mdl extends CI_Model
 			endif;
 		
 		endforeach;
+		
+		// See if we have an icon
+		
+		if(is_file(APPPATH.'third_party/trigger/'.$this->folder.'/'.$package_slug.'/icon.png')):
+	
+			$info['icon'] = $this->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/packages/'.$package_slug.'/icon.png';
+		
+		else:
+		
+			$info['icon'] = $this->img_base.'block.png';
+		
+		endif;
 		
 		return $info;
 	}

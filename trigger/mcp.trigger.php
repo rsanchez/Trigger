@@ -498,9 +498,9 @@ class Trigger_mcp {
 		// Get Packages
 		// -------------------------------------
 
-		$vars['packages'] = $this->EE->package_mdl->get_packages();
+		$vars['packages'] = $this->EE->package_mdl->get_packages($this->img_base);
 		
-		$vars['package_icon'] = $this->img_base.'block.png';
+		$vars['default_package_icon'] = $this->img_base.'block.png';
 		
 		// -------------------------------------
 		// Load list of packages
