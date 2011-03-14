@@ -661,7 +661,22 @@ class Trigger
 	 */
 	public function system_drivers()
 	{
-		// TODO
+		// Load up the drivers directory and display them.
+		// Not that hard.
+		
+		$this->EE->load->helper('directory');
+
+		$drivers = directory_map(PATH_THIRD.'trigger/drivers/', 1);
+
+		$out = TRIGGER_BUFFER."\n";
+		
+		foreach($drivers as $driver):
+		
+			$out .= $driver."\n";
+		
+		endforeach;
+		
+		$this->out = $out.TRIGGER_BUFFER;
 	}
 
 }
