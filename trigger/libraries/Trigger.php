@@ -209,32 +209,13 @@ class Trigger
 			// will set it back if need be.
 			$this->context = array( 'ee', $this->driver->driver_slug );
 			
-			// -------------------------------------
-			// Replace driver variables
-			// -------------------------------------
-			
-			if( $this->driver->has_vars === TRUE ):
-			
-				// TODO
-			
-			endif;
-
-			// -------------------------------------
-
 			// Could this be a system command?
 			if($this->_is_system_command($segment)):
 			
 				return $this->out;
 			
 			endif;
-			
-			// Perhaps a driver variable?
-			if($this->_is_variable( $segment, $this->driver )):
-			
-				return $this->out;
-			
-			endif;
-			
+						
 			// Could very well possibly be a singular command.
 			if($this->_is_singular_command( $segment )):
 			
@@ -362,37 +343,16 @@ class Trigger
 	 * @param	obj
 	 * @return	string
 	 */
-	private function _is_variable($segment = '', $driver_obj = FALSE)
-	{
-		if( $driver_obj === FALSE ):
-
-			// -------------------------------------
-			// No Driver Obj
-			// -------------------------------------
-			// No driver object means it could be
-			// a system variable
-			// -------------------------------------
-			
-			if( in_array($segment, $this->system_var_methods) ):
-			
-				$this->context = array('ee');
-			
-				$this->out = $this->EE->vars->$segment();
-				
-				return TRUE;
-						
-			endif;
-
-		else:
+	private function _is_variable($segment = '')
+	{			
+		if( in_array($segment, $this->system_var_methods) ):
 		
-			// -------------------------------------
-			// Driver Variable
-			// -------------------------------------
-			// Could be a driver variable
-			// -------------------------------------
+			$this->context = array('ee');
 		
-			// TODO
-		
+			$this->out = $this->EE->vars->$segment();
+			
+			return TRUE;
+					
 		endif;
 		
 		return FALSE;
@@ -494,28 +454,6 @@ class Trigger
 			// Set up some class variables
 			$this->driver->driver_name 	= $this->driver->lang['driver_name'];
 			$this->driver->driver_desc 	= $this->driver->lang['driver_desc'];
-
-			// -------------------------------------
-			// Load Variables
-			// -------------------------------------
-			
-			$vars_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.vars.php';
-			
-			if( file_exists($vars_file) ):
-			
-				@require_once($vars_file);
-				
-				$vars_class = 'Vars_'.$driver_slug;
-				
-				$this->driver->vars = new $vars_class();
-
-				$this->driver->has_vars = TRUE;
-			
-			else:
-				
-				$this->driver->has_vars = FALSE;
-			
-			endif;			
 						
 			// -------------------------------------
 			// Set driver to driver context position
@@ -533,7 +471,8 @@ class Trigger
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Find a bracketed variable
+	 * Find the bracketed variable, and find the
+	 * comma-separated variables within.
 	 *
 	 * @access	public
 	 * @param	string
