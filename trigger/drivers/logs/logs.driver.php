@@ -37,6 +37,30 @@ class Driver_logs
 		return trigger_lang('logs_cleared');
 	}	
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Clear the logs
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	public function _comm_count()
+	{
+		$count = $this->EE->db->count_all('trigger_log');
+		
+		if($count == 1):
+			
+			return "there is currently 1 entry in the log";
+		
+		else:
+
+			return "there are currently $count entries in the log";
+		
+		endif;
+	}	
+
+
 }
 
 /* End of file logs.driver.php */
