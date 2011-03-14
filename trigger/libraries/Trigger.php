@@ -27,7 +27,7 @@ class Trigger
 	 * If there is a bracketed variable it will be
 	 * found and put into this variable.
 	 */
-	public $variable			= FALSE;
+	public $variable			= array();
 
 	// --------------------------------------------------------------------------
 	
@@ -261,6 +261,8 @@ class Trigger
 			
 			// This may get boring. Sorry. Not very elegant.
 			switch($args_num):
+				case 0:
+					$msg = $this->driver->$call(); break;
 				case 1:
 					$msg = $this->driver->$call($arg_0); break;
 				case 2:
