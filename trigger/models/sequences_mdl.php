@@ -68,8 +68,17 @@ class Sequences_mdl extends CI_Model
 
 	// --------------------------------------------------------------------------	
 	
-	// Return array
-	function read_sequence_file_data($seq_name, $location)
+	/**
+	 * Read Sequence File Data
+	 *
+	 * Read the file and parse the data
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string
+	 * @return	array
+	 */
+	public function read_sequence_file_data($seq_name, $location)
 	{
 		// Where is the location?
 		if($location == 'seqs'):
@@ -95,8 +104,9 @@ class Sequences_mdl extends CI_Model
 		
 		// Parse the lines up to the first blank one
 		$lines = explode("\n", $sequence);
+		$seq_data['pre_checks'] = array();
 		
-		// Get that data.
+		// Get the data and the pre-checks
 		foreach($lines as $line):
 		
 			if(trim($line) == ''):
@@ -112,29 +122,27 @@ class Sequences_mdl extends CI_Model
 				$seq_data[str_replace(' ', '_', $parts[0])] = $parts[1];
 			
 			endif;
+			
+			// Get the pre-check
+			if(substr($line, 0, 6) == '#check'):
+			
+				$seq_data['pre_checks'][] = trim($line);
+			
+			endif;
 		
 		endforeach;
 		
-		$count = 1;
+		$count = 0;
+		
+		// Get the lines
+		preg_match("#TRIGGER SEQUENCE START([^<]+)TRIGGER SEQUENCE END#", $sequence, $matches);
+		
+		$seq_data['commands'] = trim($matches[1]);
 		
 		// Count the lines
-		foreach($lines as $line):
+		$exp = explode("\n", $seq_data['commands']);
 		
-			if(trim($line) == 'TRIGGER SEQUENCE START'):
-			
-				$count = 1;
-			
-			endif;
-			
-			$count++;
-			
-			if(trim($line) == 'TRIGGER SEQUENCE END'):
-			
-				$seq_data['lines'] = $count;
-			
-			endif;
-	
-		endforeach;
+		$seq_data['lines'] = count($exp);
 	
 		// Return the sequence data
 		return $seq_data;
@@ -145,8 +153,12 @@ class Sequences_mdl extends CI_Model
 	/**
 	 * Find the filename slug from the
 	 * full filename
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
 	 */
-	function find_filename_slug($filename)
+	public function find_filename_slug($filename)
 	{
 		// Strip the .seq and the .txt
 		$file_pieces = explode('.', $filename);

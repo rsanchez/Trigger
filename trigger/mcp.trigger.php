@@ -475,7 +475,7 @@ class Trigger_mcp {
 		// Load view sequences window
 		// -------------------------------------
 
-		return $this->EE->load->view('sequences', $vars, TRUE); 		
+		return $this->EE->load->view('sequences/list_sequences', $vars, TRUE); 		
 	}
 
 	// --------------------------------------------------------------------------
@@ -559,7 +559,12 @@ class Trigger_mcp {
 	 */
 	function run_sequence()
 	{
-		$vars['sequence'] = $this->validate_sequence_data( $this->EE->input->get_post('sequence_id') );
+		$this->EE->load->model('sequences_mdl');
+	
+		$vars['sequence'] = $this->EE->sequences_mdl->read_sequence_file_data($this->EE->input->get_post('sequence'), $this->EE->input->get_post('location'));
+	
+		$vars['sequence_slug'] = $this->EE->input->get_post('sequence');
+		$vars['location'] = $this->EE->input->get_post('location');
 	
 		// -------------------------------------
 		// Ask if we want to run it
@@ -567,46 +572,7 @@ class Trigger_mcp {
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_run_sequence'));
 
-		return $this->EE->load->view('run_sequence', $vars, TRUE); 		
-	}
-
-	// --------------------------------------------------------------------------
-	
-	/**
-	 * Checks and Validates Sequence Data
-	 *
-	 * @access	private
-	 * @param	int
-	 * @return	obj
-	 */
-	private function validate_sequence_data( $sequence_id )
-	{
-		// -------------------------------------
-		// Get the sequence ID
-		// -------------------------------------
-		
-		if( !is_numeric($sequence_id) ):
-		
-			show_error("Invalid Sequence ID.");
-		
-		endif;
-		
-		// -------------------------------------
-		// Get the data
-		// -------------------------------------
-		
-		$this->EE->db->limit(1);
-		$this->EE->db->where('id', $sequence_id);
-		
-		$db_obj = $this->EE->db->get('trigger_sequences');
-		
-		if( $db_obj->num_rows() == 0 ):
-			
-			show_error("Couldn't find sequence.");
-		
-		endif;
-		
-		return $db_obj->row_array();
+		return $this->EE->load->view('sequences/run_sequence', $vars, TRUE); 		
 	}
 
 	// --------------------------------------------------------------------------
@@ -618,7 +584,9 @@ class Trigger_mcp {
 	{
 		$this->EE->cp->add_to_head('<style type="text/css" media="screen">pre {margin: 0;}</style>');
 
-		$vars['sequence'] = $this->validate_sequence_data( $this->EE->input->get_post('sequence_id') );
+		$this->EE->load->model('sequences_mdl');
+
+		$vars['sequence'] = $this->EE->sequences_mdl->read_sequence_file_data($this->EE->input->get_post('sequence'), $this->EE->input->get_post('location'));
 
 		// -------------------------------------
 		// Send it to the Sequences library
@@ -627,7 +595,7 @@ class Trigger_mcp {
 		
 		$this->EE->load->library('Sequence');
 		
-		$vars['log_lines'] = $this->EE->sequence->run_sequence( $vars['sequence'] );
+		$vars['log_lines'] = $this->EE->sequence->run_sequence($vars['sequence']['commands'], $vars['sequence']['title']);
 
 		// -------------------------------------
 		// Load Table Library for layout
@@ -657,7 +625,7 @@ class Trigger_mcp {
 
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequence_results'));
 
-		return $this->EE->load->view('run_sequence_results', $vars, TRUE); 		
+		return $this->EE->load->view('sequences/run_sequence_results', $vars, TRUE); 		
 	}
 
 	// --------------------------------------------------------------------------

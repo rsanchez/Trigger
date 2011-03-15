@@ -14,31 +14,29 @@ class Sequence
 	 *
 	 * Takes sequence data, runs it, and returns the results.
 	 *
-	 * @param	array
+	 * @param	string
+	 * @param	string
 	 * @param	string 'log' or 'log_string'
 	 * @return	obj
 	 */
-	function run_sequence( $seq, $output = 'log' )
+	function run_sequence($raw_lines, $seq_name, $output = 'log')
 	{
-		// -------------------------------------
-		// Break down into lines
-		// -------------------------------------
-		
-		$lines = explode("\n", trim($seq['sequence']));
-
 		// -------------------------------------
 		// Write the start mark
 		// -------------------------------------
 		
-		$start_id = write_log_mark( 'start', $seq['name'] );
+		$start_id = write_log_mark('start', trim($seq_name));
 		
 		// -------------------------------------
 		// Feed each line through the processor
 		// -------------------------------------
 		
+		// Cut up the lines
+		$lines = explode("\n", $raw_lines);
+		
 		$out = '';
 		
-		foreach( $lines as $line ):
+		foreach($lines as $line):
 		
 			$line = trim($line);
 		
@@ -56,7 +54,7 @@ class Sequence
 		// Write the end mark
 		// -------------------------------------
 		
-		$end_id = write_log_mark( 'end', $seq['name'] );
+		$end_id = write_log_mark('end', trim($seq_name));
 		
 		if($output == 'log'):
 		
@@ -64,7 +62,7 @@ class Sequence
 			// Get logs from start to finish
 			// -------------------------------------
 		
-			$this->EE->db->order_by('log_time', 'desc');		
+			$this->EE->db->order_by('id', 'asc');		
 			$this->EE->db->where('id >=', $start_id);
 			$this->EE->db->where('id <=', $end_id);
 			
@@ -82,4 +80,3 @@ class Sequence
 }
 
 /* End of file Sequence.php */
-/* Location: ./Trigger/trigger/libraries/Sequence.php */

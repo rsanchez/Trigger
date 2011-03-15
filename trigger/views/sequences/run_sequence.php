@@ -2,9 +2,10 @@
 	
 	<p>Are you sure you want to run the sequence titled <strong><?=$sequence['title'];?></strong>? It will run the following commands:</p>
 	
-	<pre><?=$sequence['sequence'];?></pre>
+	<pre><?=$sequence['commands'];?></pre>
 	
-	<p><input type="hidden" name="sequence_id" value="<?=$sequence['id'];?>" /></p>
+	<input type="hidden" name="sequence" value="<?=$sequence_slug;?>" />
+	<input type="hidden" name="location" value="<?=$location;?>" />
 	
 	<p><?=form_submit('submit', lang('trigger_run'), 'class="submit"')?></p>
 

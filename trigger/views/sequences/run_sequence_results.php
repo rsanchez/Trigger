@@ -1,6 +1,6 @@
 <?php if( $log_lines ): ?>
 
-<p>Sequence was run successfully. Below are the log results.</p>
+<p>Sequence was run successfully. Below are the log results.</p><br />
 	
 <?php
 	$this->table->set_template($cp_table_template);
