@@ -25,8 +25,6 @@ class Package_mdl extends CI_Model
 		$this->img_base = $img_base;
 	
 		$this->load->helper('directory');
-	
-		$types = new stdClass;
 
 		$files = directory_map(APPPATH.'third_party/trigger/'.$this->folder.'/', 1);
 		

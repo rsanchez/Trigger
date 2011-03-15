@@ -9,16 +9,18 @@
 	$this->table->set_heading(
 		'Sequence Title', 'Sequence Name', 'Sequence Description', 'Lines', 'Created By', ''
 	);
-
-	foreach($sequences as $sequence)
+	
+	foreach($sequences as $seq_name => $sequence)
 	{
+		$sequence = $this->sequences_mdl->read_sequence_file_data($seq_name, $sequence['loc']);
+		
 		$this->table->add_row(
-				$sequence->title,
-				$sequence->name,
-				$sequence->description,
-				$sequence->lines,
-				$sequence->created_by,
-				'<a href="'.$module_base.AMP.'method=run_sequence'.AMP.'sequence_id='.$sequence->id.'">Run</a>'
+				$sequence['title'],
+				$seq_name,
+				$sequence['desc'],
+				$sequence['lines'],
+				$sequence['created_by'],
+				'<a href="'.$module_base.AMP.'method=run_sequence'.AMP.'sequence_id='.$seq_name.'">Run</a>'
 			);
 	}
 ?>

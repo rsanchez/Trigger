@@ -433,6 +433,8 @@ class Trigger_mcp {
 	 */	
 	function sequences()
 	{
+		$this->EE->load->model('sequences_mdl');
+	
 		$this->EE->cp->add_to_head('<style type="text/css" media="screen">'.$this->EE->load->view('css/table', '', TRUE).'</style>');
 
 		$this->EE->cp->set_right_nav( $this->nav );
@@ -459,10 +461,9 @@ class Trigger_mcp {
 	
 		$vars['pagination'] = $this->EE->pagination->create_links();
 		
-		$this->EE->db->order_by('name', 'desc');		
-		$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
+		//$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
 		
-		$vars['sequences'] = $db_obj->result();
+		$vars['sequences'] = $this->EE->sequences_mdl->get_sequences();
 
 		// -------------------------------------
 		// Load Table Library for layout

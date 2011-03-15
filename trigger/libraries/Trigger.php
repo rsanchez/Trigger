@@ -525,8 +525,6 @@ class Trigger
 				
 				if($p_call == 'p.'):
 				
-					//return "HELLO";
-				
 					$call = substr($val, 2);
 					
 					// If they didn't put an extension on there, we add in
