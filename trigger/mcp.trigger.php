@@ -20,7 +20,7 @@ class Trigger_mcp {
 		
 		$this->module_base = $this->EE->config->item('base_url').'admin/'.BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
 		
-		$this->img_base = $this->EE->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/img/';
+		define('TRIGGER_IMG_URL', $this->EE->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/img/');
 
 		// -------------------------------------
 		// Set the top right nav.
@@ -499,15 +499,57 @@ class Trigger_mcp {
 		// Get Packages
 		// -------------------------------------
 
-		$vars['packages'] = $this->EE->package_mdl->get_packages($this->img_base);
+		$vars['packages'] = $this->EE->package_mdl->get_packages();
 		
-		$vars['default_package_icon'] = $this->img_base.'block.png';
+		$vars['default_package_icon'] = TRIGGER_IMG_URL.'block.png';
 		
 		// -------------------------------------
 		// Load list of packages
 		// -------------------------------------
 
-		return $this->EE->load->view('list_packages', $vars, TRUE); 		
+		return $this->EE->load->view('packages/list_packages', $vars, TRUE); 		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * List Packages Contents
+	 *
+	 * Show what is in the different packages.
+	 */	
+	function package_contents()
+	{
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">'.$this->EE->load->view('css/table', '', TRUE).'</style>');
+
+		$this->EE->cp->set_right_nav($this->nav);
+		
+		$this->EE->load->helper('inflector');
+
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_package_contents'));
+		
+		$vars['module_base'] = $this->module_base;
+
+		// -------------------------------------
+		// Get Package Contents
+		// -------------------------------------
+
+		$package = $this->EE->input->get_post('package');
+		
+		if(!$package):
+		
+			show_error("Invalid package.");
+		
+		endif;
+		
+		$vars['details'] = $this->EE->package_mdl->parse_package_details($package);
+
+		$vars['contents'] = $this->EE->package_mdl->get_package_contents($package);
+		
+		// -------------------------------------
+		// Load list of packages
+		// -------------------------------------
+
+		return $this->EE->load->view('packages/list_package_contents', $vars, TRUE);
 	}
 
 	// --------------------------------------------------------------------------

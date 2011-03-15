@@ -8,8 +8,8 @@ class Package_mdl extends CI_Model
 	{
 		parent::__construct();
 		
-		$this->load->helper('file');
-    }
+		$this->load->helper(array('file', 'directory'));
+   }
     
 	// --------------------------------------------------------------------------
 	
@@ -20,12 +20,8 @@ class Package_mdl extends CI_Model
 	 * @access	public
 	 * @return	array
 	 */
-	function get_packages($img_base)
+	function get_packages()
 	{
-		$this->img_base = $img_base;
-	
-		$this->load->helper('directory');
-
 		$files = directory_map(APPPATH.'third_party/trigger/'.$this->folder.'/', 1);
 		
 		$return = array();
@@ -97,11 +93,49 @@ class Package_mdl extends CI_Model
 		
 		else:
 		
-			$info['icon'] = $this->img_base.'block.png';
+			$info['icon'] = TRIGGER_IMG_URL.'block.png';
 		
 		endif;
 		
 		return $info;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Get package contents
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	array
+	 */
+	public function get_package_contents($package)
+	{
+		$files = directory_map(APPPATH.'third_party/trigger/packages/'.$package.'/', 2);
+		
+		$contents = array();
+		
+		foreach($files as $folder => $file):
+					
+			// If we have an array of files, see what they are
+			if(is_array($file)):
+			
+				if($folder == 'snippets' or $folder == 'templates'):
+				
+					$contents[$folder] = $file;
+					
+				endif;
+			
+			// Is this a sequence?
+			elseif(substr($file, 0, 4) == 'seq.'):
+			
+				$contents['sequences'][] = $file;
+			
+			endif;
+					
+		endforeach;
+		
+		return $contents;
 	}
 }
 
