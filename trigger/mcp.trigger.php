@@ -149,6 +149,7 @@ class Trigger_mcp {
 	function logs()
 	{
 		$this->EE->cp->add_to_head('<style type="text/css" media="screen">pre {margin: 0;}</style>');
+		$this->EE->cp->add_to_head('<style type="text/css" media="screen">'.$this->EE->load->view('css/table', '', TRUE).'</style>');
 
 		$this->EE->cp->set_right_nav( $this->nav );	
 		
@@ -255,19 +256,7 @@ class Trigger_mcp {
 	 */
 	function export()
 	{	
-		// -------------------------------------
-		// Find out where this is going to
-		// -------------------------------------
-
-		$vars['to'] = $this->EE->input->get_post('to');
-		
-		// Make sure we got something we can use
-
-		if( $vars['to'] == '' || ($vars['to'] != 'file' && $vars['to'] != 'sequences') ):
-		
-			$vars['to'] = 'sequences';
-		
-		endif;
+		$vars['to'] = 'file';
 	
 		// Set page title accordingly
 		
@@ -628,30 +617,6 @@ class Trigger_mcp {
 		return $this->EE->load->view('sequences/run_sequence_results', $vars, TRUE); 		
 	}
 
-	// --------------------------------------------------------------------------
-
-	/**
-	 * Import Sequence
-	 *
-	 * Imports a sequence into the sequence database by pasting it in
-	 */	
-	function import()
-	{
-		$this->EE->cp->set_right_nav( $this->nav );
-
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_sequences'));
-		
-		$vars['module_base'] = $this->module_base;
-
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_import'));
-
-		// -------------------------------------
-		// Load import screen
-		// -------------------------------------
-
-		return $this->EE->load->view('import', $vars, TRUE); 
-	}
 }
 
 /* End of file mcp.trigger.php */
-/* Location: ./system/expressionengine/third_party/trigger/mcp.trigger.php */

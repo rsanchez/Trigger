@@ -5,21 +5,26 @@
 	</div> 
 	
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=export&to=sequences"><?=lang('trigger_export_to_seqs');?></a> 
-	</div> 
-	
-	<div class="cp_button"> 
 		<a href="<?=$module_base.AMP;?>method=export&to=file"><?=lang('trigger_export_logs_as_seq_file');?></a> 
 	</div> 
 
+<table cellpadding="0" cellspacing="0" class="trigger_table">
+<thead>
+	<tr>
+		<th>ID</th>
+		<th>User</th>
+		<th>When</th>
+		<th>Command</th>
+		<th>Result</th>
+	</tr>
+</thead>
+
 <?php
-	$this->table->set_template($cp_table_template);
-	$this->table->set_heading(
-		'ID', 'User', 'When', 'Command', 'Result'
-	);
+
+	$count = 1;
 	
-	foreach($log_lines as $line)
-	{
+	foreach($log_lines as $line):
+
 		$start	= '';
 		$end 	= '';
 		
@@ -35,16 +40,18 @@
 		
 		endif;
 
-		$this->table->add_row(
-				$line->id,
-				$members[$line->user_id],
-				date('M j Y g:i:s a', $line->log_time),
-				$start.$line->command.$end,
-				'<pre>'.trim($line->result).'</pre>'
-			);
-	}
 ?>
-<?=$this->table->generate();?>
+
+<tr class="<?php if($count%2 == 0): echo 'even'; else: echo 'odd'; endif;?>">
+	<td><?php echo $line->id; ?></td>
+	<td><?php echo $members[$line->user_id]; ?></td>
+	<td><?php echo date('M j Y g:i:s a', $line->log_time); ?></td>
+	<td><?php echo $start.$line->command.$end; ?></td>
+	<td><pre><?php echo trim($line->result); ?></pre></td>
+</tr>
+
+<?php $count++; endforeach; ?>
+</table>
 
 <?=$pagination;?>
 
