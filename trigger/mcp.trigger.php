@@ -449,15 +449,7 @@ class Trigger_mcp {
 	
 		$vars['pagination'] = $this->EE->pagination->create_links();
 		
-		//$db_obj = $this->EE->db->get('trigger_sequences', $this->page_config['per_page'], $rownum);
-		
 		$vars['sequences'] = $this->EE->sequences_mdl->get_sequences();
-
-		// -------------------------------------
-		// Load Table Library for layout
-		// -------------------------------------
-		
-		$this->EE->load->library('Table');
 
 		// -------------------------------------
 		// Load view sequences window

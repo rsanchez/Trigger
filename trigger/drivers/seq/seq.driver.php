@@ -33,12 +33,13 @@ class Driver_seq
 	 */	
 	public function _comm_list()
 	{
-		// Get our snippets
-		$db_obj = $this->EE->db->where('site_id', $this->EE->config->item('site_id'))->get('trigger_sequences');
+		$this->EE->load->model('sequences_mdl');
+	
+		$sequences = $this->EE->sequences_mdl->get_sequences();
+
+		$total = count($sequences);
 		
-		$total = $db_obj->num_rows();
-		
-		if($total == 0):
+		if($total == 0 or $sequences === FALSE):
 		
 			return trigger_lang('no_sequences');
 		
@@ -46,9 +47,9 @@ class Driver_seq
 		
 		$out = TRIGGER_BUFFER."\n";
 		
-		foreach($db_obj->result() as $sequence):
+		foreach($sequences as $sequence_name => $data):
 		
-			$out .= $sequence->name."\n";
+			$out .= $sequence_name."\n";
 		
 		endforeach;
 		
@@ -63,35 +64,51 @@ class Driver_seq
 	 * @access	public
 	 * @return	string
 	 */	
-	public function _comm_run($sequence_name)
+	public function _comm_run($sequence_data)
 	{
 		// Check for data
-		if(!$sequence_name):
+		if(!$sequence_data):
 		
 			return trigger_lang('no_name');
 		
 		endif;
 		
-		// We need our site ID
-		$site_id = $this->EE->config->item('site_id');
+		$this->EE->load->model('sequences_mdl');
+
+		// We could be passed a single string in which
+		// case we look in the sequences folder. Otherwise,
+		// we look into the packages
+		$items = explode('/', $sequence_data);
+
+		if(count($items) == 2):
 		
-		// Get the sequence
-		$this->EE->db->where('site_id', $site_id)->where('name', $sequence_name);
-		$db_obj = $this->EE->db->limit(1)->get('trigger_sequences');
+			$seq_name = trim($parts[1]);
 		
-		if($db_obj->num_rows() == 0):
+			// We have a package sequence
+			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($seq_name, $parts[0]);
+		
+		elseif(count($items) == 1):
+	
+			$seq_name = $sequence_data;
+	
+			// We have a package sequence
+			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($sequence_data, 'seqs');	
+		
+		else:
 		
 			return trigger_lang('invalid_sequence_name');
 		
 		endif;
-				
-		$sequence = $db_obj->row_array();
-		
+
 		// Run the sequence
 
 		$this->EE->load->library('Sequence');
 		
-		$out = $this->EE->sequence->run_sequence($sequence, 'log_string');
+		$out = $this->EE->sequence->run_sequence($sequence['commands'], $seq_name, 'log_string');
+		
+		// Reset the context.
+		// It is usually reset by the trigger library
+		$this->EE->trigger->context[1] = 'seq';
 		
 		return $out.trigger_lang('sequence_run');
 	}
