@@ -79,20 +79,20 @@ class Driver_seq
 		// case we look in the sequences folder. Otherwise,
 		// we look into the packages
 		$items = explode('/', $sequence_data);
-
+		
 		if(count($items) == 2):
 		
-			$seq_name = trim($parts[1]);
+			$seq_name = trim($items[1]);
 		
 			// We have a package sequence
-			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($seq_name, $parts[0]);
+			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($seq_name, $items[0]);
 		
 		elseif(count($items) == 1):
 	
 			$seq_name = $sequence_data;
 	
 			// We have a package sequence
-			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($sequence_data, 'seqs');	
+			$sequence = $this->EE->sequences_mdl->read_sequence_file_data($seq_name, 'seqs');	
 		
 		else:
 		
@@ -103,12 +103,20 @@ class Driver_seq
 		// Run the sequence
 
 		$this->EE->load->library('Sequence');
-		
-		$out = $this->EE->sequence->run_sequence($sequence['commands'], $seq_name, 'log_string');
+				
+		$out = $this->EE->sequence->run_sequence($sequence['commands'], $seq_name, $sequence['pre_checks'], 'log_string');
 		
 		// Reset the context.
 		// It is usually reset by the trigger library
 		$this->EE->trigger->context[1] = 'seq';
+		
+		// Check for a pre-check error
+		if($out{0} == '#'):
+		
+			$error = substr($out, 1);
+			return "sequence run failed pre-check: $error";
+		
+		endif;
 		
 		return $out.trigger_lang('sequence_run');
 	}
