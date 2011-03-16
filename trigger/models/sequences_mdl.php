@@ -126,7 +126,7 @@ class Sequences_mdl extends CI_Model
 			// Get the pre-check
 			if(substr($line, 0, 6) == '#check'):
 			
-				$seq_data['pre_checks'][] = trim($line);
+				$seq_data['pre_checks'][] = trim(substr($line, 7));
 			
 			endif;
 		
