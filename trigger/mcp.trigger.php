@@ -443,13 +443,13 @@ class Trigger_mcp {
 		$this->EE->load->library('pagination');
 		
 		$this->page_config['base_url'] 		= $this->module_base . AMP . 'method=sequences';
-		$this->page_config['total_rows'] 	= $this->EE->db->count_all('trigger_sequences');
 		
 		$this->EE->pagination->initialize( $this->page_config );
 	
 		$vars['pagination'] = $this->EE->pagination->create_links();
 		
 		$vars['sequences'] = $this->EE->sequences_mdl->get_sequences();
+
 
 		// -------------------------------------
 		// Load view sequences window
@@ -583,13 +583,21 @@ class Trigger_mcp {
 		
 		$this->EE->load->library('Sequence');
 		
-		$vars['log_lines'] = $this->EE->sequence->run_sequence($vars['sequence']['commands'], $vars['sequence']['title']);
+		$vars['log_lines'] = $this->EE->sequence->run_sequence(
+															$vars['sequence']['commands'],
+															$vars['sequence']['title'],
+															$vars['sequence']['pre_checks']);
 
-		// -------------------------------------
-		// Load Table Library for layout
-		// -------------------------------------
+		// Check for errors:
 		
-		$this->EE->load->library('Table');
+		if(is_string($vars['log_lines']) and $vars['log_lines']{0} == '#'):
+		
+			// Strip out the # sign
+			$vars['log_lines'] = substr($vars['log_lines'], 1);
+		
+			show_error("Sequence pre-checks returned the following error: <span style='color: red;'>".$vars['log_lines']."</span>");
+			
+		endif;
 
 		// -------------------------------------
 		// Get an array of users
