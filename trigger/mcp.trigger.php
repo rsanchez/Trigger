@@ -36,7 +36,7 @@ class Trigger_mcp {
 			'trigger_logs' => 
 				$this->module_base . AMP . 'method=logs'
 		);
-		
+
 		// -------------------------------------
 		// Default pagination config
 		// -------------------------------------		
@@ -239,7 +239,6 @@ class Trigger_mcp {
 		else:
 
 			$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
-			
 			$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=logs', $this->EE->lang->line('trigger_logs'));
 			
 			$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_clear_logs'));				
@@ -464,6 +463,8 @@ class Trigger_mcp {
 		// Load view sequences window
 		// -------------------------------------
 
+		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
+
 		return $this->EE->load->view('sequences/list_sequences', $vars, TRUE); 		
 	}
 
@@ -496,6 +497,8 @@ class Trigger_mcp {
 		// Load list of packages
 		// -------------------------------------
 
+		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
+
 		return $this->EE->load->view('packages/list_packages', $vars, TRUE); 		
 	}
 
@@ -513,8 +516,6 @@ class Trigger_mcp {
 		$this->EE->cp->set_right_nav($this->nav);
 		
 		$this->EE->load->helper('inflector');
-
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_package_contents'));
 		
 		$vars['module_base'] = $this->module_base;
 
@@ -538,6 +539,11 @@ class Trigger_mcp {
 		// Load list of packages
 		// -------------------------------------
 
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_package_contents').': '.$vars['details']['name']);
+
+		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
+		$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=packages', $this->EE->lang->line('trigger_packages'));
+
 		return $this->EE->load->view('packages/list_package_contents', $vars, TRUE);
 	}
 
@@ -559,6 +565,7 @@ class Trigger_mcp {
 		// Ask if we want to run it
 		// -------------------------------------
 
+		$this->EE->cp->set_breadcrumb($this->module_base, $this->EE->lang->line('trigger_module_name'));
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('trigger_run_sequence'));
 
 		return $this->EE->load->view('sequences/run_sequence', $vars, TRUE); 		
