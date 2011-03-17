@@ -1,0 +1,11 @@
+title: Pre-Launch
+desc: Things to do before Launch.
+author: Addict Add-ons
+author url: http://www.addictaddons.com
+
+TRIGGER SEQUENCE START
+ee : templates : sync
+ee : site : clear cache
+ee : site : disable op
+ee : site : online
+TRIGGER SEQUENCE END
