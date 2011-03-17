@@ -28,8 +28,8 @@
 	<td><?php echo $seq_name; ?></td>
 	<td><?php echo $sequence['desc']; ?></td>
 	<td><?php echo $sequence['lines']; ?></td>
-	<td><?php echo $sequence['created_by']; ?></td>
-	<td><a href="<?php echo $module_base.AMP.'method=run_sequence'.AMP.'sequence='.$seq_name.AMP.'location='.$seq['loc'];?>">Run</a></td>
+	<td><?php if(isset($sequence['author_url']) and $sequence['author_url'] != ''): ?><a href="<?php echo $this->cp->masked_url($sequence['author_url']);?>"><?php echo $sequence['author']; ?></a><?php else: echo $sequence['author']; endif; ?></td>
+	<td><a href="<?php echo $module_base.AMP.'method=run_sequence'.AMP.'sequence='.$seq_name.AMP.'location='.$seq['loc'];?>"><strong>Run</strong></a></td>
 </tr>		
 
 <?php $count++; endforeach; ?>
