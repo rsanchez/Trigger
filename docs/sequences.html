@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+
+	<title>Sequences | Trigger Documentation</title>
+
+	<meta charset="utf-8"> 
+	<meta name="generator" content="CodeIgniter 2.0" /> 
+
+	<link rel="stylesheet" type="text/css" media="all" href="css/style.css" /> 
+
+</head>
+
+<body>
+
+	<header>
+	
+		<h2>Trigger Documentation</h2>
+		
+		<p class="breadcrumbs"><a href="index.html">Home</a> &#187; Variables</p>
+	
+	</header>
+
+	<section id="main_content">
+		
+		<ul>
+			<li><a href="basics.html">Trigger Basics</a></li>
+			<li><a href="variables.html">Variables</a></li>
+			<li><a href="sequences.html">Sequences</a></li>
+			<li><a href="packages.html">Packages</a></li>
+			<li><a href="drivers">Drivers References</a></li>
+		</ul>
+	
+		<h1>Sequences</h1>
+		
+		<p>If you use EE enough you will find yourself doing the same thing over and over again. Trigger sequences are a way to automate your EE workflow by automatically running a list of Trigger commands. These can be used for something as simple as a pre-launch sequence of commands, to a list of commands that builds an entire blog.</p>
+		
+		<h2>Sequence Structure</h2>
+		
+		<p>Sequences are stored as plain text files with a <strong>.txt</strong> extension, and are places in the <strong>sequences</strong> folder within Trigger. Using text files allows you to easily transport frequently used sequences from site to site. Each file has a simple naming structure:</p>
+		
+		<pre><code>seq.pre_launch.txt</code></pre>
+		
+		<p>In the above example, the text in between the prefix (seq.) and suffix (.txt) is the name of the sequence. Each sequence needs a unique name.</p>
+		
+		<p>Sequences have a standard internal structure that contains both data about the sequence and the Trigger commands:</p>
+		
+		<pre><code>title: Pre-Launch
+desc: Things to do before Launch.
+author: Adam Fairholm
+author url: http://www.addictaddons.com
+
+TRIGGER SEQUENCE START
+ee : templates : sync
+ee : site : clear cache
+ee : site : disable op
+ee : site : online
+TRIGGER SEQUENCE END</code></pre>
+
+		<p>As you can probably guess, the top part of the sequence contains the data. Here are the data points you can provide:</p>
+		
+		<table cellpadding="0" cellspacing="0">
+		
+		<thead>
+			<tr>
+				<th>Data Piece</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr>
+				<td>title</td>
+				<td>The title of the sequence.</td>
+			</tr>
+			<tr>
+				<td>desc</td>
+				<td>A short description of what the sequence does.</td>
+			</tr>
+			<tr>
+				<td>author</td>
+				<td>Your name.</td>
+			</tr>
+			<tr>
+				<td>author url</td>
+				<td>Optional. A full web address for you.</td>
+			</tr>
+			<tr>
+				<td>created</td>
+				<td>Optional. A timestamp for when this sequence was created.</td>
+			</tr>
+		
+		</tbody>
+		
+		</table>
+		
+		<h2>Running Sequences</h2>
+		
+		<p>There are two ways to run a sequence. One is from the Trigger Sequences panel where you can see a list of sequences and run them. Trigger will show you the lines you are about to run. The next is with the sequence driver, where you can run it like this:</p>
+		
+		<pre><code>ee : seq : run (pre_launch)</code></pre>
+		
+		<h2>Sequence Pre-Checks</h2>
+		
+		<p>Once a sequence starts, it just rams through all of its commands, so it is a good idea to check to make sure it is okay to run the commands before you do. You can do this by adding check lines before the sequence. These look like this:</p>
+		
+		<pre><code>#check snippet header does not exist</code></pre>
+		
+		<p>This will look for a snipper called "header" and will not allow you to run the sequence if it finds one. Right now you can look to see if snippets ("snippet"), global variables ("global_var"), and templates ("template") exist.</p>
+		
+	</section>
+	
+	<footer>
+	
+		<p>&copy;2011 Addict Add-ons</p>
+	
+	</footer>
+
+</body>
+
+</html>
