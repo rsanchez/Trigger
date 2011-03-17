@@ -1,10 +1,19 @@
 <?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger Accessory
+ *
+ * @package		Trigger
+ * @category	accessories
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2011, Addict Add-ons
+ */
+ 
 class Trigger_acc {
 
 	var $name			= 'Trigger';
 	var $id				= 'trigger';
-	var $version		= '0.5 alpha';
+	var $version		= '0.9';
 	var $description	= 'Quickly access the Trigger command line.';
 
 	/**
@@ -15,6 +24,8 @@ class Trigger_acc {
 		$this->EE =& get_instance();
 	}
 
+	// --------------------------------------------------------------------------
+	
 	/**
 	 * Set Sections
 	 *
@@ -34,4 +45,3 @@ class Trigger_acc {
 }
 
 /* End of file acc.trigger.php */
-/* Location: ./Trigger/trigger/acc.trigger.php */
