@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+
+	<title>Templates Driver | Trigger Documentation</title>
+
+	<meta charset="utf-8"> 
+	<meta name="generator" content="CodeIgniter 2.0" /> 
+
+	<link rel="stylesheet" type="text/css" media="all" href="../css/style.css" /> 
+
+</head>
+
+<body>
+
+	<header>
+	
+		<h2>Trigger Documentation</h2>
+		
+		<p class="breadcrumbs"><a href="../index.html">Home</a> &#187; <a href="index.html">Command Reference</a> &#187; Templates Driver</p>
+	
+	</header>
+
+	<section id="main_content">
+		
+		<ul>
+			<li><a href="../basics.html">Trigger Basics</a></li>
+			<li><a href="../variables.html">Variables</a></li>
+			<li><a href="../sequences.html">Sequences</a></li>
+			<li><a href="../packages.html">Packages</a></li>
+			<li>Command Reference</li>
+			<li><a href="../vars_reference.html">Variable Reference</a></li>
+		</ul>
+	
+		<h2>Drivers</h2>
+		
+		<ul>
+			<li><a href="channels.html">Channels</a></li>
+			<li><a href="global_variables.html">Global Variables</a></li>
+			<li><a href="template_groups.html">Template Groups</a></li>
+			<li><a href="trigger_logs.html">Trigger Logs</a></li>
+			<li><a href="trigger_packages.html">Trigger Packages</a></li>
+			<li><a href="trigger_sequences.html">Trigger Sequences</a></li>
+			<li><a href="site.html">Site</a></li>
+			<li><a href="snippets.html">Snippets</a></li>
+			<li>Templates</li>
+		</ul>
+		
+		<h1>Templates</h1>
+		
+		<h3>Driver slug: <span>templates</span></h3>
+		
+		<p>The templates driver deals with EE templates (and sometimes groups).</p>
+
+		<h2>sync</h2>
+		
+		<p>Syncs all templates. File templates and groups will be updated and created in the database. Things found in the database not found in the filesystem will be created.</p>
+		
+		<h2>new <span>(group/template, content, [type], [save_as_file-y or n])</span></h2>
+		
+		<p>Creates a template within a group. If the group doesn't exist, Trigger will create it. Obeys the config that allows templates to be saved as files (if it is set to yes the necessary files will be created in the filesystem).</p>
+		
+		<p>Additionally, if no group is supplied, it will be added to the site's default group.</p>
+		
+		<h2>enable strict urls</h2>
+		
+		<p>Enables strict URLs.</p>
+		
+		<h2>disable strict urls</h2>
+		
+		<p>Disables strict URLs.</p>
+		
+		<h2>save template revs</h2>
+		
+		<p>Sets save template revisions to yes.</p>
+		
+		<h2>dont save template revs</h2>
+
+		<p>Sets save template revisions to no.</p>
+		
+		<h2>max number of revs <span>(# of revs)</span></h2>
+		
+		<p>Sets the max number of template revisions.</p>
+		
+		<h2>allow as files</h2>
+		
+		<p>Allows templates to be saved as files.</p>
+		
+		<h2>disallow as files</h2>
+		
+		<p>Disallows templates to be saved as files.</p>
+		
+		<h2>set base <span>(basepath)</span></h2>
+
+		<p>Sets the template file basepath.</p>
+
+	</section>
+	
+	<footer>
+	
+		<p>&copy;2011 Addict Add-ons</p>
+	
+	</footer>
+
+</body>
+
+</html>
