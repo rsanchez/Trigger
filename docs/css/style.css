@@ -25,7 +25,7 @@ header p.breadcrumbs a:hover {color: #000;}
 
 #main_content p {font-size: 12px; color: #616161; line-height: 20px; margin-bottom: 20px;}
 #main_content h1 {font-size: 30px; margin-bottom: 20px;}
-#main_content code {background: #EBF3F5; padding: 10px; width: 620px; display: block; border: 1px solid #CEE5EB; color: #3C4649; text-shadow: 1px 1px 1px #fff; margin-bottom: 20px;}
+#main_content code {background: #EBF3F5; padding: 10px; width: 620px; display: block; border: 1px solid #CEE5EB; color: #3C4649; text-shadow: 1px 1px 1px #fff; margin-bottom: 20px; font-size: 12px; line-height: 20px;}
 #main_content ul {font-size: 12px; line-height: 20px; margin-bottom: 20px; color: #616161; font-weight: bold;}
 #main_content ul a {font-weight: bold;}
 #main_content a {color: #3572AC; text-decoration: none;}
