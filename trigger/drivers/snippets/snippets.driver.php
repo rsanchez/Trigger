@@ -62,7 +62,7 @@ class Driver_snippets
 	 * @access	public
 	 * @return	string
 	 */	
-	public function _comm_new($snippet_name)
+	public function _comm_new($snippet_name, $snippet_content = '')
 	{
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
@@ -97,7 +97,7 @@ class Driver_snippets
 		// Add it
 		$snippet_data['snippet_name']		= $snippet_name;
 		$snippet_data['site_id']			= $site_id;
-		$snippet_data['snippet_contents']	= '';
+		$snippet_data['snippet_contents']	= $snippet_content;
 		
 		if($this->EE->db->insert('snippets', $snippet_data)):
 		
