@@ -17,7 +17,7 @@ class Trigger_mcp {
 
 	// --------------------------------------------------------------------------
 	
-	function Trigger_mcp()
+	function __construct()
 	{
 		$this->EE =& get_instance();
 		
