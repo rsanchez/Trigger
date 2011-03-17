@@ -34,3 +34,5 @@ header p.breadcrumbs a:hover {color: #000;}
 #main_content table {font-size: 12px; text-align: left; width: 640px; margin-bottom: 15px;}
 #main_content table td {padding: 5px; background: #F2F3F5;}
 #main_content table th {padding: 5px; background: #838588; color: #fff; font-weight: bold;}
+#main_content h3 {font-size: 14px; margin-bottom: 15px;}
+#main_content h3 span {color: #919191;}
