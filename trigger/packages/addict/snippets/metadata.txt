@@ -1,0 +1,14 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+ 
+	<title>Sample Site</title> 
+ 
+	<meta charset="utf-8"> 
+	<meta name="generator" content="ExpressionEngine {app_version}" /> 
+ 
+	<link rel="stylesheet" type="text/css" media="all" href="{stylesheet=site/style}" /> 
+ 
+</head> 
+ 
+<body> 

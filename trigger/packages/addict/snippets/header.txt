@@ -1,0 +1,5 @@
+<header>
+
+	<h2>Welcome to This Default Site!</h2>
+
+</header>

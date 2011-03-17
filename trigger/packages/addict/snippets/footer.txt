@@ -1,0 +1,7 @@
+<footer>
+
+	<p>&copy;2011, You</p>
+	
+	<p>Follow us on Twitter at <a href="http://twitter.com/{twitter_handle}">{twitter_handle}</a>
+
+</footer>

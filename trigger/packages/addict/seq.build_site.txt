@@ -1,0 +1,23 @@
+title: Build Site Structure
+desc: Builds a basic site structure.
+author: Addict Add-ons
+author url: http://www.addictaddons.com
+
+#check global_var twitter_handle does not exist
+#check snippet metadata does not exist
+#check snippet header does not exist
+#check snippet footer does not exist
+#check template site/style does not exist
+#check template site/index does not exist
+
+TRIGGER SEQUENCE START
+ee : globals : new (twitter_handle, addictaddons)
+ee : snippets : new (metadata, p.addict/snippets/metadata.txt)
+ee : snippets : new (header, p.addict/snippets/header.txt)
+ee : snippets : new (footer, p.addict/snippets/footer.txt)
+ee : templates : dont save template revs
+ee : templates : allow as files
+ee : templates : set base ({ee_path}templates)
+ee : templates : new (site/style, p.addict/templates/style, css_stylesheet)
+ee : templates : new (site/index, p.addict/templates/home)
+TRIGGER SEQUENCE END

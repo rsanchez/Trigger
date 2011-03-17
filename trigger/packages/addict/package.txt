@@ -1,0 +1,5 @@
+name: Addict Add-ons Site Structure
+description: Basic site structure for a site
+author: Addict Add-ons
+author url: http://www.addictaddons.com
+copyright: 2011 Addict Add-ons
