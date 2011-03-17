@@ -75,11 +75,11 @@ class Package_mdl extends CI_Model
 		// Break up into key/vals
 		foreach($lines as $line):
 		
-			$line_info = explode(":", trim($line));
+			$line_info = explode(":", trim($line), 2);
 		
 			if(count($line_info)==2):
 			
-				$info[$line_info[0]] = $line_info[1];
+				$info[trim(str_replace(' ', '_', $line_info[0]))] = trim($line_info[1]);
 			
 			endif;
 		
