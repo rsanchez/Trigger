@@ -7,6 +7,8 @@ class Trigger_upd {
     function Trigger_upd() 
     { 
 		$this->EE =& get_instance();
+
+		$this->EE->load->dbforge();
     }
 
 	// --------------------------------------------------------------------------
@@ -15,23 +17,22 @@ class Trigger_upd {
     {
 		$outcome = TRUE;
 		
-		$this->EE->load->dbforge();
-
 		// -------------------------------------
 		// Create the Log Table
 		// -------------------------------------
 			
 		$log_fields = array(
-            'log_time' 		=> array( 'type' => 'INT', 'constraint' => 11 ),
-            'user_id' 		=> array( 'type' => 'INT', 'constraint' => 6 ),
-            'command' 		=> array( 'type' =>'VARCHAR', 'constraint' => '255'),
-            'result' 		=> array( 'type' => 'TEXT'));
+            'log_time' 		=> array('type' => 'INT', 'constraint' => 11),
+            'user_id' 		=> array('type' => 'INT', 'constraint' => 6),
+            'command' 		=> array('type' =>'VARCHAR', 'constraint' => '255'),
+            'type' 			=> array('type' =>'VARCHAR', 'constraint' => '20'),
+            'result' 		=> array('type' => 'TEXT'));
             
-        $this->dbforge->add_field( $log_fields );
+        $this->EE->dbforge->add_field($log_fields);
             
-		$this->dbforge->add_field( 'id' );
+		$this->EE->dbforge->add_field('id');
 		
-		$outcome = $this->dbforge->create_table('trigger_log');
+		$outcome = $this->EE->dbforge->create_table('trigger_log');
 	
 		// -------------------------------------
 		// Register the Module
@@ -62,8 +63,11 @@ class Trigger_upd {
 	{
 		$outcome = TRUE;
 		
+		// Drop from the modules table
+		$outcome = $this->EE->db->where('module_name', 'Trigger')->delete('modules');
+		
 		// Drop log table	
-		$outcome = $this->dbforge->drop_table('trigger_log');
+		$outcome = $this->EE->dbforge->drop_table('trigger_log');
 	
 		return $outcome;
 	}
