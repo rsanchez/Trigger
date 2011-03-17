@@ -115,11 +115,11 @@ class Sequences_mdl extends CI_Model
 			
 			endif;
 			
-			$parts = explode(':', $line);
-			
+			$parts = explode(':', $line, 2);
+						
 			if(count($parts) == 2):
 			
-				$seq_data[str_replace(' ', '_', $parts[0])] = $parts[1];
+				$seq_data[str_replace(' ', '_', trim($parts[0]))] = trim($parts[1]);
 			
 			endif;
 			
