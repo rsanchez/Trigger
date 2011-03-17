@@ -45,10 +45,9 @@ class Driver_channels
 	 */
 	public function _comm_new($channel_title, $channel_name = '', $channel_content = '')
 	{
-		
 		if(!$channel_title):
 
-			return trigger_lang('no_name');
+			return "no channel name provided";
 		
 		endif;
 
@@ -56,11 +55,11 @@ class Driver_channels
 		$channel_data['channel_title'] 	= $channel_title;
 
 		// We will just guess the name if we don't have it
-		if(!$channel_name)
+		if(!$channel_name):
 
 			$this->EE->load->helper('url');
 
-			$channel_data['channel_name']	= url_title($channel_name, 'dash', TRUE);
+			$channel_data['channel_name']	= url_title($channel_title, 'dash', TRUE);
 		
 		else:
 		
@@ -91,7 +90,7 @@ class Driver_channels
 	 * @return	string
 	 */	
 	function _comm_list()
-	{
+	{	
 		$call = $this->EE->api_channel_structure->get_channels($this->EE->config->item('site_id'));
 		
 		if( !$call ):
