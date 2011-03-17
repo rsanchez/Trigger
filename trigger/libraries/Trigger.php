@@ -391,9 +391,9 @@ class Trigger
 				$driver_class = 'Driver_'.$driver_slug;
 				
 				$this->driver = new $driver_class();
-			
+		
 			else:
-			
+		
 				// We can't go on without a driver file
 				$this->out = "missing driver file";
 				
@@ -464,7 +464,7 @@ class Trigger
 			return TRUE;
 			
 		endif;
-		
+				
 		return FALSE;
 	}
 
@@ -661,7 +661,7 @@ class Trigger
 		
 		if(isset($this->EE->session->userdata['language']) and $this->EE->session->userdata['language'] != ''):
 		
-			$user_lang = $EE->session->userdata['language'];
+			$user_lang = $this->EE->session->userdata['language'];
 		
 		else:
 		
