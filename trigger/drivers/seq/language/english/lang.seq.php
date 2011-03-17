@@ -1,16 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$driver_lang = array(
+$lang = array(
 
-	'driver_name'				=> "Sequences",
-	'driver_desc'				=> "Controls Trigger Sequences.",
+	'seq.driver_name'				=> "Sequences",
+	'seq.driver_desc'				=> "Controls Trigger Sequences.",
 
 	// --------------------------------------------------------------------------	
 
-	'no_sequences'				=> "no sequences found",
-	'no_name'					=> "no sequence name provided",
-	'sequence_run'				=> "sequence run",
-	'invalid_sequence_name'		=> "invalid sequence name"
+	'seq.no_sequences'				=> "no sequences found",
+	'seq.no_name'					=> "no sequence name provided",
+	'seq.sequence_run'				=> "sequence run",
+	'seq.invalid_sequence_name'		=> "invalid sequence name"
 
 );
 

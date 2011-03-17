@@ -39,7 +39,7 @@ class Driver_snippets
 		
 		if($total == 0):
 		
-			return trigger_lang('no_snippets');
+			return $this->EE->lang->line('snippets.no_snippets');
 		
 		endif;
 		
@@ -67,14 +67,14 @@ class Driver_snippets
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
 		// Check for data
 		if(!$snippet_name):
 		
-			return trigger_lang('no_name');
+			return $this->EE->lang->line('snippets.no_name');
 		
 		endif;
 		
@@ -90,7 +90,7 @@ class Driver_snippets
 		
 		if($db_obj->num_rows() == 1):
 		
-			return trigger_lang('snippet_already_exits');
+			return $this->EE->lang->line('snippets.snippet_already_exits');
 		
 		endif;
 		
@@ -101,11 +101,11 @@ class Driver_snippets
 		
 		if($this->EE->db->insert('snippets', $snippet_data)):
 		
-			return trigger_lang('snippet_add_success');
+			return $this->EE->lang->line('snippets.snippet_add_success');
 		
 		else:
 		
-			return trigger_lang('snippet_add_error');
+			return $this->EE->lang->line('snippets.snippet_add_error');
 		
 		endif;
 	}
@@ -123,14 +123,14 @@ class Driver_snippets
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
 		// Check for data
 		if(!$snippet_name):
 		
-			return trigger_lang('trigger_no_data');
+			return $this->EE->lang->line('snippets.trigger_no_data');
 		
 		endif;
 		
@@ -139,7 +139,7 @@ class Driver_snippets
 					->where('snippet_name', $snippet_name)
 					->delete('snippets');
 		
-		return trigger_lang('snippet_delete_success');
+		return $this->EE->lang->line('snippets.snippet_delete_success');
 	}
 
 	// --------------------------------------------------------------------------
@@ -155,7 +155,7 @@ class Driver_snippets
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
@@ -163,7 +163,7 @@ class Driver_snippets
 					->where('site_id', $this->EE->config->item('site_id'))
 					->delete('snippets');
 		
-		return trigger_lang('all_snippets_deleted');
+		return $this->EE->lang->line('snippets.all_snippets_deleted');
 	}
 
 }

@@ -48,13 +48,13 @@ class Driver_templates
 	
 		if ( $this->EE->config->item('save_tmpl_files') != 'y' ):
 		
-			return trigger_lang('no_saved_as_files');
+			return $this->EE->lang->line('templates.no_saved_as_files');
 		
 		endif;
 
 		if ( $this->EE->config->item('tmpl_file_basepath') == '' ):
 		
-			return trigger_lang('basepath_not_set');
+			return $this->EE->lang->line('templates.basepath_not_set');
 		
 		endif;
 		
@@ -62,7 +62,7 @@ class Driver_templates
 		
 		$this->EE->sync->sync_all();
 		
-		return trigger_lang('templates_synced');
+		return $this->EE->lang->line('templates.templates_synced');
 	}
 
 	// --------------------------------------------------------------------------

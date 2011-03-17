@@ -41,7 +41,7 @@ class Driver_pack
 		
 		if($total == 0 or $packages === FALSE):
 		
-			return trigger_lang('no_packages');
+			return $this->EE->lang->line('pack.no_packages');
 		
 		endif;
 		

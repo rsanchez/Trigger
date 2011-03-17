@@ -1,19 +1,19 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$driver_lang = array(
+$lang = array(
 
-	'driver_name'				=> "Snippets",
-	'driver_desc'				=> "Controls EE snippets.",
+	'snippets.driver_name'				=> "Snippets",
+	'snippets.driver_desc'				=> "Controls EE snippets.",
 
 	// --------------------------------------------------------------------------	
 
-	'no_name'					=> "no snippet name provided",
-	'snippet_add_success'		=> "snippet added successfully",
-	'snippet_add_error'			=> "there was an error adding your snippet",
-	'snippet_already_exits'		=> "this snippet already exits",
-	'snippet_delete_success'	=> "snippet deleted successfully",
-	'no_snippets'				=> "no snippets found",
-	'all_snippets_deleted'		=> "all snippets deleted"
+	'snippets.no_name'					=> "no snippet name provided",
+	'snippets.snippet_add_success'		=> "snippet added successfully",
+	'snippets.snippet_add_error'		=> "there was an error adding your snippet",
+	'snippets.snippet_already_exits'	=> "this snippet already exits",
+	'snippets.snippet_delete_success'	=> "snippet deleted successfully",
+	'snippets.no_snippets'				=> "no snippets found",
+	'snippets.all_snippets_deleted'		=> "all snippets deleted"
 
 );
 

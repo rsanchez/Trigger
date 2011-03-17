@@ -1,13 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$driver_lang = array(
+$lang = array(
 
-	'driver_name'				=> "Pack",
-	'driver_desc'				=> "Controls Trigger Packages.",
+	'pack.driver_name'				=> "Pack",
+	'pack.driver_desc'				=> "Controls Trigger Packages.",
 
 	// --------------------------------------------------------------------------	
 
-	'no_packages'				=> "no packages found"
+	'pack.no_packages'				=> "no packages found"
 
 );
 

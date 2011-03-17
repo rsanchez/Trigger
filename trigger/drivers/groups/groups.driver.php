@@ -161,7 +161,7 @@ class Driver_groups
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 
@@ -177,11 +177,11 @@ class Driver_groups
 		
 		// NEED TO BE ABLE TO DELETE THE FILES / FOLDERS AS WELL
 		
-		$this->EE->db
+		/*$this->EE->db
 					->where('site_id', $this->EE->config->item('site_id'))
 					->delete('snippets');
 		
-		return trigger_lang('all_snippets_deleted');
+		return "all_snippets_deleted";*/
 	}
 
 }

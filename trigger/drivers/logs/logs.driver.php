@@ -34,7 +34,7 @@ class Driver_logs
 	{
 		clear_logs();
 		
-		return trigger_lang('logs_cleared');
+		return $this->EE->lang->line('logs.logs_cleared');
 	}	
 
 	// --------------------------------------------------------------------------

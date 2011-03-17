@@ -1,15 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$driver_lang = array(
+$lang = array(
 
-	'driver_name'					 	=> "Templates",
-	'driver_desc'						=> "Controls EE templates actions.",
+	'templates.driver_name'					 	=> "Templates",
+	'templates.driver_desc'						=> "Controls EE templates actions.",
 
 	// --------------------------------------------------------------------------	
 
-	'templates_synced'					=> "templates synced",
-	'no_saved_as_files'					=> "templates cannot be saved as files",
-	'basepath_not_set'					=> "templates file basepath not set",
+	'templates.templates_synced'				=> "templates synced",
+	'templates.no_saved_as_files'				=> "templates cannot be saved as files",
+	'templates.basepath_not_set'				=> "templates file basepath not set",
 
 );
 

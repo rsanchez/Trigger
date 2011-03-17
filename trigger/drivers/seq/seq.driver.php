@@ -41,7 +41,7 @@ class Driver_seq
 		
 		if($total == 0 or $sequences === FALSE):
 		
-			return trigger_lang('no_sequences');
+			return $this->EE->lang->line('seq.no_sequences');
 		
 		endif;
 		
@@ -69,7 +69,7 @@ class Driver_seq
 		// Check for data
 		if(!$sequence_data):
 		
-			return trigger_lang('no_name');
+			return $this->EE->lang->line('seq.no_name');
 		
 		endif;
 		
@@ -96,7 +96,7 @@ class Driver_seq
 		
 		else:
 		
-			return trigger_lang('invalid_sequence_name');
+			return $this->EE->lang->line('seq.invalid_sequence_name');
 		
 		endif;
 
@@ -118,7 +118,7 @@ class Driver_seq
 		
 		endif;
 		
-		return $out.trigger_lang('sequence_run');
+		return $out.$this->EE->lang->line('seq.sequence_run');
 	}
 
 }

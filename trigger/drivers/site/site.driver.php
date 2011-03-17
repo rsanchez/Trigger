@@ -25,17 +25,17 @@ class Driver_site
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Take the site offline
+	 * Take the site online
 	 */
-	function _comm_offline()
+	function _comm_online()
 	{
-		if( $this->_change_preference('is_system_on', 'n') ):
+		if( $this->_change_preference('is_system_on', 'y') ):
 		
-			return trigger_lang('site_offline');
+			return $this->EE->lang->line('site.site_online');
 		
 		else:
 		
-			return trigger_lang('site_already_offline');
+			return $this->EE->lang->line('site.site_already_online');
 	
 		endif;
 	}
@@ -43,17 +43,17 @@ class Driver_site
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Take the site online
+	 * Take the site offline
 	 */
-	function _comm_online()
+	function _comm_offline()
 	{
-		if( $this->_change_preference('is_system_on', 'y') ):
+		if( $this->_change_preference('is_system_on', 'n') ):
 		
-			return trigger_lang('site_online');
+			return $this->EE->lang->line('site.site_offline');
 		
 		else:
 		
-			return trigger_lang('site_already_online');
+			return $this->EE->lang->line('site.site_already_offline');
 	
 		endif;
 	}
@@ -67,11 +67,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('show_profiler', 'y') ):
 		
-			return trigger_lang('profiler_enabled');
+			return $this->EE->lang->line('site.profiler_enabled');
 		
 		else:
 		
-			return trigger_lang('profiler_already_enabled');
+			return $this->EE->lang->line('site.profiler_already_enabled');
 	
 		endif;
 	}
@@ -85,11 +85,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('show_profiler', 'n') ):
 		
-			return trigger_lang('profiler_disabled');
+			return $this->EE->lang->line('site.profiler_disabled');
 		
 		else:
 		
-			return trigger_lang('profiler_already_disabled');
+			return $this->EE->lang->line('site.profiler_already_disabled');
 	
 		endif;
 	}
@@ -103,11 +103,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('template_debugging', 'y') ):
 		
-			return trigger_lang('templ_debug_enabled');
+			return $this->EE->lang->line('site.templ_debug_enabled');
 		
 		else:
 		
-			return trigger_lang('templ_debug_already_enabled');
+			return $this->EE->lang->line('site.templ_debug_already_enabled');
 	
 		endif;
 	}
@@ -121,11 +121,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('template_debugging', 'n') ):
 		
-			return trigger_lang('templ_debug_disabled');
+			return $this->EE->lang->line('site.templ_debug_disabled');
 		
 		else:
 		
-			return trigger_lang('templ_debug_already_disabled');
+			return $this->EE->lang->line('site.templ_debug_already_disabled');
 	
 		endif;
 	}
@@ -136,11 +136,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('debug', '0') ):
 		
-			return trigger_lang('debug_set_0');
+			return $this->EE->lang->line('site.debug_set_0');
 		
 		else:
 		
-			return trigger_lang('debug_already_set_0');
+			return $this->EE->lang->line('site.debug_already_set_0');
 	
 		endif;
 	}
@@ -151,11 +151,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('debug', '1') ):
 		
-			return trigger_lang('debug_set_1');
+			return $this->EE->lang->line('site.debug_set_1');
 		
 		else:
 		
-			return trigger_lang('debug_already_set_1');
+			return $this->EE->lang->line('site.debug_already_set_1');
 	
 		endif;
 	}
@@ -166,11 +166,11 @@ class Driver_site
 	{
 		if( $this->_change_preference('debug', '2') ):
 		
-			return trigger_lang('debug_set_2');
+			return $this->EE->lang->line('site.debug_set_2');
 		
 		else:
 		
-			return trigger_lang('debug_already_set_2');
+			return $this->EE->lang->line('site.debug_already_set_2');
 	
 		endif;
 	}
@@ -184,7 +184,7 @@ class Driver_site
 	{
 		$this->_cache_clear( 'all' );
 
-		return trigger_lang('cache_files_deleted');
+		return $this->EE->lang->line('site.cache_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -196,7 +196,7 @@ class Driver_site
 	{
 		$this->_cache_clear( 'page' );
 
-		return trigger_lang('cache_page_files_deleted');
+		return $this->EE->lang->line('site.cache_page_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -208,7 +208,7 @@ class Driver_site
 	{
 		$this->_cache_clear( 'db' );
 
-		return trigger_lang('cache_db_files_deleted');
+		return $this->EE->lang->line('site.cache_db_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -220,7 +220,7 @@ class Driver_site
 	{
 		$this->_cache_clear( 'relationships' );
 
-		return trigger_lang('cache_rel_files_deleted');
+		return $this->EE->lang->line('site.cache_rel_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------
@@ -232,7 +232,7 @@ class Driver_site
 	{
 		$this->_cache_clear( 'tag' );
 
-		return trigger_lang('cache_tag_files_deleted');
+		return $this->EE->lang->line('site.cache_tag_files_deleted');
 	}
 
 	// --------------------------------------------------------------------------

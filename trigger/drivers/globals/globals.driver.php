@@ -39,7 +39,7 @@ class Driver_globals
 		
 		if($total == 0):
 		
-			return trigger_lang('no_variables');
+			return $this->EE->lang->line('globals.no_variables');
 		
 		endif;
 		
@@ -81,14 +81,14 @@ class Driver_globals
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
 		// Check for a global name at least
 		if(!$global_name):
 		
-			return trigger_lang('no_data');
+			return $this->EE->lang->line('globals.no_data');
 		
 		endif;
 		
@@ -103,7 +103,7 @@ class Driver_globals
 		
 		if($query->num_rows() == 1):
 		
-			return trigger_lang('var_already_exits');
+			return $this->EE->lang->line('globals.var_already_exits');
 		
 		endif;
 		
@@ -120,11 +120,11 @@ class Driver_globals
 		
 		if($this->EE->db->insert('global_variables', $global_data)):
 		
-			return trigger_lang('global_add_success');
+			return $this->EE->lang->line('globals.global_add_success');
 		
 		else:
 		
-			return trigger_lang('global_add_error');
+			return $this->EE->lang->line('globals.global_add_error');
 		
 		endif;
 	}
@@ -142,14 +142,14 @@ class Driver_globals
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 
 		// Check for data
 		if(!$global_name):
 		
-			return trigger_lang('no_data');
+			return $this->EE->lang->line('globals.no_data');
 		
 		endif;
 		
@@ -158,7 +158,7 @@ class Driver_globals
 					->where('variable_name', $global_name)
 					->delete('global_variables');
 		
-		return trigger_lang('globals_delete_success');
+		return $this->EE->lang->line('globals.globals_delete_success');
 	}
 
 	// --------------------------------------------------------------------------
@@ -174,7 +174,7 @@ class Driver_globals
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
@@ -183,7 +183,7 @@ class Driver_globals
 		// without a second value to clear it
 		if(!$global_name):
 		
-			return trigger_lang('no_data');
+			return $this->EE->lang->line('globals.no_data');
 		
 		endif;
 
@@ -198,7 +198,7 @@ class Driver_globals
 		
 		if($db_obj->num_rows() == 0):
 		
-			return trigger_lang('var_not_found');
+			return $this->EE->lang->line('globals.var_not_found');
 		
 		endif;
 		
@@ -209,11 +209,11 @@ class Driver_globals
 		
 		if($this->EE->db->update('global_variables', $global_data)):
 		
-			return trigger_lang('global_set_success');
+			return $this->EE->lang->line('globals.global_set_success');
 		
 		else:
 		
-			return trigger_lang('global_set_error');
+			return $this->EE->lang->line('globals.global_set_error');
 		
 		endif;
 	}
@@ -231,7 +231,7 @@ class Driver_globals
 		// Check for access
 		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 
-			return trigger_lang('trigger_no_access');
+			return $this->EE->lang->line('trigger_no_access');
 			
 		endif;
 	
@@ -240,7 +240,7 @@ class Driver_globals
 					->where('site_id', $this->EE->config->item('site_id'))
 					->delete('global_variables');
 
-		return trigger_lang('all_globals_deleted');
+		return $this->EE->lang->line('globals.all_globals_deleted');
 	}
 
 }
