@@ -14,26 +14,20 @@
 			<strong>Sequence Title</strong><br />
 			<div class="subtext">A title for your sequence</div>
 		</td>
-		<td>
-			<?=form_input(array('id'=>'title','name'=>'title','class'=>'fullfield'))?>
-		</td>
+		<td><?=form_input(array('id'=>'title','name'=>'title','class'=>'fullfield'))?></td>
 	</tr>
 	<tr>
 		<td width="40%">
 			<strong>Sequence Name</strong><br />
 			<div class="subtext">All lower case, no spaces. Underscores allowed.</div>
 		</td>
-		<td>
-			<?=form_input(array('id'=>'name','name'=>'name','class'=>'fullfield'))?>
-		</td>
+		<td><?=form_input(array('id'=>'name','name'=>'name','class'=>'fullfield'))?></td>
 	</tr>
 	<tr>
 		<td width="40%">
 			<strong>Sequence Description</strong>
 		</td>
-		<td>
-			<?=form_input(array('id'=>'description','name'=>'description','class'=>'fullfield'))?>
-		</td>
+		<td><?=form_input(array('id'=>'desc','name'=>'desc','class'=>'fullfield'))?></td>
 	</tr>
 	<tr>
 		<td width="40%">
@@ -43,9 +37,15 @@
 	</tr>
 	<tr>
 		<td width="40%">
-			<strong>Exported By</strong> 
+			<strong>Author</strong> 
 		</td>
-		<td><?=$this->session->userdata('screen_name');?></td>
+		<td><?=form_input(array('id'=>'author','name'=>'author','class'=>'fullfield'))?></td>
+	</tr>
+	<tr>
+		<td width="40%">
+			<strong>Author URL</strong> 
+		</td>
+		<td><?=form_input(array('id'=>'author_url','name'=>'author_url','class'=>'fullfield'))?></td>
 	</tr>
 
 </tbody>	

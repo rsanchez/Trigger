@@ -1,5 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger CP
+ *
+ * @package		Trigger
+ * @category	controllers
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2011, Addict Add-ons
+ */
+
 class Trigger_mcp {
 
 	var $context 	= array();
@@ -287,7 +296,7 @@ class Trigger_mcp {
 		
 		$this->EE->cp->set_breadcrumb($this->module_base.AMP.'method=logs', $this->EE->lang->line('trigger_logs'));
 		
-		return $this->EE->load->view('export_trigger_sequence', $vars, TRUE);
+		return $this->EE->load->view('sequences/export', $vars, TRUE);
 	}
 
 	// --------------------------------------------------------------------------
@@ -329,23 +338,17 @@ class Trigger_mcp {
 		// Export to a File
 		// -------------------------------------
 
-		if( $this->EE->input->get_post('to') == 'file' ):
-
 			// -------------------------------------
 			// Create Header
 			// -------------------------------------
 	
-			$seq  = 'sequence title: '.$this->EE->input->get_post('title').$term;
+			$seq  = 'title: '.$this->EE->input->get_post('title').$term;
 
-			$seq  = 'sequence name: '.$this->EE->input->get_post('name').$term;
-
-			$seq  = 'sequence description: '.$this->EE->input->get_post('description').$term;
+			$seq  .= 'desc: '.$this->EE->input->get_post('desc').$term;
 			
-			$seq .= 'lines: '.$db_obj->num_rows().$term;
-			
-			$seq .= 'created by: '.$this->EE->session->userdata('screen_name').$term;
+			$seq .= 'author: '.$this->EE->input->get_post('author').$term;
 	
-			$seq .= 'created: '.date('M j Y g:i:s a').$term;
+			$seq .= 'author url: '.$this->EE->input->get_post('author_url').$term;
 			
 			$seq .= $term;
 	
@@ -369,47 +372,7 @@ class Trigger_mcp {
 			
 			$this->EE->load->helper('download');
 	
-			force_download('Trigger_Sequence_'.date('mdy').'.txt', $seq);
-			
-		else:
-		
-		// -------------------------------------
-		// Export to Sequences
-		// -------------------------------------
-
-			// -------------------------------------
-			// Get the Sequence
-			// -------------------------------------
-	
-			$seq = '';
-		
-			foreach( $log_lines as $line ):
-			
-				$seq .= $line->command.$term;
-			
-			endforeach;
-			
-			// Save to the Sequences table
-			
-			$insert_data['title'] 			= $this->EE->input->get_post('title');
-			$insert_data['name'] 			= $this->EE->input->get_post('name');
-			$insert_data['description'] 	= $this->EE->input->get_post('description');
-			$insert_data['lines']			= $db_obj->num_rows();
-			$insert_data['created_by']		= $this->EE->session->userdata('screen_name');
-			$insert_data['created']			= date('Y-m-d H:i:s');
-			$insert_data['sequence']		= $seq;
-			
-			$sql = $this->EE->db->insert_string('trigger_sequences', $insert_data);
-
-			$this->EE->db->query( $sql );
-			
-			// -------------------------------------
-			// Redirect To Sequence
-			// -------------------------------------
-		
-			$this->EE->functions->redirect($this->module_base.AMP.'method=sequences');
-		
-		endif;
+			force_download('seq.'.$this->EE->input->get_post('name').'.txt', $seq);			
 	}
 
 	// --------------------------------------------------------------------------
@@ -434,6 +397,9 @@ class Trigger_mcp {
 		// -------------------------------------
 		// Get sequences & paginate
 		// -------------------------------------
+		
+		// TODO: This is not paginated yet. It is pulled from file systems,
+		// so the data fed to pagination must be properly formatted.
 
 		if ( ! $rownum = $this->EE->input->get_post('rownum') )
 		{		
@@ -449,7 +415,6 @@ class Trigger_mcp {
 		$vars['pagination'] = $this->EE->pagination->create_links();
 		
 		$vars['sequences'] = $this->EE->sequences_mdl->get_sequences();
-
 
 		// -------------------------------------
 		// Load view sequences window
