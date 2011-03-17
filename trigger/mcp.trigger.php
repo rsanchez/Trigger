@@ -14,7 +14,7 @@ class Trigger_mcp {
 		
 		$this->EE->load->library('Trigger');
 		
-		$this->EE->load->helper( array('log', 'trigger') );
+		$this->EE->load->helper('log');
 		
 		$this->EE->load->model('package_mdl');
 		
