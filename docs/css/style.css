@@ -1,0 +1,33 @@
+/* ------------------------------------- */
+/* Reset Style Sheet 		      */
+/* ------------------------------------- */
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+body { line-height: 1; font-family: Helvetica, Arial, sans-serif; background: #F5F5F5; padding: 30px;}
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none}
+:focus { outline: 0; }
+ins { text-decoration: none; }
+del { text-decoration: line-through;}
+table { border-collapse: collapse; border-spacing: 0;}
+strong {font-weight: bold;}
+em {font-style: italic;}
+
+header, footer {width: 660px; margin: 10px auto; color: #9EA3A5; text-shadow: 1px 1px 1px #fff;}
+#main_content {width: 640px; padding: 15px; background: #fff; margin: 10px auto; border: 1px solid #ECECEC;}
+
+footer {font-size: 12px;}
+header h2 {font-size: 20px; margin-bottom: 5px;}
+header p.breadcrumbs {font-size: 12px;}
+header p.breadcrumbs a {color: #60676D; text-decoration: none;}
+header p.breadcrumbs a:hover {color: #000;}
+
+#main_content p {font-size: 12px; color: #616161; line-height: 20px; margin-bottom: 20px;}
+#main_content h1 {font-size: 30px; margin-bottom: 20px;}
+#main_content code {background: #EBF3F5; padding: 10px; width: 620px; display: block; border: 1px solid #CEE5EB; color: #3C4649; text-shadow: 1px 1px 1px #fff; margin-bottom: 20px;}
+#main_content ul {font-size: 12px; line-height: 20px; margin-bottom: 20px; color: #616161;}
+#main_content ul a {font-weight: bold;}
+#main_content a {color: #3572AC; text-decoration: none;}
+#main_content a:hover {text-decoration: underline;}
+#main_content h2 {margin-bottom: 15px;}

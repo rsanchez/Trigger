@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+
+	<title>Basics | Trigger Documentation</title>
+
+	<meta charset="utf-8"> 
+	<meta name="generator" content="CodeIgniter 2.0" /> 
+
+	<link rel="stylesheet" type="text/css" media="all" href="css/style.css" /> 
+
+</head>
+
+<body>
+
+	<header>
+	
+		<h2>Trigger Documentation</h2>
+		
+		<p class="breadcrumbs"><a href="index.html">Home</a> &#187; Trigger Basics</p>
+	
+	</header>
+
+	<section id="main_content">
+		
+		<ul>
+			<li><a href="basics.html">Trigger Basics</a></li>
+			<li><a href="variables.html">Variables</a></li>
+			<li><a href="sequences.html">Sequences</a></li>
+			<li><a href="packages.html">Packages</a></li>
+			<li><a href="drivers">Drivers References</a></li>
+		</ul>
+	
+		<h1>Trigger Basics</h1>
+		
+		<h2>Drivers</h2>
+		
+		<p>Drivers are a key concept to understand before we start with the structure of Trigger commands. Drivers are basically grouped functions that you can access via Trigger. There is a site driver (for accessing basic site and config commands), a template driver (for manipulating templates), and many more. You can even create your own drivers to do what you want. More on that later, but let's first get into how to actually use Trigger...</p>
+		
+		<h2>Trigger Commands</h2>
+		
+		<p>Trigger works like this: you give it a text command, and it does something for you, then gives you a response. When you first open up Trigger, you'll see the command window with a simple prompt:</p>
+		
+		<pre><code>ee : </code></pre>
+		
+		<p>This is the base of a Trigger command. It means that EE is ready to do what you want it to. If you make a command and there is no error and no ee prompt, then something has gone wrong!</p>
+		
+		<h2>Two Part Commands</h2>
+		
+		<p>A Trigger command comes in two types: a two part command and a three part command. A two part command is just the ee root and something else. For example:</p>
+	
+		<pre><code>ee : server_path</code></pre>
+	
+		<p>This is an example of a variable call (we'll get into those later), but it is an example of something you can call in the 2nd command slot.</p>
+		
+		<p>In general, things you do with two-slot commands are pretty basic. Here's what you can do with two slots:</p>
+		
+		<ul>
+			<li>Run Trigger system commands</li>
+			<li>Return the value of Trigger system variables</li>
+			<li>Load a Driver</li>
+		</ul>
+		
+		<p>Most of the things you'll do in Trigger utilize three part commands.</p>
+
+		<h2>Three Part Commands</h2>
+	
+		<p>Three part commands allow you to access functionality in drivers. They look something like this:</p>
+
+		<pre><code>ee : site : disable op</code></pre>
+	
+		<p>The above command calls the <strong>site</strong> driver, and calls the command <strong>disable op</strong>. This disables the output profiler.</p>
+		
+		<p>Many Trigger driver functions need data to process, and you can pass that data in between parenthesis. For example:</p>
+		
+		<pre><code>ee : groups : new (about)</code></pre>
+
+		<p>The above will create a new group (with an index.html template) called about. If more than one variable is needed, you can separate them via commas:</p>
+		
+		<pre><code>ee : globals : new (twitter_handle, addictaddons)</code></pre>
+	
+		<p>The above creates a new global variable with the value of "addictaddons".</p>
+		
+		<p>That's it! Working Trigger is actually pretty simple. Once you get the hang of it, you can do things a lot quicker and even automate a lot of what you do with EE.</p>
+	
+	</section>
+	
+	<footer>
+	
+		<p>&copy;2011 Addict Add-ons</p>
+	
+	</footer>
+
+</body>
+
+</html>
