@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+
+	<title>Packages | Trigger Documentation</title>
+
+	<meta charset="utf-8"> 
+	<meta name="generator" content="CodeIgniter 2.0" /> 
+
+	<link rel="stylesheet" type="text/css" media="all" href="css/style.css" /> 
+
+</head>
+
+<body>
+
+	<header>
+	
+		<h2>Trigger Documentation</h2>
+		
+		<p class="breadcrumbs"><a href="index.html">Home</a> &#187; Packages</p>
+	
+	</header>
+
+	<section id="main_content">
+		
+		<ul>
+			<li><a href="basics.html">Trigger Basics</a></li>
+			<li><a href="variables.html">Variables</a></li>
+			<li><a href="sequences.html">Sequences</a></li>
+			<li>Packages</li>
+			<li><a href="commands">Command Reference</a></li>
+			<li><a href="vars_reference.html">Variable Reference</a></li>
+		</ul>
+	
+		<h1>Packages</h1>
+		
+		<p>Sequences are great, but what if you want to add a template or a snippet with some data to it? For instance, if you really wanted to automate the creation of a blog, then you'd need template files that can be inserted.</p>
+		
+		<p>Enter packages. Packages are convenient ways to hold templates, snippets, and sequences all in one folder for easy portability.</p>
+		
+		<h2>Packages Structure</h2>
+		
+		<p>Packages sit in the <strong>packages</strong> folder within trigger and have a set structure. Here is an example package called "blog":</p>
+		
+		<pre><code>blog
+- package.txt
+- seq.build_blog.txt
+- snippets
+	- sidebar.txt
+	- post.txt
+- templates
+	- blog_index.html
+	- archive.html
+	- single.html</code></pre>
+		
+		<p>You can have as many sequences as you'd like in your package folder.</p>
+		
+		<h2>Package.txt</h2>
+		
+		<p>Package.txt contains some basic info about your package. Here is an example:</p>
+		
+<pre><code>name: Blog Structure
+description: Creates a basic blog
+author: Addict Add-ons
+author url: http://www.addictaddons.com
+copyright: 2011 Addict Add-ons
+</code></pre>
+		
+		<p>For your package, you cab provide the following data:</p>
+		
+		<table cellpadding="0" cellspacing="0">
+		
+		<thead>
+			<tr>
+				<th>Data Piece</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr>
+				<td>name</td>
+				<td>The name of the package.</td>
+			</tr>
+			<tr>
+				<td>desc</td>
+				<td>A short description of the package.</td>
+			</tr>
+			<tr>
+				<td>author</td>
+				<td>The package author's name.</td>
+			</tr>
+			<tr>
+				<td>author url</td>
+				<td>Optional. A full web address for the package author.</td>
+			</tr>
+			<tr>
+				<td>copyright</td>
+				<td>Optional. A copyright notice for the package.</td>
+			</tr>
+		
+		</tbody>
+		
+		</table>
+		
+		<h2>Loading Package Resources</h2>
+		
+		<p>When you have a Trigger command like template : new, you can pass data to the template to populate it. You can load in a package resource (from anywhere, no just in package sequences) using the following syntaxt:</p>
+		
+		<pre><code>p.package_name/templates/template_name</code></pre>
+
+		<p>The above will grab the content from the template folder of the specified package (it will automatically append .html for template, .txt for everything else) and use that data. Note that you don't have to just use the snippets and templates folder, you can specify any folder you'd like.</p>
+
+		<h2>Viewing Package Contents</h2>
+		
+		<p>To get a quick overview of the contents for a package, just go to the packages pane of Trigger. You can click on a package name to view package details and a file list.</p>
+		
+	</section>
+	
+	<footer>
+	
+		<p>&copy;2011 Addict Add-ons</p>
+	
+	</footer>
+
+</body>
+
+</html>
