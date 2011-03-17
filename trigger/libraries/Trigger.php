@@ -375,7 +375,7 @@ class Trigger
 	private function _load_driver( $driver_slug )
 	{
 		$driver_folder = PATH_THIRD.'trigger/drivers/';
-	
+		
 		if( is_dir($driver_folder.$driver_slug) ):
 
 			// -------------------------------------
@@ -434,28 +434,26 @@ class Trigger
 	
 				$this->out = $error;
 				
-				return FALSE;
+				return;
 				
 			else:
 			
-				@include($lang_file);
+				$this->load_trigger_lang($this->driver->driver_slug);
 			
 			endif;
 	
 			// -------------------------------------
-			// Load master language & merge
+			// Load master language
 			// -------------------------------------
-			
-			@include(PATH_THIRD . 'trigger/language/'.$this->EE->config->item('deft_lang').'/lang.trigger.php');
-			
-			$this->driver->lang 		= array_merge($driver_lang, $lang);
-			
-			// Copy for wider use
-			$this->EE->trigger_lang		= $this->driver->lang;
-						
+
+			$this->EE->load->language('trigger');
+									
+			// -------------------------------------
 			// Set up some class variables
-			$this->driver->driver_name 	= $this->driver->lang['driver_name'];
-			$this->driver->driver_desc 	= $this->driver->lang['driver_desc'];
+			// -------------------------------------
+
+			$this->driver->driver_name 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_name');
+			$this->driver->driver_desc 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_desc');
 						
 			// -------------------------------------
 			// Set driver to driver context position
@@ -648,6 +646,46 @@ class Trigger
 		endforeach;
 
 		return $output;
+	}
+	
+	/**
+	 * Loads a trigger language file
+	 *
+	 * @access	public
+	 * @param	string - driver slug
+	 * @return	bool
+	 */
+	function load_trigger_lang($driver_slug)
+	{
+		$this->EE->load->library('security');
+		
+		if(isset($this->EE->session->userdata['language']) and $this->EE->session->userdata['language'] != ''):
+		
+			$user_lang = $EE->session->userdata['language'];
+		
+		else:
+		
+			if ($this->EE->input->cookie('language')):
+			
+				$user_lang = $this->EE->input->cookie('language');
+			
+			elseif ($this->EE->config->item('deft_lang') != ''):
+			
+				$user_lang = $this->EE->config->item('deft_lang');
+			
+			else:
+			
+				$user_lang = 'english';
+			
+			endif;
+			
+		endif;
+
+		$deft_lang = ( ! isset($config['language'])) ? 'english' : $config['language'];
+		
+		$user_lang = $this->EE->security->sanitize_filename($user_lang);
+	
+		$this->EE->lang->load($driver_slug, $user_lang, FALSE, TRUE, PATH_THIRD . 'trigger/drivers/'.$driver_slug.'/');
 	}
 
 	// --------------------------------------------------------------------------
