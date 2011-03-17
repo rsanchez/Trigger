@@ -10,7 +10,7 @@
  * @param	string
  * @return	void
  */
-function write_log( $line, $result = '' )
+function write_log($line, $result = '')
 {
 	$EE =& get_instance();
 
@@ -22,7 +22,7 @@ function write_log( $line, $result = '' )
 	
 	$sql = $EE->db->insert_string('trigger_log', $log_data);
 	
-	$EE->db->query( $sql );
+	$EE->db->query($sql);
 }
 
 // --------------------------------------------------------------------------
