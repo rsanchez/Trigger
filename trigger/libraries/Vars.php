@@ -80,13 +80,13 @@ class Vars
 	 * @access	public
 	 * @return	string
 	 */
-	public function license_key()
+	public function license()
 	{
 		$key = $this->EE->config->item('license_number');
 	
 		if(!$key):
 		
-			return "key is empty";
+			return "license is empty";
 		
 		else:
 		
