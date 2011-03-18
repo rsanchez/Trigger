@@ -37,7 +37,7 @@ class Vars
 	{
 		$server = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]);
 	
-		return $server.'/expressionengine/';
+		return $server.'expressionengine';
 	}
 
 	// --------------------------------------------------------------------------
