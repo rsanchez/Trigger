@@ -84,7 +84,7 @@ class Vars
 	{
 		$key = $this->EE->config->item('license_number');
 	
-		if( !$key ):
+		if(!$key):
 		
 			return "key is empty";
 		
