@@ -43,7 +43,7 @@ class Driver_groups
 		endif;
 		
 		// Does it exist already?
-		$query = $this->EE->db->limit(1)->get_where('template_groups', array('group_name' => $group));
+		$query = $this->EE->db->limit(1)->get_where('template_groups', array('group_name' => $group_name));
 
 		if($query->num_rows() == 1):
 		
