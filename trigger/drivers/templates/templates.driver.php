@@ -1048,6 +1048,199 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Deny Member Groups Access
+	 *
+	 * @acces	public
+	 * @param	string - group/template
+	 * @param	string - group/template
+	 * @return	string
+	 */
+	function _comm_deny_access($template_data, $member_groups)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR !$this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+
+		// Parse the member groups
+		if(is_string($groups = $this->_parse_groups($member_groups))):
+		
+			return $groups;
+		
+		endif;
+
+		// Go throught the groups and add them to the deny access table	
+		foreach($groups['ids'] as $group_id):
+		
+			$insert_data['template_id'] = $template['template_id'];
+			$insert_data['member_group'] = $group_id;
+			
+			$this->EE->db->insert('template_no_access', $insert_data);
+		
+		endforeach;
+		
+		$list_groups = implode(', ', $groups['titles']);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+
+		return "denied access to $uri for $list_groups";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Grant Member Groups Access
+	 *
+	 * @acces	public
+	 * @param	string - group/template
+	 * @param	string - group/template
+	 * @return	string
+	 */
+	function _comm_grant_access($template_data, $member_groups)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR !$this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+
+		// Parse the member groups
+		if(is_string($groups = $this->_parse_groups($member_groups))):
+		
+			return $groups;
+		
+		endif;
+
+		// Go throught the groups and add them to the deny access table	
+		foreach($groups['ids'] as $group_id):
+		
+			$this->EE->db
+						->where('member_group', $group_id)
+						->where('template_id', $template['template_id'])
+						->delete('template_no_access');
+		
+		endforeach;
+		
+		$list_groups = implode(', ', $groups['titles']);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+
+		return "granted access to $uri for $list_groups";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Flush denied member groups for template
+	 *
+	 * @acces	public
+	 * @param	string - group/template
+	 * @param	string - group/template
+	 * @return	string
+	 */
+	function _comm_open_access($template_data)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR !$this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+
+		$this->EE->db
+					->where('template_id', $template['template_id'])
+					->delete('template_no_access');
+		
+		$uri = $group['group_name'].'/'.$template['template_name'];
+
+		return "access is now open for $uri";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Parse groups
+	 *
+	 * @access	private
+	 * @param	string
+	 * @retun 	mixed - array on success, string on failure
+	 */
+	private function _parse_groups($groups)
+	{
+		// We need our groups
+		if(!$groups):
+		
+			return "no groups provided";
+		
+		endif;
+	
+		// Separate based on the pipe character
+		$all = explode('|', $groups);
+		
+		$return = array();
+		
+		foreach($all as $group_title):
+		
+			// Get the group to validate it
+			$grp = $this->EE->db
+					->limit(1)
+					->where('site_id', $this->EE->config->item('site_id'))
+					->where('group_title', $group_title)
+					->get('member_groups');
+					
+			if($grp->num_rows == 0):
+			
+				return "cannot find $group_title group";
+			
+			endif;
+			
+			$tmp = $grp->row();
+			
+			// Add it to the array
+			$return['ids'][] = $tmp->group_id;
+			$return['titles'][] = $tmp->group_title;
+		
+		endforeach;
+	
+		return $return;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private
