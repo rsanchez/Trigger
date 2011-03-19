@@ -56,15 +56,24 @@
 		
 		<p>Syncs all templates. File templates and groups will be updated and created in the database. Things found in the database not found in the filesystem will be created.</p>
 		
-		<h2>new <span>(group/template, content, [type], [save_as_file-y or n])</span></h2>
+		<h2>new <span>(group/template, content, [type], [save_as_file])</span></h2>
 		
-		<p>Creates a template within a group. If the group doesn't exist, Trigger will create it. Obeys the config that allows templates to be saved as files (if it is set to yes the necessary files will be created in the filesystem).</p>
+		<p>Creates a template within a group. If the group doesn't exist, Trigger will create it. The type value will set the type of template to create. Set to webpage as default. Available types are:</p>
 		
-		<p>Additionally, if no group is supplied, it will be added to the site's default group.</p>
+		<ul>
+			<li>webpage</li>
+			<li>static</li>
+			<li>feed</li>
+			<li>css</li>
+			<li>feed</li>
+			<li>xml</li>
+		</ul>
+		
+		<p>Setting the last value to 'y' will force the template's config to marked it as savable as a file. Leaving this blank will set it to your site's config.</p>
+		
+		<h2>delete <span>(group/template)</span></h2>
 
-		<h2>delete <span>(template)</span></h2>
-
-		<p>Deletes a template.</p>
+		<p>Deletes a template. If a template file exists, it will delete this as well.</p>
 		
 		<h2>enable strict urls</h2>
 		

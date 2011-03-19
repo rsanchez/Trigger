@@ -81,7 +81,7 @@ class Driver_templates
 	 * @param	[string] - save template as file? y/n
 	 * @return	string
 	 */	
-	public function _comm_new($template_group_name, $template_data = '', $template_type = 'webpage', $template_as_file = 'n')
+	public function _comm_new($template_group_name, $template_data = '', $template_type = 'webpage', $template_as_file = '')
 	{
 		// We need a template name
 		if(!$template_group_name):
@@ -95,6 +95,20 @@ class Driver_templates
 		if($template_data == 'TRIGGER_FILE_READ_ERR'):
 		
 			return "error reading template file";
+		
+		endif;
+		
+		// Obey the template as file config
+		if(!$template_as_file):
+		
+			$template_as_file = $this->EE->config->item('save_tmpl_files');
+		
+		endif;
+		
+		// Last check. You never know
+		if($template_as_file != 'y' and $template_as_file != 'n'):
+		
+			$template_as_file = 'n';
 		
 		endif;
 		
