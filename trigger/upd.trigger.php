@@ -1,8 +1,18 @@
 <?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger Update
+ *
+ * @package		Trigger
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2010 - 2011, Addict Add-ons
+ * @license		
+ * @link		
+ */
+
 class Trigger_upd { 
 
-    var $version        = '0.1'; 
+    var $version        = '0.8'; 
      
     function Trigger_upd() 
     { 
@@ -75,4 +85,3 @@ class Trigger_upd {
 }
 
 /* End of file upd.trigger.php */
-/* Location: ./expressionengine/third_party/trigger/upd.trigger.php */

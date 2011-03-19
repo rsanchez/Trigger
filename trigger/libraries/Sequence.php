@@ -1,5 +1,16 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger Sequence Class
+ *
+ * Contains sequence running logic.
+ *
+ * @package		Trigger
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2010 - 2011, Addict Add-ons
+ * @license		
+ * @link		
+ */
 
 class Sequence
 {
