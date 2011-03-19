@@ -490,9 +490,10 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Set the template base path
+	 * Enable the cache and set the refresh interval
 	 *
 	 * @access	public
+	 * @param	string
 	 * @param	int
 	 * @return	string
 	 */	
@@ -534,8 +535,49 @@ class Driver_templates
 		$data = array('cache'=>'y', 'refresh'=>$refresh);
 
 		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
 		
-		return "cache enabled with a refresh interval of $refresh";
+		return "cache enabled for $uri with a refresh interval of $refresh";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable the cache and reset the refresh interval to 0
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */	
+	function _comm_disable_cache($template_data)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('cache'=>'n', 'refresh'=>0);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+		
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "cache disabled for $uri";
 	}
 
 	// --------------------------------------------------------------------------
