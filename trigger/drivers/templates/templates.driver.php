@@ -933,6 +933,68 @@ class Driver_templates
 		
 		return "hits set to 0 for $uri";
 	}
+	
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable or http auth for a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */	
+	function _comm_enable_http_auth($template_data)
+	{
+		return $this->_toggle_auth($template_data, 'y');
+	}
+
+	function _comm_disable_http_auth($template_data)
+	{
+		return $this->_toggle_auth($template_data, 'n');
+	}
+	
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Toggle HTTP Auth
+	 *
+	 * @acces	private
+	 * @param	string
+	 * @param	string
+	 * @return	string
+	 */
+	private function _toggle_auth($template_data, $val)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('enable_http_auth'=>$val);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		($val == 'y') ? $word = 'enabled' : $word = 'disabled';
+		
+		return "http auth $word for $uri";
+	
+	}
 
 	// --------------------------------------------------------------------------
 
