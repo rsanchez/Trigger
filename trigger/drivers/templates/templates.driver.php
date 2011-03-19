@@ -999,6 +999,55 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Set HTTP Auth Bounce location
+	 *
+	 * @acces	private
+	 * @param	string - group/template
+	 * @param	string - group/template
+	 * @return	string
+	 */
+	function _comm_set_auth_bounce($template_data, $bounce_location)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+
+		// No parse bounce location group/template
+		if(is_string($bounce = $this->_separate_template_data($bounce_location))):
+		
+			return $bounce;
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+		
+		$bounce_uri = $bounce['group']['group_name'].'/'.$bounce['template']['template_name'];
+
+		$data = array('no_auth_bounce'=>$bounce_uri);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "http auth bounce location for $uri to $bounce_uri";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private
