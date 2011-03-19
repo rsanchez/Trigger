@@ -17,6 +17,10 @@ class Driver_templates
 
 	// --------------------------------------------------------------------------
 
+	public $extensions = array('.html', '.feed', '.css', '.js', '.xml');
+
+	// --------------------------------------------------------------------------
+
 	function __construct()
 	{
 		$this->EE =& get_instance();
@@ -221,59 +225,28 @@ class Driver_templates
 	 * @param	string - group/template name
 	 * @return	string
 	 */
-	public function _comm_delete($delete_data)
+	public function _comm_delete($template_data)
 	{
-		// We cut it up first.
-		// They should have provided this in group/template format
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
 		
-		$pieces = explode('/', $delete_data, 2);
-	
-		if(count($pieces) != 2):
+			return $tmp;
 		
-			return "no group provided";
+		else:
 		
-		endif;
-
-		$group = $pieces[0];
-		$template = $pieces[1];
-		
-		// Make sure the group exists and get the id
-		$query = $this->EE->db->limit(1)->where('group_name', $group)->get('template_groups');
-		
-		if($query->num_rows()==0):
-		
-			return "group not found";
+			extract($tmp);
 		
 		endif;
 		
-		$row = $query->row();
-		$group_id = $row->group_id;
-		
-		// Now find the template the delete out of the db
-		$check = $this->EE->db
-							->limit(1)
-							->where('template_name', $template)
-							->where('group_id', $group_id)
-							->get('templates');
-		
-		if($check->num_rows()==0):
-		
-			return "template not found";
-		
-		endif;
-		
-		$tmpl = $check->row();
-		
-		$this->EE->db	
-				->where('group_id', $group_id)
-				->where('template_name', $template)
+		$this->EE->db
+				->where('group_id', $group['group_id'])
+				->where('template_name', $template['template_name'])
 				->delete('templates');
 		
 		// Are we saving as files? If so, if there are any files
 		// Get rid of them.
 		if($this->EE->config->item('save_tmpl_files') == 'y'):
 		
-			$this->EE->templates->delete_template_file($group, $template, $tmpl->template_type);
+			$this->EE->templates->delete_template_file($group, $template['template_name'], $template['template_type']);
 		
 		endif;
 		
@@ -421,11 +394,15 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Set the templates base
+	 * Set the max number of revisions
+	 *
+	 * @access	public
+	 * @param	int
+	 * @return	string
 	 */	
-	function _comm_max_number_of_revs($number_of_revs)
+	public function _comm_max_number_of_revs($number_of_revs)
 	{
-		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
 		
 			return "no";
 		
@@ -447,27 +424,138 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Set the templates base
+	 * Set the template base path
+	 *
+	 * @access	public
+	 * @param	int
+	 * @return	string
 	 */	
 	function _comm_set_base($base)
 	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
 		if(!$base):
 		
 			return "no basepath provided";
 		
 		endif;
 	
-		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
-		
-			return "no";
-		
-		endif;
-
 		$config = array('tmpl_file_basepath' => $base);
 
 		$this->EE->config->update_site_prefs($config);
 		
 		return "template basepath set";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the template base path
+	 *
+	 * @access	public
+	 * @param	int
+	 * @return	string
+	 */	
+	function _comm_set_404($template_data)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+		
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$uri = $group['group_name'].'/'.$template['template_name'];
+
+		$config = array('site_404' => $uri);
+
+		$this->EE->config->update_site_prefs($config);
+		
+		return "404 set to $uri";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Separates and sanitizes the group/template data
+	 *
+	 * @access	private
+	 * @param	string
+	 * @return	mixed - array on success, string on error
+	 */	
+	private function _separate_template_data($template_data)
+	{
+		// Make sure there is 2 bits of data
+		$pieces = explode('/', $template_data, 2);
+	
+		if(count($pieces) != 2):
+		
+			return (string)"no group provided";
+		
+		endif;
+
+		$group_name = $pieces[0];
+		$template_name = $pieces[1];
+		
+		// Make sure the group exists
+		$check_group = $this->EE->db->limit(1)->get_where('template_groups', array('group_name' => $group_name));
+		
+		if($check_group->num_rows() == 0):
+		
+			return (string)"group not found";
+		
+		endif;
+		
+		$group = $check_group->row_array();
+		
+		// Sanitize the template name by going through template
+		// extensions and checking to see if that's what's at the
+		// end of the name
+		/*foreach($this->extensions as $ext):
+		
+			if(substr($template_name, -1, count($ext)) == $ext):
+			
+				// How do we turn this negative? I guess we could do
+				// it this way??
+				$neg = count($ext);
+				$neg = $neg-($neg*2);
+				
+				$template_name = substr($template_name, $neg);
+			
+			endif;
+		
+		endforeach;*/
+		
+		// Make sure the template exists
+		$check_tmpl = $this->EE->db
+							->limit(1)
+							->where('template_name', $template_name)
+							->where('group_id', $group['group_id'])
+							->get('templates');
+		
+		if($check_tmpl->num_rows()==0):
+		
+			return (string)"template not found";
+		
+		endif;
+		
+		$template = $check_tmpl->row_array();
+		
+		// Return array of data
+		return array('group'=>$group, 'template'=>$template);
 	}
 
 	// --------------------------------------------------------------------------
