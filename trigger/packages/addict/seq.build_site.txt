@@ -18,6 +18,6 @@ ee : snippets : new (footer, p.addict/snippets/footer.txt)
 ee : templates : dont save template revs
 ee : templates : allow as files
 ee : templates : set base ({ee_path}/templates)
-ee : templates : new (site/style, p.addict/templates/style, css_stylesheet)
+ee : templates : new (site/style, p.addict/templates/style, css)
 ee : templates : new (site/index, p.addict/templates/home)
 TRIGGER SEQUENCE END
