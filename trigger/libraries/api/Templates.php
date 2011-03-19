@@ -128,8 +128,6 @@ class Templates
 				
 				if(!file_exists($template_path)):	
 				
-					echo "FILE CREATED";		
-
 					if($fp = @fopen($template_path, FOPEN_WRITE_CREATE_DESTRUCTIVE)):
 					
 						flock($fp, LOCK_EX);
