@@ -898,6 +898,45 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Reset the hits to 0 for a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */	
+	function _comm_reset_hits($template_data)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('hits'=>0);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "hits set to 0 for $uri";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private
