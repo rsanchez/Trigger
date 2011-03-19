@@ -637,7 +637,7 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Set the refresh interval for a template
+	 * Allow PHP in a template and set php parsing stage
 	 *
 	 * @access	public
 	 * @param	string
@@ -684,6 +684,46 @@ class Driver_templates
 		($stage == 'o') ? $php_stage = 'output' : $php_stage = 'input' ;
 		
 		return "php is now allowed for $uri in the $php_stage stage";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disallow PHP in a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	int
+	 * @return	string
+	 */	
+	function _comm_disallow_php($template_data)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('allow_php'=>'n');
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "php is now disallowed for $uri";
 	}
 
 	// --------------------------------------------------------------------------
