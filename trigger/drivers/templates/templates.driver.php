@@ -27,9 +27,13 @@ class Driver_templates
 		// We're using the API for this dealio
 		// -------------------------------------
 		
-		$this->EE->load->library( 'Api' );
+		$this->EE->load->library('Api');
 		
-		$this->EE->api->instantiate( 'template_structure' );
+		$this->EE->api->instantiate('template_structure');
+
+		// This is our homebrew template action lib.
+		// It does maaaagical things. Maybe.
+		$this->EE->load->library('api/Templates');
 	}
 
 	// --------------------------------------------------------------------------
@@ -46,21 +50,19 @@ class Driver_templates
 		// Pre-sync Checks
 		// -------------------------------------
 	
-		if ( $this->EE->config->item('save_tmpl_files') != 'y' ):
+		if ($this->EE->config->item('save_tmpl_files') != 'y'):
 		
 			return $this->EE->lang->line('templates.no_saved_as_files');
 		
 		endif;
 
-		if ( $this->EE->config->item('tmpl_file_basepath') == '' ):
+		if ($this->EE->config->item('tmpl_file_basepath') == ''):
 		
 			return $this->EE->lang->line('templates.basepath_not_set');
 		
 		endif;
-		
-		$this->EE->load->library('api/Sync');
-		
-		$this->EE->sync->sync_all();
+				
+		$this->EE->templates->sync_all();
 		
 		return $this->EE->lang->line('templates.templates_synced');
 	}
@@ -95,6 +97,8 @@ class Driver_templates
 			return "error reading template file";
 		
 		endif;
+		
+		// TODO: Validate the Template type
 		
 		// Separate group and name
 		$pieces = explode('/', $template_group_name);
@@ -136,7 +140,7 @@ class Driver_templates
 
 			$insert_data['group_id'] 	= $group;
 			
-		elseif(!$group):
+		elseif($group === FALSE):
 		
 			// They have not specified a group. We are now going
 			// to use the default group
@@ -144,7 +148,7 @@ class Driver_templates
 			
 			if($query->num_rows() == 0):
 			
-				return "unable to find default template group";
+				return "no default template group - please specify a group";
 			
 			endif;
 			
@@ -153,25 +157,28 @@ class Driver_templates
 			
 		else:
 
-			// This must be a name
-			$group = strtolower($group);
+			// They must've given us a group name.
+			// First of all, does it actuall exist?
 			$query = $this->EE->db->limit(1)->get_where('template_groups', array('group_name' => $group));
 		
 			if($query->num_rows() == 0):
 			
+				// They named a group that doesn't exist.
 				// Normally we'd just give up, but we're better
 				// than that. This time, we are going to create the group.
-				// Hardcore. I just spent a whole comment line on this word.
+				// Hardcore <-- I just spent a whole comment line on this word.
 				$this->EE->load->model('template_model');
 				
 				$group_data['is_site_default']		= 'n';
-				$group_data['group_name']			= strtolower($group);
+				$group_data['group_name']			= $group;
 				$group_data['site_id']				= $this->EE->config->item('site_id');
 				
 				$insert_data['group_id'] = $this->EE->template_model->create_group($group_data);
 				
 			else:
 
+				// They anmed a group that exists. Get the ID and on
+				// with the show.
 				$row = $query->row();
 				$insert_data['group_id'] 	= $row->group_id;
 			
@@ -195,23 +202,29 @@ class Driver_templates
 
 	/**
 	 * Delete a template
+	 *
+	 * @access	public
+	 * @param	string - group/template name
+	 * @return	string
 	 */
-	public function _comm_delete($template, $group)
+	public function _comm_delete($delete_data)
 	{
-		if(!$group):
+		// We cut it up first.
+		// They should have provided this in group/template format
+		
+		$pieces = explode('/', $delete_data, 2);
+	
+		if(count($pieces) != 2):
 		
 			return "no group provided";
 		
 		endif;
 
-		if(!$template):
-		
-			return "no template data provided";
-		
-		endif;
+		$group = $pieces[0];
+		$template = $pieces[1];
 		
 		// Make sure the group exists and get the id
-		$query = $this->EE->db->where('group_name', strtolower($group))->get('template_groups');
+		$query = $this->EE->db->limit(1)->where('group_name', $group)->get('template_groups');
 		
 		if($query->num_rows()==0):
 		
@@ -222,41 +235,33 @@ class Driver_templates
 		$row = $query->row();
 		$group_id = $row->group_id;
 		
-		// We can either take an id or a string
-		if(is_numeric($template)):
+		// Now find the template the delete out of the db
+		$check = $this->EE->db
+							->limit(1)
+							->where('template_name', $template)
+							->where('group_id', $group_id)
+							->get('templates');
 		
-			$check = $this->EE->db->where('template_id', $template)->get('templates');
-			
-			if($check->num_rows()==0):
-			
-				return "template not found";
-			
-			endif;
-			
-			$this->EE->db->where('template_id', $template);
+		if($check->num_rows()==0):
 		
-		else:
-			
-			$template = strtolower($template);
+			return "template not found";
 		
-			$check = $this->EE->db
-								->where('template_name', $template)
-								->where('group_id', $group_id)
-								->get('templates');
-			
-			if($check->num_rows()==0):
-			
-				return "template not found";
-			
-			endif;
-			
-			$this->EE->db	
-					->where('group_id', $group_id)
-					->where('template_name', $template);
-
 		endif;
 		
-		$this->EE->db->delete('templates');
+		$tmpl = $check->row();
+		
+		$this->EE->db	
+				->where('group_id', $group_id)
+				->where('template_name', $template)
+				->delete('templates');
+		
+		// Are we saving as files? If so, if there are any files
+		// Get rid of them.
+		if($this->EE->config->item('save_tmpl_files') == 'y'):
+		
+			$this->EE->templates->delete_template_file($group, $template, $tmpl->template_type);
+		
+		endif;
 		
 		return "template deleted";
 	}

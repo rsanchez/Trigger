@@ -406,9 +406,9 @@ class Templates
 		$ext = $this->EE->api_template_structure->file_extensions($template_type);
 		$group_folder = $group_name.'.group';
 	
-		if(is_file($this->template_directory.'/'.$group_folder.'/'.$template.$ext)):
+		if(is_file($this->template_directory.'/'.$group_folder.'/'.$template_name.$ext)):
 		
-			@unlink($this->template_directory.'/'.$group_folder.'/'.$template.$ext);
+			@unlink($this->template_directory.'/'.$group_folder.'/'.$template_name.$ext);
 		
 		endif;
 	}
