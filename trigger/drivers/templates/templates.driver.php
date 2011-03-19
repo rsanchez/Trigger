@@ -490,6 +490,57 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Set the template base path
+	 *
+	 * @access	public
+	 * @param	int
+	 * @return	string
+	 */	
+	function _comm_enable_cache($template_data, $refresh)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Check for refresh interval
+		if(!$refresh):
+		
+			return "please provide a refresh interval";
+		
+		endif;
+		
+		// Check to make sure refresh interval is a number
+		if(!is_numeric($refresh)):
+		
+			return "refresh interval needs to be numeric";
+		
+		endif;
+		
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('cache'=>'y', 'refresh'=>$refresh);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+		
+		return "cache enabled with a refresh interval of $refresh";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private

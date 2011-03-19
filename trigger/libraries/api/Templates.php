@@ -342,25 +342,21 @@ class Templates
 				foreach( $templates as $template ):
 				
 					// No subdirectories
-					
 					if(is_array($template))
 					{
 						continue;
 					}
 					
 					// None of those dumb .. and . files
-					
 					if(strrpos($template, '.') == FALSE)
 					{
 						continue;
 					}
 					
 					// Get the extension
-					
 					$ext = strtolower(ltrim(strrchr($template, '.'), '.')); 
 							
 					// We only want approved file extensions
-						
 					if (!in_array('.'.$ext, $this->EE->api_template_structure->file_extensions) )
 					{
 						continue;
@@ -373,21 +369,18 @@ class Templates
 					$template_type = array_search('.'.$ext, $this->EE->api_template_structure->file_extensions);
 					
 					// Do we already have it? I don't know, but the following code does.
-
 					if( isset($this->templates[$group_name][$template_name]) )
 					{
 						continue;
 					}
 					
 					// Is the URL safe if we're going to use it?
-
 					if ( ! $this->EE->api->is_url_safe($template_name))
 					{
 						continue;
 					}
 					
 					// Save our template data
-
 					$this->templates[$group_name][$template_name] = 
 					array(
 						'template_type' 		=> $template_type,
