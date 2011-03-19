@@ -111,13 +111,21 @@
 
 		<p>Sets the site 404 template. The template and group should already exist for this function.</p>
 
-		<h2>enable cache <span>(group/template, refresh limit)</span></h2>
+		<h2>enable cache <span>(group/template, refresh interval)</span></h2>
 		
-		<p>Enables cache for a template with a refresh limit.</p>
+		<p>Enables cache for a template with a refresh interval.</p>
 		
 		<h2>disable cache <span>(group/template)</span></h2>
 		
-		<p>Disables the cache for a template and sets the refresh limit back to 0.</p>
+		<p>Disables the cache for a template and sets the refresh interval back to 0.</p>
+
+		<h2>set refresh <span>(group/template, refresh interval)</span></h2>
+		
+		<p>Sets the refresh interval for a template.</p>
+
+		<h2>allow php <span>(group/template, [parsing stage])</span></h2>
+		
+		<p>Allows PHP for a template. Parsing stage defaults to output, but this can be overridden by providing 'i' or 'input' for the second parameter.</p>
 
 	</section>
 	

@@ -583,6 +583,112 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Set the refresh interval for a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	int
+	 * @return	string
+	 */	
+	function _comm_set_refresh($template_data, $refresh = '')
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// Check for refresh interval
+		if(!$refresh):
+		
+			return "please provide a refresh interval";
+		
+		endif;
+		
+		// Check to make sure refresh interval is a number
+		if(!is_numeric($refresh)):
+		
+			return "refresh interval needs to be numeric";
+		
+		endif;
+		
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('refresh'=>$refresh);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "refresh interval for $uri set to $refresh";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the refresh interval for a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	int
+	 * @return	string
+	 */	
+	function _comm_allow_php($template_data, $stage = 'o')
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+
+		// We only need the first letter
+		$stage = strtolower($stage{0});
+	
+		// Check for valid parsing stage
+		if($stage != 'o' and $stage != 'i'):
+		
+			return "please provide a valid parsing stage (input or output)";
+		
+		endif;
+		
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('allow_php'=>'y', 'php_parse_location'=>$stage);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		($stage == 'o') ? $php_stage = 'output' : $php_stage = 'input' ;
+		
+		return "php is now allowed for $uri in the $php_stage stage";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private
