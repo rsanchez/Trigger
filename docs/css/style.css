@@ -36,3 +36,4 @@ header p.breadcrumbs a:hover {color: #000;}
 #main_content table th {padding: 5px; background: #838588; color: #fff; font-weight: bold;}
 #main_content h3 {font-size: 14px; margin-bottom: 15px;}
 #main_content h3 span, h2 span {color: #919191;}
+#main_content p.warning {color: #CA3535; font-size: 11px;}
