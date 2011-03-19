@@ -19,10 +19,10 @@
 			);
 	}
 ?>
-<?=$this->table->generate();?>
+<?php echo $this->table->generate();?>
 
 <?php else: ?>
 
-	<p>There are no sequences to display. You can <a href="<?=$module_base.AMP;?>method=import">import one</a> to get started.</p>
+	<p>There are no sequences to display. You can <a href="<?php echo $module_base.AMP;?>method=import">import one</a> to get started.</p>
 
 <?php endif; ?>

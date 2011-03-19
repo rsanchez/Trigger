@@ -1,12 +1,12 @@
-<?=form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=do_run_sequence')?>
+<?php echo form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger'.AMP.'method=do_run_sequence')?>
 	
-	<p>Are you sure you want to run the sequence titled <strong><?=$sequence['title'];?></strong>? It will run the following commands:</p>
+	<p>Are you sure you want to run the sequence titled <strong><?php echo $sequence['title'];?></strong>? It will run the following commands:</p>
 	
-	<pre><?=$sequence['commands'];?></pre>
+	<pre><?php echo $sequence['commands'];?></pre>
 	
-	<input type="hidden" name="sequence" value="<?=$sequence_slug;?>" />
-	<input type="hidden" name="location" value="<?=$location;?>" />
+	<input type="hidden" name="sequence" value="<?php echo $sequence_slug;?>" />
+	<input type="hidden" name="location" value="<?php echo $location;?>" />
 	
-	<p><?=form_submit('submit', lang('trigger_run'), 'class="submit"')?></p>
+	<p><?php echo form_submit('submit', lang('trigger_run'), 'class="submit"')?></p>
 
-<?=form_close()?>
+<?php echo form_close()?>

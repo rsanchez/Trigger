@@ -1,11 +1,11 @@
 <?php if( $log_lines ): ?>
 
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=clear_logs"><?=lang('trigger_clear_logs');?></a> 
+		<a href="<?php echo $module_base.AMP;?>method=clear_logs"><?php echo lang('trigger_clear_logs');?></a> 
 	</div> 
 	
 	<div class="cp_button"> 
-		<a href="<?=$module_base.AMP;?>method=export&to=file"><?=lang('trigger_export_logs_as_seq_file');?></a> 
+		<a href="<?php echo $module_base.AMP;?>method=export&to=file"><?php echo lang('trigger_export_logs_as_seq_file');?></a> 
 	</div> 
 
 <table cellpadding="0" cellspacing="0" class="trigger_table">
@@ -53,7 +53,7 @@
 <?php $count++; endforeach; ?>
 </table>
 
-<?=$pagination;?>
+<?php echo $pagination;?>
 
 <?php else: ?>
 
