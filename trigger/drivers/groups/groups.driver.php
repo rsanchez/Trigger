@@ -93,7 +93,7 @@ class Driver_groups
 		endif;
 		
 		// Get the group ID
-		$query = $this->EE->db->limit(1)->where('group_name', strtolower($group))->get('template_groups');
+		$query = $this->EE->db->limit(1)->where('group_name', $group)->get('template_groups');
 		
 		if($query->num_rows() == 0):
 		
@@ -115,6 +115,16 @@ class Driver_groups
 					->where('group_id', $group_id)
 					->where('site_id', $this->EE->config->item('site_id'))
 					->delete('templates');
+					
+		// Delete the group folder if it exists.
+		
+		if($this->EE->config->item('save_tmpl_files') == 'y'):
+		
+			$this->EE->load->library('api/Templates');
+		
+			$this->EE->templates->delete_group_folder($group);
+		
+		endif;
 		
 		return "group and ".$this->EE->db->affected_rows()." templates deleted";
 	}

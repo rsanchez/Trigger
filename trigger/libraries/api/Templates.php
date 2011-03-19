@@ -393,7 +393,7 @@ class Templates
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Delete a template.
+	 * Delete a template file
 	 *
 	 * @access	public
 	 * @param	string - name of the group
@@ -409,6 +409,29 @@ class Templates
 		if(is_file($this->template_directory.'/'.$group_folder.'/'.$template_name.$ext)):
 		
 			@unlink($this->template_directory.'/'.$group_folder.'/'.$template_name.$ext);
+		
+		endif;
+	}
+	
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Delete a group folder
+	 *
+	 * @access	public
+	 * @param	string - name of the group
+	 * @return	void
+	 */
+	public function delete_group_folder($group_name)
+	{
+		$group_folder = $group_name.'.group';
+	
+		echo $this->template_directory.'/'.$group_folder;
+		die();
+	
+		if(is_dir($this->template_directory.'/'.$group_folder)):
+		
+			@rmdir($this->template_directory.'/'.$group_folder);
 		
 		endif;
 	}
