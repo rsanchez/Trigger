@@ -781,6 +781,123 @@ class Driver_templates
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Change the type of a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string
+	 * @return	string
+	 */	
+	function _comm_change_type($template_data, $new_type)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+		
+		// Make sure new type is correct
+		if(!array_key_exists($new_type, $this->EE->api_template_structure->file_extensions)):
+		
+			return 'invalid type';
+		
+		endif;
+
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+		
+		$this->EE->load->model('template_model');
+
+		$data = array('template_type'=>$new_type);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+		
+		// Rename the file if we are dealing with files
+		if($this->EE->config->item('save_tmpl_files') == 'y'):
+		
+			$this->_rename_template_file($group['group_name'], $template['template_type'], $new_type, $template['template_name'], $template['template_name']);
+		
+		endif;
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		
+		return "type for $uri set to $new_type";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Change the type of a template
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string
+	 * @return	string
+	 */	
+	function _comm_rename($template_data, $new_name)
+	{
+		if(!$this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+		
+			return "no";
+		
+		endif;
+		
+		// Parse group/template
+		if(is_string($tmp = $this->_separate_template_data($template_data))):
+		
+			return $tmp;
+		
+		else:
+		
+			extract($tmp);
+		
+		endif;
+				
+		// See if the template already exists.
+		$check = $this->EE->db
+							->limit(1)
+							->where('template_name', $new_name)
+							->where('group_id', $group['group_id'])
+							->get('templates');
+		
+
+		if($check->num_rows()==1):
+		
+			return "a template with this name already exists in this group";
+		
+		endif;	
+	
+	
+		$this->EE->load->model('template_model');
+
+		$data = array('template_name'=>$new_name);
+
+		$this->EE->template_model->update_template_ajax($template['template_id'], $data);
+		
+		// Rename the file if we are dealing with files
+		if($this->EE->config->item('save_tmpl_files') == 'y'):
+		
+			$this->_rename_template_file($group['group_name'], $template['template_type'], $template['template_type'], $template['template_name'], $new_name);
+		
+		endif;
+
+		$uri = $group['group_name'].'/'.$template['template_name'];
+		$new_uri = $group['group_name'].'/'.$new_name;
+		
+		return "renamed $uri set to $new_name";
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Separates and sanitizes the group/template data
 	 *
 	 * @access	private
@@ -869,6 +986,37 @@ class Driver_templates
 		$this->EE->config->update_site_prefs($config);
 		
 		return TRUE;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Rename Template File
+	 *
+	 * This is a modified function from the template model. This one
+	 * just takes into account the fact that the extension may have changed
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	private function _rename_template_file($template_group, $old_template_type, $new_template_type, $old_name, $new_name)
+	{
+		$new_ext = $this->EE->api_template_structure->file_extensions($new_template_type);
+		$old_ext = $this->EE->api_template_structure->file_extensions($old_template_type);
+		
+		$basepath  = $this->EE->config->slash_item('tmpl_file_basepath');
+		$basepath .= $this->EE->config->item('site_short_name');
+		$basepath .= '/'.$template_group.'.group';
+		
+		$existing_path = $basepath.'/'.$old_name.$old_ext;
+		
+		if(!file_exists($existing_path)):
+		
+			return FALSE;
+		
+		endif;
+		
+		return rename($existing_path, $basepath.'/'.$new_name.$new_ext);
 	}
 
 }
