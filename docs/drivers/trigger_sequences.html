@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head>
 
-	<title>Commands | Trigger Documentation</title>
+	<title>Trigger Sequences Driver | Trigger Documentation</title>
 
 	<meta charset="utf-8"> 
 	<meta name="generator" content="CodeIgniter 2.0" /> 
@@ -17,7 +17,7 @@
 	
 		<h2>Trigger Documentation</h2>
 		
-		<p class="breadcrumbs"><a href="../index.html">Home</a> &#187; Commands</p>
+		<p class="breadcrumbs"><a href="../index.html">Home</a> &#187; <a href="index.html">Command Reference</a> &#187; Trigger Sequences Driver</p>
 	
 	</header>
 
@@ -28,26 +28,42 @@
 			<li><a href="../variables.html">Variables</a></li>
 			<li><a href="../sequences.html">Sequences</a></li>
 			<li><a href="../packages.html">Packages</a></li>
-			<li>Command Reference</li>
+			<li>Drivers Reference</li>
 			<li><a href="../vars_reference.html">Variable Reference</a></li>
 		</ul>
 	
-		<h1>Command Reference</h1>
+		<h2>Drivers</h2>
 		
-		<p>Trigger commands are part of command groups called drivers. Choose a driver below to view the commands for that driver.</p>
-
 		<ul>
 			<li><a href="channels.html">Channels</a></li>
 			<li><a href="global_variables.html">Global Variables</a></li>
 			<li><a href="template_groups.html">Template Groups</a></li>
 			<li><a href="trigger_logs.html">Trigger Logs</a></li>
 			<li><a href="trigger_packages.html">Trigger Packages</a></li>
-			<li><a href="trigger_sequences.html">Trigger Sequences</a></li>
+			<li>Trigger Sequences</a></li>
 			<li><a href="site.html">Site</a></li>
 			<li><a href="snippets.html">Snippets</a></li>
 			<li><a href="templates.html">Templates</a></li>
-		</ul>		
+		</ul>
+		
+		<h1>Trigger Sequences</h1>
+		
+		<h3>Driver slug: <span>seq</span></h3>
+		
+		<p>The site driver deals with Trigger sequences.</p>
 
+		<h2>run <span>(sequence)</span> or <span>(package/sequence)</span></h2> 
+		 
+		<p>Runs a Trigger sequence.</p> 
+		 
+		<pre><code>ee : seq : run (pre_launch)</code></pre> 
+		 
+		<pre><code>ee : seq : run (blog/build_blog)</code></pre> 
+		 
+		<h2>list</h2> 
+		 
+		<p>Lists all the Trigger sequences in the sequences folder as well as in packages.</p> 
+		
 	</section>
 	
 	<footer>
