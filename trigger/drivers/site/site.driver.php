@@ -309,6 +309,40 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the theme URL
+	 */
+	function _comm_set_theme_url($url)
+	{
+		if(!$url){
+			
+			return "invalid url";
+		}
+		
+		$this->_change_preference('theme_folder_url', $url);
+
+		return "site theme folder url has been set to $url";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the theme path
+	 */
+	function _comm_set_theme_path($path)
+	{
+		if(!$path){
+			
+			return "invalid path";
+		}
+		
+		$this->_change_preference('theme_folder_path', $path);
+
+		return "site theme path has been set to $path";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
