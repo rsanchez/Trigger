@@ -149,6 +149,21 @@ class Vars
 		return $base_url;
 	}
 
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * System Folder
+	 *
+	 * Returns the current system folder name
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function system_folder()
+	{
+		return SYSDIR;
+	}
+	
 }
 
 /* End of file commands.php.php */
