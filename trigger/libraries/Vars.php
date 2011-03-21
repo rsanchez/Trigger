@@ -25,27 +25,31 @@ class Vars
 	/**
 	 * Server Path
 	 *
-	 * Returns the server path
+	 * Returns the server path to the ee root
 	 *
 	 * @access	public
 	 * @return	string
 	 */
-	public function server_path()
+	public function server_root()
 	{
-		return $_SERVER["DOCUMENT_ROOT"];
+		$server = $_SERVER["SCRIPT_FILENAME"];
+		
+		$server = str_replace('/'.SYSDIR.'/index.php', '', $server);
+		
+		return $server;
 	}
 
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * EE Server Path
+	 * App Server Path
 	 *
-	 * Returns the EE server path
+	 * Returns the 'expressionengine' server path
 	 *
 	 * @access	public
 	 * @return	string
 	 */
-	public function ee_path()
+	public function app_path()
 	{
 		$server = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]);
 	
