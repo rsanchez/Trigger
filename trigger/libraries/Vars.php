@@ -137,6 +137,29 @@ class Vars
 		return $this->EE->config->item('site_name');
 	}
 
+	// --------------------------------------------------------------------------
+	
+	/**
+	 * Auto Base URL
+	 *
+	 * Figures out the base URL.
+	 * For use with setting values
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function auto_base_url()
+	{
+		$base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
+		$base_url .= "://".$_SERVER['HTTP_HOST'];
+		$base_url .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 
+		
+		// Remove the system dir.
+		$base_url = str_replace('/'.SYSDIR.'/', '', $base_url);
+	
+		return $base_url;
+	}
+
 }
 
 /* End of file commands.php.php */
