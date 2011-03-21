@@ -219,6 +219,40 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the site name
+	 */
+	function _comm_set_site_name($site_name)
+	{
+		if(!$site_name){
+			
+			return "invalid site name";
+		}
+	
+		$this->_change_preference('site_name', $site_name);
+
+		return "site name has been set to $site_name";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the license number
+	 */
+	function _comm_set_license($license_num)
+	{
+		if(!$license_num){
+			
+			return "invalid license number";
+		}
+		
+		$this->_change_preference('license_number', $license_num);
+
+		return "site license number has been set to $license_num";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
@@ -237,17 +271,24 @@ class Driver_site
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Change a site preference
+	 * Change a site preference.
+	 *
+	 * @access	private
+	 * @param	string - param key
+	 * @param	string - the new preference value
+	 * @param	bool - should we check to see if the value is the same as the existing one?
+	 * @return	bool
 	 */
-	function _change_preference( $item, $new_status )
+	private function _change_preference( $item, $new_status, $check_value = TRUE )
 	{
-		$current_status = $this->EE->config->item($item);
-	
-		if( $current_status == $new_status ):
+		if($check_value){
+			$current_status = $this->EE->config->item($item);
 		
-			return FALSE;
-		
-		endif;
+			if( $current_status == $new_status ){
+			
+				return FALSE;
+			}
+		}
 
 		$config = array($item => $new_status);
 
