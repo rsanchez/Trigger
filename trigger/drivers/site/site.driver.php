@@ -343,6 +343,42 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the site default language
+	 */
+	function _comm_set_lang($language)
+	{
+		if(!$language){
+			
+			return "invalid language";
+		}
+		
+		$this->_change_preference('deft_lang', $language);
+
+		return "site default language has been set to $language";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the site default XML language
+	 */
+	function _comm_set_xml_lang($language)
+	{
+		if(!$language or is_numeric($language) or count($language!=2)){
+			
+			return "invalid language";
+		}
+		
+		$language = strtolower($language);
+		
+		$this->_change_preference('xml_lang', $language);
+
+		return "site default xml language has been set to $language";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
