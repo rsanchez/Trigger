@@ -132,45 +132,28 @@ class Driver_site
 
 	// --------------------------------------------------------------------------
 	
-	function _comm_debug_0()
+	/**
+	 * Set the debug level
+	 */
+	function _comm_set_debug($debug_level)
 	{
-		if( $this->_change_preference('debug', '0') ):
-		
-			return $this->EE->lang->line('site.debug_set_0');
-		
-		else:
-		
-			return $this->EE->lang->line('site.debug_already_set_0');
+		// Make sure the value is cool
 	
+		$valid_levels = array('1', '2', '3');
+		
+		if(!is_numeric($debug_level) or !in_array($debug_level, $valid_levels)):
+		
+			return "invalid level";
+		
 		endif;
-	}
-
-	// --------------------------------------------------------------------------
 	
-	function _comm_debug_1()
-	{
-		if( $this->_change_preference('debug', '1') ):
+		if( $this->_change_preference('debug', $debug_level) ):
 		
-			return $this->EE->lang->line('site.debug_set_1');
+			return "debug level set to $debug_level";
 		
 		else:
 		
-			return $this->EE->lang->line('site.debug_already_set_1');
-	
-		endif;
-	}
-
-	// --------------------------------------------------------------------------
-	
-	function _comm_debug_2()
-	{
-		if( $this->_change_preference('debug', '2') ):
-		
-			return $this->EE->lang->line('site.debug_set_2');
-		
-		else:
-		
-			return $this->EE->lang->line('site.debug_already_set_2');
+			return "debug level already set to $debug_level";
 	
 		endif;
 	}
