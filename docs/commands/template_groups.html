@@ -52,23 +52,31 @@
 		
 		<p>The template groups driver deals with EE template groups.</p>
 
-		<h2>new <span>(group_name, is_site_default)</span></h2>
-		
-		<p>Creates a group and the index template. Passing a 'y' to the second parameter will make that template group the default or index template group.</p>
-		
-		<h2>delete <span>(group_name)</span></h2>
-		
-		<p>Deletes a template group and the templates within it.</p>
-		
-		<p class="warning">The delete function is currently not functioning correctly.</p>
-		
-		<h2>list</h2>
-		
-		<p>Lists current template groups.</p>
-		
-		<h2>delete all</h2>
-		
-		<p>Deletes all groups and their templates.</p>
+		<h2>new <span>(group name, is site default)</span></h2> 
+		 
+		<p>Creates a group and the index template. Passing a 'y' to the second parameter will make that template group the default or index template group.</p> 
+		 
+		<pre><code>ee : groups : new (home, y)</code></pre> 
+		 
+		<p><em>The above will create a new group called "home" with an index file. It will be set as the site's default group.</em></p> 
+		 
+		<pre><code>ee : groups : new (home)</code></pre> 
+		 
+		<p><em>The above will create a new group called "home" with an index file, but will not set it as the site's default group.</em></p> 
+		 
+		<h2>delete <span>(group name)</span></h2> 
+		 
+		<p>Deletes a template group and the templates within it.</p> 
+		 
+		<p class="warning">The delete function is currently not functioning correctly.</p> 
+		 
+		<h2>list</h2> 
+		 
+		<p>Lists current template groups.</p> 
+		 
+		<h2>delete all</h2> 
+		 
+		<p>Deletes all groups and their templates.</p> 
 
 	</section>
 	

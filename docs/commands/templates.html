@@ -52,124 +52,140 @@
 		
 		<p>The templates driver deals with EE templates (and sometimes groups).</p>
 
-		<h2>sync</h2>
-		
-		<p>Syncs all templates. File templates and groups will be updated and created in the database. Things found in the database not found in the filesystem will be created.</p>
-		
-		<h2>new <span>(group/template, content, [type], [save_as_file])</span></h2>
-		
-		<p>Creates a template within a group. If the group doesn't exist, Trigger will create it. The type value will set the type of template to create. Set to webpage as default. Available types are:</p>
-		
-		<ul>
-			<li>webpage</li>
-			<li>static</li>
-			<li>feed</li>
-			<li>css</li>
-			<li>feed</li>
-			<li>xml</li>
-		</ul>
-		
-		<p>Setting the last value to 'y' will force the template's config to marked it as savable as a file. Leaving this blank will set it to your site's config.</p>
-		
-		<h2>delete <span>(group/template)</span></h2>
-
-		<p>Deletes a template. If a template file exists, it will delete this as well.</p>
-		
-		<h2>enable strict urls</h2>
-		
-		<p>Enables strict URLs.</p>
-		
-		<h2>disable strict urls</h2>
-		
-		<p>Disables strict URLs.</p>
-		
-		<h2>save template revs</h2>
-		
-		<p>Sets save template revisions to yes.</p>
-		
-		<h2>dont save template revs</h2>
-
-		<p>Sets save template revisions to no.</p>
-		
-		<h2>max number of revs <span>(# of revs)</span></h2>
-		
-		<p>Sets the max number of template revisions.</p>
-		
-		<h2>allow as files</h2>
-		
-		<p>Allows templates to be saved as files.</p>
-		
-		<h2>disallow as files</h2>
-		
-		<p>Disallows templates to be saved as files.</p>
-		
-		<h2>set base <span>(basepath)</span></h2>
-
-		<p>Sets the template file basepath.</p>
-
-		<h2>set 404 <span>(group/template)</span></h2>
-
-		<p>Sets the site 404 template. The template and group should already exist for this function.</p>
-
-		<h2>enable cache <span>(group/template, refresh interval)</span></h2>
-		
-		<p>Enables cache for a template with a refresh interval.</p>
-		
-		<h2>disable cache <span>(group/template)</span></h2>
-		
-		<p>Disables the cache for a template and sets the refresh interval back to 0.</p>
-
-		<h2>set refresh <span>(group/template, refresh interval)</span></h2>
-		
-		<p>Sets the refresh interval for a template.</p>
-
-		<h2>allow php <span>(group/template, [parsing stage])</span></h2>
-		
-		<p>Allows PHP for a template. Parsing stage defaults to output, but this can be overridden by providing 'i' or 'input' for the second parameter.</p>
-
-		<h2>disallow php <span>(group/template)</span></h2>
-
-		<p>Turns off PHP allowing for a template.</p>
-
-		<h2>set php stage <span>(group/template, [parsing stage])</span></h2>
-		
-		<p>Sets PHP parsing stage for a template. Parsing stage defaults to output, but this can be overridden by providing 'i' or 'input' for the second parameter.</p>
-
-		<h2>change type <span>(group/template, new type)</span></h2>
-		
-		<p>Changes the type of a template (see list of valid types above). If you are saving templates as files, this function will also rename the file with the proper extension.</p>
-
-		<h2>rename <span>(group/template, new template name)</span></h2>
-		
-		<p>Renames a template. If you are saving templates as files, this function will also rename the file.</p>
-
-		<h2>reset hits <span>(group/template)</span></h2>
-		
-		<p>Resets the hits to 0 for a template.</p>
-
-		<h2>enable http auth <span>(group/template)</span></h2>
-		
-		<p>Enables HTTP authentication for a template.</p>
-
-		<h2>disable http auth <span>(group/template)</span></h2>
-		
-		<p>Disables HTTP authentication for a template.</p>
-
-		<h2>set auth bounce <span>(group/template, bounce location group/template)</span></h2>
-		
-		<p>Sets the HTTP authentication bounce location for a template.</p>
-
-		<h2>deny access <span>(group/template, member groups)</span></h2>
-		
-		<p>Denies access to member groups for a template. Separate member group names with a pipe character (ex: Members|Guests)</p>
-
-		<h2>grant access <span>(group/template, member groups)</span></h2>
-		
-		<p>Grants access to member groups for a template. Separate member group names with a pipe character (ex: Members|Guests)</p>
-
-		<h2>open access <span>(group/template)</span></h2>
-		
-		<p>Allows access to all groups for a template.</p>
+		<h2>sync</h2> 
+		 
+		<p>Syncs all templates. File templates and groups will be updated and created in the database. Things found in the database not found in the filesystem will be created.</p> 
+		 
+		<h2>new <span>(group/template, content, [type], [save_as_file])</span></h2> 
+		 
+		<p>Creates a template within a group. If the group doesn't exist, Trigger will create it. The type value will set the type of template to create. Set to webpage as default. Available types are:</p> 
+		 
+		<ul> 
+			<li>webpage</li> 
+			<li>static</li> 
+			<li>feed</li> 
+			<li>css</li> 
+			<li>feed</li> 
+			<li>xml</li> 
+		</ul> 
+		 
+		<p>Setting the last value to 'y' will force the template's config to marked it as savable as a file. Leaving this blank will set it to your site's config.</p> 
+		 
+		<h2>delete <span>(group/template)</span></h2> 
+		 
+		<p>Deletes a template. If a template file exists, it will delete this as well.</p> 
+		 
+		<h2>enable strict urls</h2> 
+		 
+		<p>Enables strict URLs.</p> 
+		 
+		<h2>disable strict urls</h2> 
+		 
+		<p>Disables strict URLs.</p> 
+		 
+		<h2>save template revs</h2> 
+		 
+		<p>Sets save template revisions to yes.</p> 
+		 
+		<h2>dont save template revs</h2> 
+		 
+		<p>Sets save template revisions to no.</p> 
+		 
+		<h2>max number of revs <span>(# of revs)</span></h2> 
+		 
+		<p>Sets the max number of template revisions.</p> 
+		 
+		<h2>allow as files</h2> 
+		 
+		<p>Allows templates to be saved as files.</p> 
+		 
+		<h2>disallow as files</h2> 
+		 
+		<p>Disallows templates to be saved as files.</p> 
+		 
+		<h2>set base <span>(basepath)</span></h2> 
+		 
+		<p>Sets the template file basepath. You can use a Trigger variable (like ee_path) to make setting the basepath easy:</p> 
+		 
+		<pre><code>ee : templates : set base ({ee_path}/templates)</code></pre> 
+		 
+		<h2>set 404 <span>(group/template)</span></h2> 
+		 
+		<p>Sets the site 404 template. The template and group should already exist for this function.</p> 
+		 
+		<h2>enable cache <span>(group/template, refresh interval)</span></h2> 
+		 
+		<pre><code>ee : templates : enable cache (home/index, 30)</code></pre> 
+		 
+		<p>Enables cache for a template with a refresh interval.</p> 
+		 
+		<h2>disable cache <span>(group/template)</span></h2> 
+		 
+		<p>Disables the cache for a template and sets the refresh interval back to 0.</p> 
+		 
+		<h2>set refresh <span>(group/template, refresh interval)</span></h2> 
+		 
+		<p>Sets the refresh interval for a template.</p> 
+		 
+		<h2>allow php <span>(group/template, [parsing stage])</span></h2> 
+		 
+		<p>Allows PHP for a template. Parsing stage defaults to output, but this can be overridden by providing 'i' or 'input' for the second parameter.</p> 
+		 
+		<pre><code>ee : templates : set php stage (about/team)</code></pre> 
+		 
+		<p>or:</p> 
+		 
+		<pre><code>ee : templates : set php stage (about/team, input)</code></pre> 
+		 
+		<h2>disallow php <span>(group/template)</span></h2> 
+		 
+		<p>Turns off PHP allowing for a template.</p> 
+		 
+		<h2>set php stage <span>(group/template, [parsing stage])</span></h2> 
+		 
+		<p>Sets PHP parsing stage for a template. Parsing stage defaults to output, but this can be overridden by providing 'i' or 'input' for the second parameter.</p> 
+		 
+		<h2>change type <span>(group/template, new type)</span></h2> 
+		 
+		<p>Changes the type of a template (see list of valid types above). If you are saving templates as files, this function will also rename the file with the proper extension.</p> 
+		 
+		<h2>rename <span>(group/template, new template name)</span></h2> 
+		 
+		<p>Renames a template. If you are saving templates as files, this function will also rename the file.</p> 
+		 
+		<pre><code>ee : templates : rename (about/team, our-team)</code></pre> 
+		 
+		<h2>reset hits <span>(group/template)</span></h2> 
+		 
+		<p>Resets the hits to 0 for a template.</p> 
+		 
+		<h2>enable http auth <span>(group/template)</span></h2> 
+		 
+		<p>Enables HTTP authentication for a template.</p> 
+		 
+		<h2>disable http auth <span>(group/template)</span></h2> 
+		 
+		<p>Disables HTTP authentication for a template.</p> 
+		 
+		<h2>set auth bounce <span>(group/template, bounce location group/template)</span></h2> 
+		 
+		<p>Sets the HTTP authentication bounce location for a template.</p> 
+		 
+		<pre><code>ee : templates : set auth bounce (secrets/our-secret, site/login)</code></pre> 
+		 
+		<h2>deny access <span>(group/template, member groups)</span></h2> 
+		 
+		<p>Denies access to member groups for a template. Separate member group names with a pipe character.</p> 
+		 
+		<pre><code>ee : templates : deny access (secrets/our-secret, Guests|Members)</code></pre> 
+		 
+		<h2>grant access <span>(group/template, member groups)</span></h2> 
+		 
+		<p>Grants access to member groups for a template. Separate member group names with a pipe character (ex: Members|Guests)</p> 
+		 
+		<h2>open access <span>(group/template)</span></h2> 
+		 
+		<p>Allows access to all groups for a template.</p> 
 
 	</section>
 	
