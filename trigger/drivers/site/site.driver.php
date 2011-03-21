@@ -292,6 +292,23 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the control panel index
+	 */
+	function _comm_set_cp_index($url)
+	{
+		if(!$url){
+			
+			return "invalid url";
+		}
+		
+		$this->_change_preference('cp_url', $url);
+
+		return "site cp index has been set to $url";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
