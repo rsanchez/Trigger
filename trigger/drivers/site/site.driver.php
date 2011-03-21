@@ -379,6 +379,64 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the max cacheable urls
+	 */
+	function _comm_set_max_cache_urls($max)
+	{
+		if(!is_numeric($max)){
+			
+			return "invalid number";
+		}
+	
+		$this->_change_preference('max_caches', $max);
+
+		return "max number of cachable urls has been set to $max";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable new version autocheck
+	 */
+	function _comm_enable_version_autocheck()
+	{
+		$this->_change_preference('new_version_check', 'y');
+
+		return "ee will now autocheck for new versions";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable new version autocheck
+	 */
+	function _comm_disable_version_autocheck()
+	{
+		$this->_change_preference('new_version_check', 'n');
+
+		return "ee will now not autocheck for new versions";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the docs URL
+	 */
+	function _comm_set_docs_url($url)
+	{
+		if(!$url){
+			
+			return "invalid url";
+		}
+	
+		$this->_change_preference('doc_url', $max);
+
+		return "the documentation url has been set to $url";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
