@@ -70,21 +70,6 @@ class Vars
 	// --------------------------------------------------------------------------
 	
 	/**
-	 * Last ID
-	 *
-	 * Returns the last insert ID
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public function last_id()
-	{
-		return $this->EE->db->insert_id();
-	}
-
-	// --------------------------------------------------------------------------
-	
-	/**
 	 * License Number
 	 *
 	 * Returns the name of the EE license number
