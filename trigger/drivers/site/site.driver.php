@@ -253,6 +253,45 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the site index
+	 */
+	function _comm_set_index($index_file)
+	{
+		// Note: index can be blank
+		if($license_num == 'blank'){
+			
+			$index_file = '';
+		}
+			
+		$this->_change_preference('site_index', $index_file);
+		
+		if(!$index_file){
+			return "site index page has been set to blank";			
+		}
+
+		return "site index page has been set to $index_file";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the root URL
+	 */
+	function _comm_set_root($root_url)
+	{
+		if(!$root_url){
+			
+			return "invalid root url";
+		}
+		
+		$this->_change_preference('site_url', $root_url);
+
+		return "site root url has been set to $root_url";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
