@@ -25,18 +25,16 @@ class Vars
 	/**
 	 * Server Path
 	 *
-	 * Returns the server path to the ee root
+	 * Returns the server path to the ee root. No trailing slash.
 	 *
 	 * @access	public
 	 * @return	string
 	 */
 	public function server_root()
 	{
-		$server = $_SERVER["SCRIPT_FILENAME"];
+		$root = str_replace('/'.SYSDIR.'/', '', FCPATH);
 		
-		$server = str_replace('/'.SYSDIR.'/index.php', '', $server);
-		
-		return $server;
+		return $root;
 	}
 
 	// --------------------------------------------------------------------------
@@ -51,9 +49,7 @@ class Vars
 	 */
 	public function app_path()
 	{
-		$server = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]);
-	
-		return $server.'expressionengine';
+		return rtrim(APPPATH, '/');
 	}
 
 	// --------------------------------------------------------------------------
@@ -129,6 +125,21 @@ class Vars
 	// --------------------------------------------------------------------------
 	
 	/**
+	 * Base URL
+	 *
+	 * Returns the current base url
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function base_url()
+	{
+		return rtrim($this->EE->config->item('base_url'), '/');
+	}
+
+	// --------------------------------------------------------------------------
+	
+	/**
 	 * Auto Base URL
 	 *
 	 * Figures out the base URL.
@@ -163,7 +174,7 @@ class Vars
 	{
 		return SYSDIR;
 	}
-	
+
 }
 
 /* End of file commands.php.php */
