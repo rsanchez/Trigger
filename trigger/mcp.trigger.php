@@ -35,6 +35,8 @@ class Trigger_mcp {
 
 		define('TRIGGER_ADDONS_FOLDER', PATH_THIRD.'trigger/addons/');
 
+		define('EE_SERVER_ROOT', str_replace('/'.SYSDIR.'/', '', FCPATH));
+
 		// -------------------------------------
 		// Set the top right nav.
 		// -------------------------------------		

@@ -14,7 +14,7 @@
 
 class Sequence
 {
-	private $checks = array('global_var', 'snippet', 'template');
+	private $checks = array('global_var', 'snippet', 'template', 'directory');
 
 	// Right now we just support checking if it doesn't exist
 	// To add:  'exists', 'is null', 'is numeric'
@@ -192,6 +192,15 @@ class Sequence
 			if($query->num_rows() > 0):
 			
 				return "global variable \"$item_value\" already exists";
+			
+			endif;
+			
+		// Check for a directory
+		elseif($item_type == 'directory'):
+		
+			if(@is_dir(EE_SERVER_ROOT.'/'.ltrim($item_value, '/'))):
+			
+				return "directory \"$item_value\" already exists";
 			
 			endif;
 					
