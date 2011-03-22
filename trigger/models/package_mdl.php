@@ -1,5 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger Packages MOdule
+ *
+ * @package		Trigger
+ * @category	packages
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2011, Addict Add-ons
+ */
+
 class Package_mdl extends CI_Model
 {
 	public $folder = 'packages';
@@ -22,7 +31,7 @@ class Package_mdl extends CI_Model
 	 */
 	function get_packages()
 	{
-		$files = directory_map(APPPATH.'third_party/trigger/'.$this->folder.'/', 1);
+		$files = directory_map(TRIGGER_ADDONS_FOLDER.$this->folder.'/', 1);
 		
 		$return = array();
 		
@@ -55,7 +64,7 @@ class Package_mdl extends CI_Model
 	 */
 	public function parse_package_details($package_slug)
 	{
-		$package_file = APPPATH.'third_party/trigger/'.$this->folder.'/'.$package_slug.'/package.txt';
+		$package_file = TRIGGER_ADDONS_FOLDER.$this->folder.'/'.$package_slug.'/package.txt';
 		
 		if(!$package_info = read_file($package_file)):
 		
@@ -87,7 +96,7 @@ class Package_mdl extends CI_Model
 		
 		// See if we have an icon
 		
-		if(is_file(APPPATH.'third_party/trigger/'.$this->folder.'/'.$package_slug.'/icon.png')):
+		if(is_file(TRIGGER_ADDONS_FOLDER.$this->folder.'/'.$package_slug.'/icon.png')):
 	
 			$info['icon'] = $this->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/packages/'.$package_slug.'/icon.png';
 		
@@ -111,7 +120,7 @@ class Package_mdl extends CI_Model
 	 */
 	public function get_package_contents($package)
 	{
-		$files = directory_map(APPPATH.'third_party/trigger/packages/'.$package.'/', 2);
+		$files = directory_map(TRIGGER_ADDONS_FOLDER.'/'.$this->folder.'/'.$package.'/', 2);
 		
 		$contents = array();
 		

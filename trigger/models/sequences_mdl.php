@@ -1,5 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * Trigger Sequences MOdule
+ *
+ * @package		Trigger
+ * @category	models
+ * @author		Addict Add-ons Dev Team
+ * @copyright	Copyright (c) 2011, Addict Add-ons
+ */
+
 class Sequences_mdl extends CI_Model
 {
 	public $folder = 'sequences';
@@ -26,7 +35,13 @@ class Sequences_mdl extends CI_Model
 
 		// Get them from the sequences folder
 
-		$sequence_files = directory_map(APPPATH.'third_party/trigger/'.$this->folder.'/', 1);		
+		$sequence_files = directory_map(TRIGGER_ADDONS_FOLDER.$this->folder.'/', 1);
+		
+		if(empty($sequence_files)):
+		
+			return FALSE;
+		
+		endif;		
 		
 		foreach($sequence_files as $file):
 		
@@ -40,7 +55,7 @@ class Sequences_mdl extends CI_Model
 		
 		// Get them from the packages
 		
-		$packages = directory_map(APPPATH.'third_party/trigger/packages/', 2);
+		$packages = directory_map(TRIGGER_ADDONS_FOLDER.'packages/', 2);
 	
 		foreach($packages as $folder => $package):
 		
@@ -91,14 +106,14 @@ class Sequences_mdl extends CI_Model
 		
 		endif;
 				
-		if(!file_exists(APPPATH.'third_party/trigger/'.$file)):
+		if(!file_exists(TRIGGER_ADDONS_FOLDER.$file)):
 					
 			return FALSE;
 		
 		endif;
 	
 		// Open the file
-	 	$sequence = read_file(APPPATH.'third_party/trigger/'.$file);
+	 	$sequence = read_file(TRIGGER_ADDONS_FOLDER.$file);
 		
 		$seq_data = array();
 		
