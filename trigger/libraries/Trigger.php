@@ -384,100 +384,115 @@ class Trigger
 	 * @param	string
 	 * @return	mixed
 	 */
-	private function _load_driver( $driver_slug )
+	private function _load_driver($driver_slug)
 	{
-		$driver_folder = PATH_THIRD.'trigger/drivers/';
+		// -------------------------------------
+		// Add-on Check
+		// -------------------------------------
+		// Check to see if this driver actually exists 
+		// and also if it is an addon driver
+		// This allows us to have addon drivers
+		// -------------------------------------
 		
-		if( is_dir($driver_folder.$driver_slug) ):
-
-			// -------------------------------------
-			// Load driver file
-			// -------------------------------------
-			
-			$driver_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.driver.php';
-			
-			if( file_exists($driver_file) ):
-
-				@require_once($driver_file);
-	
-				$driver_class = 'Driver_'.$driver_slug;
-				
-				$this->driver = new $driver_class();
+		if(is_dir(PATH_THIRD.'trigger/drivers/'.$driver_slug)):
 		
-			else:
+			$driver_folder = PATH_THIRD.'trigger/drivers/';
 		
-				// We can't go on without a driver file
-				$this->out = "missing driver file";
-				
-				return FALSE;
-			
-			endif;
-
-			// -------------------------------------
-			// See if we have commands
-			// -------------------------------------
-			// Commands are just methods in the
-			// driver file.
-			// -------------------------------------
-			
-			if(get_class_methods($this->driver)):
-			
-				$this->driver->has_commands = TRUE;
-			
-			else:
-				
-				$this->driver->has_commands = FALSE;
-			
-			endif;
+		elseif(is_dir(TRIGGER_ADDONS_FOLDER.'/drivers/'.$driver_slug)):
 		
-			// -------------------------------------
-			// Load driver language
-			// -------------------------------------
-			
-			$lang_file = $driver_folder.$driver_slug.'/language/'.$this->EE->config->item('deft_lang').'/lang.'.$driver_slug.'.php';
-			
-			if( ! file_exists($lang_file) ):
-			
-				// Looks like there is no language file. That's no good!
-				
-				$error = "no language file found for $driver_slug driver";
-			
-				write_log($this->line, $error);
-	
-				$this->out = $error;
-				
-				return;
-				
-			else:
-			
-				$this->load_trigger_lang($this->driver->driver_slug);
-			
-			endif;
-	
-			// -------------------------------------
-			// Load master language
-			// -------------------------------------
-
-			$this->EE->load->language('trigger');
-									
-			// -------------------------------------
-			// Set up some class variables
-			// -------------------------------------
-
-			$this->driver->driver_name 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_name');
-			$this->driver->driver_desc 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_desc');
-						
-			// -------------------------------------
-			// Set driver to driver context position
-			// -------------------------------------
-			
-			$this->context[1] = $driver_slug;
-			
-			return TRUE;
-			
+			$driver_folder = TRIGGER_ADDONS_FOLDER.'/drivers/';
+		
+		else:
+		
+			// Can't find it anywhere.
+			return FALSE;
+		
 		endif;
-				
-		return FALSE;
+		
+		// -------------------------------------
+		// Load driver file
+		// -------------------------------------
+		
+		$driver_file = $driver_folder.$driver_slug.'/'.$driver_slug.'.driver.php';
+		
+		if(file_exists($driver_file)):
+
+			@require_once($driver_file);
+
+			$driver_class = 'Driver_'.$driver_slug;
+			
+			$this->driver = new $driver_class();
+	
+		else:
+	
+			// We can't go on without a driver file
+			$this->out = "missing driver file";
+			
+			return FALSE;
+		
+		endif;
+
+		// -------------------------------------
+		// See if we have commands
+		// -------------------------------------
+		// Commands are just methods in the
+		// driver file.
+		// -------------------------------------
+		
+		if(get_class_methods($this->driver)):
+		
+			$this->driver->has_commands = TRUE;
+		
+		else:
+			
+			$this->driver->has_commands = FALSE;
+		
+		endif;
+	
+		// -------------------------------------
+		// Load driver language
+		// -------------------------------------
+		
+		$lang_file = $driver_folder.$driver_slug.'/language/'.$this->EE->config->item('deft_lang').'/lang.'.$driver_slug.'.php';
+		
+		if( ! file_exists($lang_file) ):
+		
+			// Looks like there is no language file. That's no good!
+			
+			$error = "no language file found for $driver_slug driver";
+		
+			write_log($this->line, $error);
+
+			$this->out = $error;
+			
+			return;
+			
+		else:
+		
+			$this->load_trigger_lang($this->driver->driver_slug);
+		
+		endif;
+
+		// -------------------------------------
+		// Load master language
+		// -------------------------------------
+
+		$this->EE->load->language('trigger');
+								
+		// -------------------------------------
+		// Set up some class variables
+		// -------------------------------------
+
+		$this->driver->driver_name 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_name');
+		$this->driver->driver_desc 	= $this->EE->lang->line($this->driver->driver_slug.'.driver_desc');
+					
+		// -------------------------------------
+		// Set driver to driver context position
+		// -------------------------------------
+		
+		$this->context[1] = $driver_slug;
+		
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------------
