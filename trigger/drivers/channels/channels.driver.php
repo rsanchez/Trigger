@@ -196,6 +196,114 @@ class Driver_channels
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Display Rich Format Buttons
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_enable_format_buttons($channel_name)
+	{
+		$messages = array(
+			'success' => "rich formatting buttons enabled for $channel_name",
+			'failure' => "rich formatting buttons already enabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'show_button_cluster', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Don't Display Rich Format Buttons
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disable_format_buttons($channel_name)
+	{
+		$messages = array(
+			'success' => "rich formatting buttons disabled for $channel_name",
+			'failure' => "rich formatting buttons already disabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'show_button_cluster', 'n', $messages);
+	}
+	
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable Comments
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_enable_comments($channel_name)
+	{
+		$messages = array(
+			'success' => "comments enabled for $channel_name",
+			'failure' => "comments already enabeld for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'comment_system_enabled', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable Comments
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disable_comments($channel_name)
+	{
+		$messages = array(
+			'success' => "comments disabled for $channel_name",
+			'failure' => "comments already disabeld for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'comment_system_enabled', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable CAPTCHA
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_enable_captcha($channel_name)
+	{
+		$messages = array(
+			'success' => "captcha enabled for $channel_name",
+			'failure' => "captcha already enabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'comment_use_captcha', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable CAPTCHA
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disable_captcha($channel_name)
+	{
+		$messages = array(
+			'success' => "captcha disabled for $channel_name",
+			'failure' => "captcha already disabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'comment_use_captcha', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Check the channel
 	 *
 	 * @access	private
