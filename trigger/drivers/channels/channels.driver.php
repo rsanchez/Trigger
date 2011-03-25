@@ -43,7 +43,7 @@ class Driver_channels
 	 * @param	[string]
 	 * @return	string
 	 */
-	public function _comm_new($channel_title, $channel_name = '', $channel_content = '')
+	public function _comm_new($channel_title, $channel_name = '', $channel_description = '')
 	{
 		if(!$channel_title):
 
@@ -51,8 +51,9 @@ class Driver_channels
 		
 		endif;
 
-		$channel_data['site_id']		= $this->EE->config->item('site_id');
-		$channel_data['channel_title'] 	= $channel_title;
+		$channel_data['site_id']				= $this->EE->config->item('site_id');
+		$channel_data['channel_title'] 			= $channel_title;
+		$channel_data['channel_description'] 	= $channel_description;
 
 		// We will just guess the name if we don't have it
 		if(!$channel_name):
@@ -67,7 +68,20 @@ class Driver_channels
 		
 		endif;
 		
-		// TODO: Check and see if this already exists
+		// Check and see if this already exists
+		$query = $this->EE->db->where('channel_name', $channel_data['channel_name'])->get('channels');
+		
+		if($query->num_rows() > 0):
+		
+			return "this channel already exists";
+		
+		endif;
+		
+		// We need to reset this before we create a channel because
+		// it remembers if we have any errors from any other previous calls
+		// and stops anything from working bc it checks the class error array
+		// So, there's that.
+		$this->EE->api_channel_structure->errors = array();
 		
 		// Create the channel	
 		if($this->EE->api_channel_structure->create_channel($channel_data)):
