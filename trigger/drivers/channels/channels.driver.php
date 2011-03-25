@@ -136,23 +136,17 @@ class Driver_channels
 	 */	
 	function _comm_delete($channel_name)
 	{
-		// Get the ID
-		$query = $this->EE->db
-							->where('site_id', $this->EE->config->item('site_id'))
-							->limit(1)
-							->where('channel_name', $channel_name)
-							->get('channels');
-	
-		if($query->num_rows() == 0):
+		if(is_string($tmp = $this->_check_channel($channel_name))):
 		
-			return "cannot find channel";
+			return $tmp;
+		
+		else:
+		
+			$channel = $tmp;
 		
 		endif;
-		
-		$row = $query->row();
-		$channel_id = $row->channel_id;
-	
-		if( $this->EE->api_channel_structure->delete_channel($channel_id, $this->EE->config->item('site_id')) === FALSE ):
+
+		if( $this->EE->api_channel_structure->delete_channel($channel['channel_id'], $this->EE->config->item('site_id')) === FALSE ):
 		
 			return "error encountered when deleting this channel";
 		
@@ -161,6 +155,107 @@ class Driver_channels
 			return "channel deleted successfully";
 		
 		endif;
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable Versioning
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_enable_versioning($channel_name)
+	{
+		$messages = array(
+			'success' => "versioning enabled for $channel_name",
+			'failure' => "versioning already enabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'enable_versioning', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable Versioning
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disable_versioning($channel_name)
+	{
+		$messages = array(
+			'success' => "versioning disabled for $channel_name",
+			'failure' => "versioning already disabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'enable_versioning', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Check the channel
+	 *
+	 * @access	private
+	 * @param	string
+	 * @retun 	mixed - array on success, string on failure
+	 */
+	private function _check_channel($channel_name)
+	{
+		$query = $this->EE->db
+							->where('site_id', $this->EE->config->item('site_id'))
+							->limit(1)
+							->where('channel_name', $channel_name)
+							->get('channels');
+							
+		if($query->num_rows() == 0):
+		
+			return (string)"cannot find channel";
+		
+		endif;
+		
+		// We must've found it
+		return $query->row_array();
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Change channel preference
+	 *
+	 * Function that most of the commands call to change a setting withn
+	 * a channel
+	 *
+	 * @access	private
+	 * @param	string - the preference to change
+	 * @param	array - success and failure messages in an assoc array
+	 */	
+	function _change_channel_preference($channel_name, $preference, $new_value, $messages)
+	{
+		if(is_string($tmp = $this->_check_channel($channel_name))):
+		
+			return $tmp;
+		
+		else:
+		
+			$channel = $tmp;
+		
+		endif;
+
+		// Checking to see if the value is already set to this
+		if( $channel[$preference] == $new_value ):
+		
+			return $messages['failure'];
+		
+		endif;
+		
+		$update_data = array($preference => $new_value);
+		
+		$this->EE->db->limit(1)->where('channel_id', $channel['channel_id'])->update('channels', $update_data);
+
+		return $messages['success'];
 	}
 
 }
