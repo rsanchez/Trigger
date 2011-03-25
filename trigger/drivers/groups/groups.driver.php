@@ -51,6 +51,13 @@ class Driver_groups
 		
 		endif;
 		
+		// Default the is site default to no
+		if($is_site_default != 'n' and $is_site_default != 'y'):
+		
+			$is_site_default = 'n';
+		
+		endif;
+		
 		// Create the group
 		$group_data['is_site_default'] = $is_site_default;
 		$group_data['site_id'] = $this->EE->config->item('site_id');
@@ -193,7 +200,47 @@ class Driver_groups
 		
 		return "all_snippets_deleted";*/
 	}
+	
+	// --------------------------------------------------------------------------
 
+	/**
+	 * Set a group as the default group
+	 *
+	 * @access	public
+	 * @param	string - the group you want to set as default
+	 * @return	string
+	 */	
+	public function _comm_set_default($group)
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return $this->EE->lang->line('trigger_no_access');
+			
+		endif;
+
+		// Find the group's ID
+		$query = $this->EE->db->limit(1)->where('group_name', $group)->get('template_groups');
+		
+		if($query->num_rows() == 0):
+		
+			return "group not found";
+		
+		endif;
+		
+		$row = $query->row();
+		$group_id = $row->group_id;
+
+		// Set all of the groups as not the site default
+		$this->EE->db->where('site_id', $this->EE->config->item('site_id'));
+		$this->EE->db->update('template_groups', array('is_site_default' => 'n'));
+		
+		// Set our new site
+		$this->EE->db->where('group_id', $group_id)->limit(1);
+		$this->EE->db->update('template_groups', array('is_site_default' => 'y'));
+		
+		return "$group set as site default group";
+	}
 }
 
 /* End of file groups.driver.php */
