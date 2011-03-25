@@ -89,16 +89,34 @@ class Driver_groups
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Delete a template
+	 * Delete a group
 	 */
 	public function _comm_delete($group)
+	{
+		// Check for access
+		if ( ! $this->EE->cp->allowed_group('can_access_design') OR ! $this->EE->cp->allowed_group('can_admin_templates')):
+
+			return $this->EE->lang->line('trigger_no_access');
+			
+		endif;
+
+		return $this->_delete_group($group);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Delete a group function used by a few
+	 * of the group functions
+	 */
+	function _delete_group($group)
 	{
 		if(!$group):
 		
 			return "no group provided";
 		
 		endif;
-		
+
 		// Get the group ID
 		$query = $this->EE->db->limit(1)->where('group_name', $group)->get('template_groups');
 		
@@ -170,7 +188,7 @@ class Driver_groups
 		
 		if($total == 0):
 		
-			return "no groups";
+			return "no groups found";
 		
 		endif;
 		
@@ -202,23 +220,24 @@ class Driver_groups
 			
 		endif;
 
-		$db_obj = $this->EE->db->where('site_id', $this->EE->config->item('site_id'))->get('template_groups');
+		$query = $this->EE->db->where('site_id', $this->EE->config->item('site_id'))->get('template_groups');
 	
-		if($db_obj->num_rows() == 0):
+		if($query->num_rows() == 0):
 		
 			return "no groups";
 		
 		endif;
 	
 		// Go through the groups and delete all the templates
+		$count = 0;	
+		foreach($query->result() as $group):
+			
+			$this->_delete_group(trim($group->group_name));
+			$count++;
+			
+		endforeach;
 		
-		// NEED TO BE ABLE TO DELETE THE FILES / FOLDERS AS WELL
-		
-		/*$this->EE->db
-					->where('site_id', $this->EE->config->item('site_id'))
-					->delete('snippets');
-		
-		return "all_snippets_deleted";*/
+		return "$count groups deleted";
 	}
 	
 	// --------------------------------------------------------------------------
