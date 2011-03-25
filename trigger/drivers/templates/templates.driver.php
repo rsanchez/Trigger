@@ -66,9 +66,6 @@ class Driver_templates
 		
 		endif;
 		
-		// TODO: Make sure the folder is writable
-		
-		
 		// Do the sync
 		$this->EE->templates->sync_all();
 		
@@ -89,7 +86,7 @@ class Driver_templates
 	 * @param	[string] - save template as file? y/n
 	 * @return	string
 	 */	
-	public function _comm_new($template_group_name, $template_data = '', $template_type = 'webpage', $template_as_file = '')
+	public function _comm_new($template_group_name, $template_data = '', $template_type = 'webpage', $template_as_file = FALSE)
 	{
 		// We need a template name
 		if(!$template_group_name):
@@ -120,7 +117,12 @@ class Driver_templates
 		
 		endif;
 		
-		// TODO: Validate the Template type
+		// Validate the Template type
+		if(!$this->EE->api_template_structure->file_extensions($template_type)):
+		
+			return "$template_type is not a valid template type";
+		
+		endif;
 		
 		// Separate group and name
 		$pieces = explode('/', $template_group_name);
