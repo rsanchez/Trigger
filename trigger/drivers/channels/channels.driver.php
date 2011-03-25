@@ -286,9 +286,11 @@ class Driver_channels
 	// --------------------------------------------------------------------------
 
 	/**
-	 * Disable CAPTCHA
+	 * Set XML language
 	 *
 	 * @access	public
+	 * @param	string
+	 * @param	string
 	 * @return	string
 	 */	
 	function _comm_set_xml_lang($channel_name, $lang)
@@ -313,6 +315,60 @@ class Driver_channels
 	// --------------------------------------------------------------------------
 
 	/**
+	 * Set the default status
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_set_default_status($channel_name, $status)
+	{
+		$messages = array(
+			'success' => "default status for $channel_name set to ".$status,
+			'failure' => "default status for $channel_name already set to ".$status
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'deft_status', $status, $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Select allow comments by default on Publish page
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_select_allow_comments_by_default($channel_name)
+	{
+		$messages = array(
+			'success' => "allow comments button for $channel_name now checked by default",
+			'failure' => "allow comments button for $channel_name already checked by default"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'deft_comments', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Deselect allow comments by default on Publish page
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_deselect_allow_comments_by_default($channel_name)
+	{
+		$messages = array(
+			'success' => "allow comments button for $channel_name now unchecked by default",
+			'failure' => "allow comments button for $channel_name already unchecked by default"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'deft_comments', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
 	 * Disable CAPTCHA
 	 *
 	 * @access	public
@@ -328,6 +384,164 @@ class Driver_channels
 		return $this->_change_channel_preference($channel_name, 'comment_use_captcha', 'n', $messages);
 	}
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Allow image urls
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_allow_image_urls($channel_name)
+	{
+		$messages = array(
+			'success' => "image urls allowed for $channel_name",
+			'failure' => "image urls already allowed for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'channel_allow_img_urls', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disallow image urls
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disallow_image_urls($channel_name)
+	{
+		$messages = array(
+			'success' => "image urls disallowed for $channel_name",
+			'failure' => "image urls already disallowed for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'channel_allow_img_urls', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable automatically turning URLs and email addresses into links
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_enable_auto_links($channel_name)
+	{
+		$messages = array(
+			'success' => "auto links enabled for $channel_name",
+			'failure' => "auto links already enabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'channel_auto_link_urls', 'y', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable automatically turning URLs and email addresses into links
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_disable_auto_links($channel_name)
+	{
+		$messages = array(
+			'success' => "auto links disabled for $channel_name",
+			'failure' => "auto links already disabled for $channel_name"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'channel_auto_link_urls', 'n', $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set Maximum Number of Recent Revisions per Entry
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_set_max_revs($channel_name, $revs)
+	{
+		// Validate revs
+		if(!is_numeric($revs)):
+		
+			return "invalid revision number";
+		
+		endif;
+	
+		$messages = array(
+			'success' => "max revisions for $channel_name set to $revs",
+			'failure' => "max revisions for $channel_name already set to $revs"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'max_revisions', $revs, $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set Maximum Number of Recent Revisions per Entry
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_clear_rev_data($channel_name)
+	{
+		if(is_string($tmp = $this->_check_channel($channel_name))):
+		
+			return $tmp;
+		
+		else:
+		
+			$channel = $tmp;
+		
+		endif;
+	
+		$this->EE->db->delete('entry_versioning', array('channel_id' => $channel['channel_id']));
+		
+		return "revision data cleared for ".$channel['channel_name'];
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the default entry title
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_set_default_title($channel_name, $title)
+	{
+		$messages = array(
+			'success' => "default entry title for $channel_name set to $title",
+			'failure' => "default entry title for $channel_name already set to $title"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'default_entry_title', $title, $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the URL Title Prefix
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
+	function _comm_set_url_prefix($channel_name, $prefix)
+	{
+		$messages = array(
+			'success' => "URL title prefix for $channel_name set to $prefix",
+			'failure' => "URL title prefix for $channel_name already set to $prefix"
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'url_title_prefix', $prefix, $messages);
+	}
+	
 	// --------------------------------------------------------------------------
 
 	/**
