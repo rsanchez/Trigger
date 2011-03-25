@@ -65,7 +65,11 @@ class Driver_templates
 			return $this->EE->lang->line('templates.basepath_not_set');
 		
 		endif;
-				
+		
+		// TODO: Make sure the folder is writable
+		
+		
+		// Do the sync
 		$this->EE->templates->sync_all();
 		
 		return $this->EE->lang->line('templates.templates_synced');
@@ -441,6 +445,13 @@ class Driver_templates
 		if(!$base):
 		
 			return "no basepath provided";
+		
+		endif;
+		
+		// Check for a valid path
+		if(!@is_dir($base)):
+		
+			return "invalid basepath";
 		
 		endif;
 	
