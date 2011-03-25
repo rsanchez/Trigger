@@ -110,22 +110,9 @@ class Driver_groups
 		
 		$row = $query->row();
 		$group_id = $row->group_id;
-		
-		// Delete groups
-		$this->EE->db
-					->where('group_id', $group_id)
-					->where('site_id', $this->EE->config->item('site_id'))
-					->delete('template_groups');
-					
-		// Delete templates
-		$this->EE->db
-					->where('group_id', $group_id)
-					->where('site_id', $this->EE->config->item('site_id'))
-					->delete('templates');
-					
-		// Delete the group folder if it exists.
-		
-		if($this->EE->config->item('save_tmpl_files') == 'y'):
+							
+		// Delete the group folder and files if we need to
+		if($this->EE->config->item('save_tmpl_files') == 'y' and $this->EE->config->item('tmpl_file_basepath') != ''):
 		
 			$this->EE->load->library('api/Templates');
 		
@@ -133,7 +120,40 @@ class Driver_groups
 		
 		endif;
 		
-		return "group and ".$this->EE->db->affected_rows()." templates deleted";
+		// Remove template stuff from the misc places.
+		$query = $this->EE->db->select('template_id')->where('group_id', $group_id)->get('templates');
+		
+		$num_of_deleted_templates = 0;
+		
+		if ($query->num_rows() > 0):
+		
+			// Revision Tracker shit is the first to go.
+			foreach ($query->result() as $row):
+			
+				$this->EE->db->or_where('item_id', $row->template_id);
+			
+			endforeach;
+			$this->EE->db->delete('revision_tracker');
+			
+			// No access stuff. Keeping things nice and tidy.
+			foreach ($query->result() as $row):
+			
+				$this->EE->db->or_where('template_id', $row->template_id);
+			
+			endforeach;
+			$this->EE->db->delete('template_no_access');
+			
+			// Delete templates from the database
+			$this->EE->db->where('group_id', $group_id)->delete('templates');
+			
+			$num_of_deleted_templates = $this->EE->db->affected_rows();
+	
+		endif;
+
+		// Delete groups from the database. Goodbye!
+		$this->EE->db->where('group_id', $group_id)->delete('template_groups');
+					
+		return "$group group and ".$num_of_deleted_templates." templates deleted";
 	}
 
 	// --------------------------------------------------------------------------	

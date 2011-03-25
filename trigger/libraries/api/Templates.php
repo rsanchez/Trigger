@@ -428,14 +428,15 @@ class Templates
 	 */
 	public function delete_group_folder($group_name)
 	{
-		$group_folder = $group_name.'.group';
+		$group_folder = $this->template_directory.'/'.$group_name.'.group';
 	
-		echo $this->template_directory.'/'.$group_folder;
-		die();
-	
-		if(is_dir($this->template_directory.'/'.$group_folder)):
+		if(@is_dir($group_folder)):
+
+			$this->EE->load->helper('file');
+			
+			delete_files($group_folder, TRUE);
 		
-			@rmdir($this->template_directory.'/'.$group_folder);
+			@rmdir($group_folder);
 		
 		endif;
 	}
