@@ -291,6 +291,33 @@ class Driver_channels
 	 * @access	public
 	 * @return	string
 	 */	
+	function _comm_set_xml_lang($channel_name, $lang)
+	{
+		// Validate Language
+		$this->EE->load->helper('driver');
+		
+		if(!($lang_processed = validate_language($lang))):
+		
+			return "invalid language";
+		
+		endif;
+	
+		$messages = array(
+			'success' => "xml language for $channel_name set to ".$lang_processed['full'],
+			'failure' => "xml language for $channel_name already set to ".$lang_processed['full']
+		);
+		
+		return $this->_change_channel_preference($channel_name, 'channel_lang', $lang_processed['code'], $messages);
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable CAPTCHA
+	 *
+	 * @access	public
+	 * @return	string
+	 */	
 	function _comm_disable_captcha($channel_name)
 	{
 		$messages = array(
