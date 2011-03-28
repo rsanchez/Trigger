@@ -437,6 +437,174 @@ class Driver_site
 	}
 
 	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the server offset
+	 */
+	function _comm_set_server_offset($offset)
+	{
+		if(!is_numeric($offset)){
+			
+			return "invalid input";
+		}
+	
+		$this->_change_preference('server_offset', $offset);
+
+		return "the server offset has been set to $offset";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set the default time format
+	 */
+	function _comm_set_time_format($format)
+	{
+		if($format != 'eu' and $format != 'us'){
+			
+			return "format must be 'us' or 'eu'";
+		}
+	
+		$this->_change_preference('time_format', $format);
+
+		return "the default time offset has been set to $format";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Daylight savings time on
+	 */
+	function _comm_dst_on()
+	{
+		$this->_change_preference('daylight_savings', 'y');
+
+		return "daylight savings time on";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Daylight savings time off
+	 */
+	function _comm_dst_off()
+	{
+		$this->_change_preference('daylight_savings', 'm');
+
+		return "daylight savings time off";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable HTTP page headers
+	 */
+	function _comm_enable_page_headers()
+	{
+		$this->_change_preference('send_headers', 'y');
+
+		return "http page headers are now enabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Disable HTTP page headers
+	 */
+	function _comm_disable_page_headers()
+	{
+		$this->_change_preference('send_headers', 'n');
+
+		return "http page headers are now disabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable GZIP Output
+	 */
+	function _comm_enable_gzip()
+	{
+		$this->_change_preference('gzip_output', 'y');
+
+		return "gzip output is now enabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Enable GZIP Output
+	 */
+	function _comm_disable_gzip()
+	{
+		$this->_change_preference('gzip_output', 'n');
+
+		return "gzip ouput is now disabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Force URL query strings
+	 */
+	function _comm_force_query_strings()
+	{
+		$this->_change_preference('force_query_string', 'y');
+
+		return "force query strings enabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Don't force URL query strings
+	 */
+	function _comm_dont_force_query_strings()
+	{
+		$this->_change_preference('force_query_string', 'n');
+
+		return "force query strings disabled";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set redirection method
+	 */
+	function _comm_set_redirection_method($method)
+	{
+		if($method != 'redirect' and $method != 'refresh'){
+			
+			return "value must be 'redirect' or 'refresh'";
+		}
+	
+		$this->_change_preference('redirect_method', $method);
+
+		return "the redirection has been set to $method";		
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Set server time zone
+	 */
+	function _comm_set_time_zone($zone)
+	{
+		$zone = strtoupper($zone);
+	
+		$codes = array('UM12', 'UM11', 'UM10', 'UM95', 'UM9', 'UM8', 'UM7', 'UM6', 'UM5', 'UM45', 'UM4', 'UM35', 'UM3', 'UM2', 'UM1', 'UTC', 'UP1', 'UP2', 'UP3', 'UP35', 'UP4', 'UP45', 'UP5', 'UP55', 'UP575', 'UP6', 'UP65', 'UP7', 'UP8', 'UP875', 'UP9', 'UP95', 'UP10', 'UP105', 'UP11', 'UP115', 'UP12', 'UP1275', 'UP13', 'UP14');
+	
+		if(!in_array($zone, $codes)){
+			
+			return "invalid format";
+		}
+	
+		$this->_change_preference('server_timezone', $zone);
+
+		return "the server time zone has been set to $zone";		
+	}
+
+	// --------------------------------------------------------------------------
 	
 	/**
 	 * Does the actual clearing of the cache
