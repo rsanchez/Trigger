@@ -175,6 +175,19 @@ class Vars
 		return SYSDIR;
 	}
 
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Third party path folder
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function path_third()
+	{
+		return rtrim(PATH_THIRD, '/');
+	}
+
 }
 
 /* End of file commands.php.php */
