@@ -26,15 +26,12 @@ class Trigger_mcp {
 		$this->EE->load->helper('log');
 		
 		$this->EE->load->model('package_mdl');
-		
-		$this->module_base = $this->EE->config->item('base_url').'admin/'.BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
+
+		$this->module_base = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=trigger';
 		
 		// Define some constansts
-		
 		define('TRIGGER_IMG_URL', $this->EE->config->item('base_url').SYSDIR.'/expressionengine/third_party/trigger/img/');
-
 		define('TRIGGER_ADDONS_FOLDER', PATH_THIRD.'trigger/addons/');
-
 		define('EE_SERVER_ROOT', str_replace('/'.SYSDIR.'/', '', FCPATH));
 
 		// -------------------------------------
