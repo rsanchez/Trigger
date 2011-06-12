@@ -1,0 +1,31 @@
+h1. :trigger for ExpressionEngine (Beta)
+
+:trigger is a free, open source rapid site development tool for ExpressionEngine 2. :trigger helps you by providing an easy system to automate and easily access the power of EE and EE add-ons.
+
+After toying around with selling Trigger, we have decided to make it open source. We are still working towards a 1.0 and also working on a website for :trigger.
+
+In the mean time, feel free to download it, play around with it, and let us know what you think.
+
+h2. Documentation
+
+Docs are included with the download.
+
+h2. Core Drivers
+
+* addons (in development)
+* categories (in development)
+* channels
+* fields (in development)
+* globals
+* groups
+* logs
+* pack
+* seq
+* site
+* snippets
+* status (in development)
+* templates
+
+h2. Team
+
+"Adam Fairholm":http://twitter.com/adamfairholm
