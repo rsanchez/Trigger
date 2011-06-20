@@ -408,6 +408,18 @@ class Trigger
 			return FALSE;
 		
 		endif;
+
+		// -------------------------------------
+		// Set driver folder as constant
+		// -------------------------------------
+
+		define('DRIVER_PATH', $driver_folder);
+
+		// -------------------------------------
+		// Add as package
+		// -------------------------------------
+		
+		$this->EE->load->remove_package_path(DRIVER_PATH.$driver_slug);
 		
 		// -------------------------------------
 		// Load driver file
