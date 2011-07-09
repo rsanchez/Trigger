@@ -724,7 +724,7 @@ class Trigger
 		
 		$user_lang = $this->EE->security->sanitize_filename($user_lang);
 	
-		$this->EE->lang->load($driver_slug, $user_lang, FALSE, TRUE, PATH_THIRD . 'trigger/drivers/'.$driver_slug.'/');
+		$this->EE->lang->load($driver_slug, $user_lang, FALSE, TRUE, DRIVER_PATH.$driver_slug.'/');
 	}
 
 	// --------------------------------------------------------------------------

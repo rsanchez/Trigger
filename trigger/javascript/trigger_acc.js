@@ -14,6 +14,8 @@ $(document).ready(function()
 		success: function(data){
 		
 		$('#trigger_acc_content').val($('#trigger_acc_content').val()+data);
+        
+        $('#trigger_acc_content').scrollTop($('#trigger_acc_content')[0].scrollHeight - $('#trigger_acc_content').height());
 		
 		var textarea = null;
 		
